@@ -5,13 +5,13 @@ import { ShieldCheck, ArrowRight, Sparkles, Terminal, Zap, Lock } from "lucide-r
 import { motion } from "motion/react";
 import { Magnetic } from "./magnetic";
 import { MacOSWindow } from "./macos-window";
-import { HeroAmbientGlow } from "./hero-ambient-glow";
+import { HeroCausticsBackground } from "./hero-caustics-background";
 
 export function Hero() {
   return (
     <section className="relative mb-20 flex flex-col items-center text-center">
-      {/* Animated Liquid Aurora Halo & Floating Lights */}
-      <HeroAmbientGlow />
+      {/* 60fps Interactive Optical Laser Mesh & Caustics Ambient Canvas */}
+      <HeroCausticsBackground />
 
       {/* Floating Micro-Pill (Left) */}
       <motion.div

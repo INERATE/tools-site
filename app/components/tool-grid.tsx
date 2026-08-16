@@ -5,6 +5,7 @@ import { WatermarkIcon } from "./icons/watermark-icon";
 import { ToImageIcon } from "./icons/to-image-icon";
 import { DocxIcon } from "./icons/docx-icon";
 import { ResumeIcon } from "./icons/resume-icon";
+import { Sparkles } from "lucide-react";
 
 /** Icons are passed as components, not elements — the card owns hover state. */
 const TOOLS = [
@@ -12,47 +13,72 @@ const TOOLS = [
     href: "/pdf-merger",
     icon: MergeIcon,
     title: "PDF Merger",
-    description: "Combine multiple PDFs into one, in your browser.",
+    description: "Combine multiple PDFs into a single clean file with custom page ordering.",
     live: true,
+    category: "PDF Suite",
   },
   {
     href: "/pdf-split",
     icon: SplitIcon,
     title: "PDF Splitter",
-    description: "Pull pages out of a PDF or split it apart.",
+    description: "Extract specific page ranges or burst a multi-page document apart.",
+    category: "PDF Suite",
   },
   {
     href: "/watermark-remover",
     icon: WatermarkIcon,
     title: "Watermark Remover",
-    description: "Strip watermarks from PDF pages.",
+    description: "Strip background stamps, text overlays, and artifacts from documents.",
+    category: "Clean & Polish",
   },
   {
     href: "/pdf-to-image",
     icon: ToImageIcon,
     title: "PDF to Image",
-    description: "Export PDF pages as PNG or JPG.",
+    description: "Render high-resolution vector PDF pages directly into PNG or JPG.",
+    category: "Convert & Export",
   },
   {
     href: "/docx-to-pdf",
     icon: DocxIcon,
     title: "DOCX to PDF",
-    description: "Convert Word documents to PDF.",
+    description: "Convert Word documents to standard PDF while preserving fonts and layout.",
+    category: "Convert & Export",
   },
   {
     href: "/resume-builder",
     icon: ResumeIcon,
     title: "Resume Builder",
-    description: "Build and export a clean resume PDF.",
+    description: "Generate and export ATS-friendly resume PDFs tailored for tech roles.",
+    category: "Document Studio",
   },
 ];
 
 export function ToolGrid() {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-      {TOOLS.map((tool, i) => (
-        <ToolCard key={tool.href} {...tool} index={i} />
-      ))}
-    </div>
+    <section id="tools" className="mt-28 flex flex-col gap-8">
+      {/* Section Header */}
+      <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-[var(--accent)] uppercase">
+            <Sparkles className="size-3.5" />
+            <span>Complete Suite</span>
+          </div>
+          <h2 className="text-[28px] sm:text-[34px] font-extrabold tracking-tight text-[var(--text)]">
+            Explore All Document Tools
+          </h2>
+        </div>
+        <p className="max-w-[32ch] text-[13.5px] text-[var(--text-dim)]">
+          Fast, sandboxed, and engineered to execute completely inside your browser tab.
+        </p>
+      </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {TOOLS.map((tool, i) => (
+          <ToolCard key={tool.href} {...tool} index={i} />
+        ))}
+      </div>
+    </section>
   );
 }

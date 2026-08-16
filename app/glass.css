@@ -1,19 +1,21 @@
-/* Liquid-glass materials. Held in @layer components so Tailwind's rounded and
-   border utilities still win on elements that set their own shape. */
+/* Liquid-glass, Claymorphic and macOS Materials */
 
 @layer components {
-  .glass {
+  /* Apple Liquid Glass Navbar Capsule */
+  .nav-glass {
     position: relative;
-    background: var(--glass-bg);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-radius: 20px;
-    border: 0;
-    box-shadow: 0 20px 50px -22px var(--glow), inset 0 1px 0 var(--glass-hi);
+    background: color-mix(in srgb, var(--bg-raised) 78%, transparent);
+    backdrop-filter: blur(36px) saturate(220%);
+    -webkit-backdrop-filter: blur(36px) saturate(220%);
+    border-radius: 9999px;
+    box-shadow:
+      0 20px 50px -15px rgba(0, 0, 0, 0.25),
+      0 6px 18px -4px rgba(0, 0, 0, 0.12),
+      inset 0 1px 1.5px var(--glass-hi),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.15);
   }
 
-  /* Luminous 1px gradient ring: a padding-box/border-box mask XOR. */
-  .glass::before {
+  .nav-glass::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -27,29 +29,196 @@
     pointer-events: none;
   }
 
+  /* Ultra-Refined Glass Material */
+  .glass {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border-radius: 20px;
+    border: 0;
+    box-shadow:
+      0 20px 50px -22px var(--glow),
+      inset 0 1px 1px var(--glass-hi),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--glass-border);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Liquid Glass Window */
+  .liquid-card {
+    position: relative;
+    background: color-mix(in srgb, var(--bg-raised) 82%, transparent);
+    backdrop-filter: blur(36px) saturate(210%);
+    -webkit-backdrop-filter: blur(36px) saturate(210%);
+    border-radius: 24px;
+    box-shadow:
+      0 32px 70px -20px rgba(0, 0, 0, 0.45),
+      0 12px 28px -8px var(--glow),
+      inset 0 1.5px 1px var(--glass-hi),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .liquid-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--glass-border);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Apple Claymorphic Card */
+  .clay-card {
+    position: relative;
+    background: color-mix(in srgb, var(--bg-raised) 90%, transparent);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-radius: 26px;
+    border: 1px solid var(--border);
+    box-shadow:
+      0 24px 50px -15px rgba(0, 0, 0, 0.16),
+      0 8px 20px -6px rgba(0, 0, 0, 0.08),
+      inset 0 2px 2px var(--glass-hi),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.08);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s ease;
+  }
+
+  .clay-card:hover {
+    box-shadow:
+      0 32px 64px -15px rgba(0, 0, 0, 0.22),
+      0 12px 28px -6px var(--glow),
+      inset 0 2.5px 2px var(--glass-hi),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Clay Icon Bed */
+  .clay-icon {
+    position: relative;
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+    border: 1px solid var(--border);
+    box-shadow:
+      inset 0 2px 1.5px var(--glass-hi),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.15),
+      0 6px 14px -4px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  }
+
+  /* Tactile Apple Skeuomorphic Button */
   .clay {
-    border-radius: 28px;
+    position: relative;
+    border-radius: 9999px;
     color: var(--on-accent);
     border: 0;
     background: linear-gradient(160deg, var(--accent), var(--accent-2));
     box-shadow:
-      inset 0 2px 0 rgba(255, 255, 255, .55),
-      inset 0 -8px 14px rgba(0, 0, 0, .25),
-      0 14px 30px -10px var(--glow),
-      0 2px 6px rgba(0, 0, 0, .28);
+      inset 0 2px 1.5px rgba(255, 255, 255, 0.7),
+      inset 0 -3px 8px rgba(0, 0, 0, 0.28),
+      0 16px 36px -10px var(--glow),
+      0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.2s ease;
   }
 
-  .shimmer { position: relative; overflow: hidden; isolation: isolate; }
+  .clay:hover {
+    filter: brightness(1.06);
+    box-shadow:
+      inset 0 2.5px 2px rgba(255, 255, 255, 0.85),
+      inset 0 -3px 10px rgba(0, 0, 0, 0.3),
+      0 22px 46px -8px var(--glow),
+      0 6px 18px rgba(0, 0, 0, 0.3);
+  }
+
+  .clay:active {
+    transform: scale(0.97);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.4),
+      inset 0 3px 8px rgba(0, 0, 0, 0.4),
+      0 6px 16px -4px var(--glow);
+  }
+
+  /* Liquid Glass Ghost Button */
+  .glass-btn {
+    position: relative;
+    background: color-mix(in srgb, var(--bg-raised) 70%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-radius: 9999px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 8px 24px -6px rgba(0, 0, 0, 0.15),
+      inset 0 1px 1.5px var(--glass-hi),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.12);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .glass-btn:hover {
+    background: var(--bg-raised);
+    transform: translateY(-1px);
+    box-shadow:
+      0 14px 32px -8px var(--glow),
+      inset 0 1.5px 1.5px var(--glass-hi);
+  }
+
+  /* Shimmer Sheen */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
 
   .shimmer::after {
     content: "";
     position: absolute;
-    inset: -40%;
+    inset: -60%;
     pointer-events: none;
-    background: linear-gradient(105deg, transparent 42%, var(--shimmer) 50%, transparent 58%);
-    transform: translate3d(-60%, 0, 0);
-    animation: sheen 7s linear infinite;
+    background: linear-gradient(105deg, transparent 40%, var(--shimmer) 50%, transparent 60%);
+    transform: translate3d(-70%, 0, 0);
+    animation: sheen 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  /* Micro Mathematical Dot Grid Matrix */
+  .dot-matrix-bg {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  [data-theme="daylight"] .dot-matrix-bg {
+    background-image: radial-gradient(rgba(24, 20, 45, 0.10) 1px, transparent 1px);
   }
 }
 
-@keyframes sheen { to { transform: translate3d(60%, 0, 0); } }
+@keyframes sheen {
+  0% { transform: translate3d(-80%, 0, 0); }
+  35%, 100% { transform: translate3d(80%, 0, 0); }
+}
+
+@keyframes hero-aurora {
+  0%, 100% { transform: scale(1) translate3d(0, 0, 0) rotate(0deg); opacity: 0.55; }
+  50% { transform: scale(1.18) translate3d(2%, 4%, 0) rotate(3deg); opacity: 0.85; }
+}
+
+.animate-hero-aurora {
+  animation: hero-aurora 14s ease-in-out infinite;
+}

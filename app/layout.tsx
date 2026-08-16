@@ -24,7 +24,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+        <script
+          id="theme-boot"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: THEME_BOOT }}
+        />
       </head>
       <body>
         <SmoothScroll />

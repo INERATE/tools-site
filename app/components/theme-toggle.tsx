@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useState, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Flame, Gem, Monitor, Moon, Sparkles, Sun } from "lucide-react";
 import { applyTheme, LABEL, ORDER, readStoredTheme, resolve, type Choice } from "../lib/theme";
@@ -15,12 +15,17 @@ const ICON: Record<Choice, typeof Monitor> = {
 };
 
 export function ThemeToggle() {
-  const [choice, setChoice] = useState<Choice>(readStoredTheme);
+  const [choice, setChoice] = useState<Choice>("auto");
+  const [mounted, setMounted] = useState(false);
   const reducedMotion = useReducedMotion();
 
-  // Re-applies data-theme (covers React Strict Mode's dev remount) and
-  // (de)registers the OS-appearance listener whenever Auto is active.
+  useEffect(() => {
+    setMounted(true);
+    setChoice(readStoredTheme());
+  }, []);
+
   useLayoutEffect(() => {
+    if (!mounted) return;
     document.documentElement.setAttribute("data-theme", resolve(choice));
     if (choice !== "auto") return;
 
@@ -28,7 +33,7 @@ export function ThemeToggle() {
     const onChange = () => document.documentElement.setAttribute("data-theme", resolve("auto"));
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, [choice]);
+  }, [choice, mounted]);
 
   function cycle(e: MouseEvent<HTMLButtonElement>) {
     const next = ORDER[(ORDER.indexOf(choice) + 1) % ORDER.length];
@@ -52,14 +57,15 @@ export function ThemeToggle() {
     );
   }
 
-  const Icon = ICON[choice];
+  const Icon = ICON[choice] || Monitor;
 
   return (
     <button
       onClick={cycle}
-      title={`Appearance: ${LABEL[choice]}`}
-      aria-label={`Appearance: ${LABEL[choice]}. Click to change.`}
-      className="glass grid size-11 shrink-0 cursor-pointer place-items-center rounded-full text-[var(--text-dim)] transition-colors hover:text-[var(--text)]"
+      title={mounted ? `Appearance: ${LABEL[choice]}` : "Appearance"}
+      aria-label={mounted ? `Appearance: ${LABEL[choice]}. Click to change.` : "Appearance. Click to change."}
+      suppressHydrationWarning
+      className="glass grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-[var(--text-dim)] transition-colors hover:text-[var(--text)]"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
@@ -70,7 +76,7 @@ export function ThemeToggle() {
           transition={reducedMotion ? { duration: 0.15 } : { type: "spring", bounce: 0, duration: 0.35 }}
           className="grid place-items-center"
         >
-          <Icon size={17} strokeWidth={1.75} />
+          <Icon size={16} strokeWidth={1.75} />
         </motion.span>
       </AnimatePresence>
     </button>

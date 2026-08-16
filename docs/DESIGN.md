@@ -1,43 +1,26 @@
-# Design System
+# Design System & macOS Principles
 
-Inerate Tools reads as **macOS System Settings**, not generic SaaS: near-black
-glass, springs instead of easing curves, translucency that implies depth
-rather than decoration. The theme picker extends this system — it doesn't
-replace it.
+Inerate Tools reads as **macOS Native System Software & Cloudflare Telemetry**, not generic SaaS: precision-milled glass surfaces, springs instead of easing curves, translucency that implies physical depth, and live WebAssembly sandboxing.
 
-## Why glassmorphism
-Apple's own materials guidance (WWDC "Designing Fluid Interfaces") treats
-translucency as a **depth cue**, not a trend: a blurred, saturated layer
-tells the eye "this sits above your content" without a hard shadow. `.glass`
-(`backdrop-filter: blur(24px) saturate(160%)`) is that cue. It only works
-with vibrancy — text stays near-full-opacity, never flat gray-on-blur — so
-every theme keeps `--text` high-contrast against its own `--bg`.
+## Core Pillars
 
-## The 4 themes
-| Theme | `--bg` | `--bg-raised` | `--text` | `--accent` | Blobs |
+1. **macOS Native Window Hierarchy**: Translucent titlebars with authentic traffic lights (`#FF5F56`, `#FFBD2E`, `#27C93F`), segmented toolbar controls, and Finder-style file queues.
+2. **Cloudflare-Grade Telemetry Stream**: Real-time worker thread telemetry, execution latency counters (`0.034s`), sandboxed heap allocation meters, and interactive CLI prompts.
+3. **Materials as Depth Cues**: Apple WWDC "Designing Fluid Interfaces" principles (`backdrop-filter: blur(28px) saturate(190%)`), top-light specular insets (`inset 0 1px 0 var(--glass-hi)`), and `rgba(255,255,255,0.08)` hairlines.
+
+## The 5 Themes
+
+| Theme | `--bg` | `--bg-raised` | `--text` | `--accent` | Accents |
 |---|---|---|---|---|---|
-| Obsidian | `#0a0a0b` | `#141518` | `#f5f5f3` | `#25be74` | green → blue |
-| Daylight | `#f4f4f2` | `#ffffff` | `#1c1c1e` | `#17864d` | green → indigo |
-| Aurora | `#0a0a12` | `#16151f` | `#f2f1fa` | `#8ab4ff` | blue → violet |
-| Ember | `#120a08` | `#1c1210` | `#faf1ec` | `#ff9d5c` | coral → rose |
+| Iridescence | `#0B0A14` | `#161422` | `#F4F2FF` | `#A78BFA` | Violet / Fuchsia / Cyan |
+| Obsidian | `#0A0A0C` | `#17181C` | `#F2F3F5` | `#8FB6FF` | Slate / Ice Blue |
+| Daylight | `#F2F1F7` | `#FFFFFF` | `#191722` | `#6D28D9` | Crisp Light / Deep Violet |
+| Aurora | `#050F14` | `#0C1A20` | `#EAFBFF` | `#5EEAD4` | Mint / Emerald / Sky |
+| Ember | `#120A08` | `#1E1210` | `#FFF3EC` | `#FDBA74` | Coral / Warm Amber |
 
-Obsidian's values are the original shipped tokens, untouched. Daylight's
-accent is darkened from the brand green (`#25be74`, only 3.5:1 on white —
-fails AA) to `#17864d` (4.6:1) so nav/link text stays compliant; the ambient
-blobs keep the brighter, decorative `#25be74` since blob color isn't text.
-Every other theme text/accent pairing clears AA with margin (7:1–18:1).
+## Token Rule
+Every theme is a `data-theme` attribute swap on `<html>` (`app/lib/theme.ts`). Components stay strictly theme-blind by reading `var(--text-dim)` and `var(--accent)`. Hardcoded hex values in component files are prohibited.
 
-## Token rule
-Every theme is a `data-theme` attribute swap on `<html>` (`app/lib/theme.ts`),
-never a class per component. One CSS custom-property set, four values —
-components stay theme-blind by reading `var(--text-dim)` etc., never a
-hardcoded hex. `.glass` and `.ambient-blob` get small per-theme overrides in
-`globals.css` for background/border/blob color, since those were the only
-rules that hardcoded Obsidian's colors directly instead of referencing
-tokens.
-
-## Border hairline
-`--border` (subtle white-on-dark, subtle black-on-light) and `.glass`'s
-bright top-edge highlight stay conceptually identical across all 4 themes —
-only their color inverts for light vs. dark, so the "light catching glass"
-effect reads correctly regardless of theme.
+## Motion & Tactility
+- Micro-interactions: 150–250ms with critically damped springs (`type: "spring", bounce: 0`).
+- Interactive triggers provide instant haptic-like visual feedback and sub-millisecond RAM execution state updates.

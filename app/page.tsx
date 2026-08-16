@@ -11,8 +11,8 @@ export default function Home() {
       <Nav />
       <main className="mx-auto max-w-5xl px-6 pt-12 pb-28 space-y-24 sm:space-y-32">
         <Hero />
-        <InteractiveGlassFilm />
         <ToolGrid />
+        <InteractiveGlassFilm />
       </main>
     </div>
   );

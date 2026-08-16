@@ -5,6 +5,8 @@
 
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, rgba(255, 255, 255, 0.2)) transparent;
 }
 
 html {
@@ -14,9 +16,6 @@ html {
   transition: background-color 0.3s ease;
 }
 
-/* body MUST stay transparent. Negative-z-index children (.mesh) paint before
-   in-flow block backgrounds, so an opaque body background would cover the
-   gradient mesh entirely. The ground colour lives on <html>. */
 body {
   background: transparent;
   color: var(--text);
@@ -27,6 +26,30 @@ body {
   margin: 0;
   padding: 0;
   transition: color 0.3s ease;
+}
+
+/* Custom Sleek Minimalist macOS Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, rgba(255, 255, 255, 0.2));
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, var(--accent));
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
 }
 
 a {

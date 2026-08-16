@@ -1,43 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, Sparkles, Terminal, Zap, Lock } from "lucide-react";
+import { ShieldCheck, ArrowRight, Terminal } from "lucide-react";
 import { motion } from "motion/react";
 import { Magnetic } from "./magnetic";
 import { MacOSWindow } from "./macos-window";
-import { HeroCausticsBackground } from "./hero-caustics-background";
+import { HeroAmbientGlow } from "./hero-ambient-glow";
 
 export function Hero() {
   return (
     <section className="relative mb-20 flex flex-col items-center text-center">
-      {/* 60fps Interactive Optical Laser Mesh & Caustics Ambient Canvas */}
-      <HeroCausticsBackground />
+      {/* Dynamic Ambient Fluid Aurora Background */}
+      <HeroAmbientGlow />
 
-      {/* Floating Micro-Pill (Left) */}
-      <motion.div
-        className="pointer-events-none absolute top-6 left-0 hidden xl:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-raised)]/80 px-3.5 py-1.5 backdrop-blur-xl shadow-lg"
-        animate={{ y: [-4, 6, -4] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <Zap className="size-3.5 text-[var(--accent)]" />
-        <span className="text-[11.5px] font-mono font-semibold text-[var(--text)]">0.03s Execution</span>
-        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-      </motion.div>
-
-      {/* Floating Micro-Pill (Right) */}
-      <motion.div
-        className="pointer-events-none absolute top-6 right-0 hidden xl:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-raised)]/80 px-3.5 py-1.5 backdrop-blur-xl shadow-lg"
-        animate={{ y: [6, -5, 6] }}
-        transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-      >
-        <Lock className="size-3.5 text-emerald-400" />
-        <span className="text-[11.5px] font-mono font-semibold text-[var(--text)]">0 KB Uploaded</span>
-        <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-400 uppercase">
-          Air-Gapped
-        </span>
-      </motion.div>
-
-      {/* Top Pill Badge */}
+      {/* Top Air-Gapped Trust Badge */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -108,7 +84,7 @@ export function Hero() {
         <span>Sandboxed in Browser RAM · Zero Data Leaves Your Device</span>
       </motion.div>
 
-      {/* macOS Application Window & Cloudflare Telemetry Centerpiece */}
+      {/* Interactive Application Workstation Centerpiece */}
       <MacOSWindow />
     </section>
   );

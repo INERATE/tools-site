@@ -3,12 +3,12 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "motion/react";
-import { ArrowRight, Layers, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileText, Lock, ShieldCheck, Sparkles, TrendingUp, Layers } from "lucide-react";
 
 /**
- * Ultra-Premium 3D Isometric Glass Stack Engine.
- * 5 thick refractive glass document slabs with luminous edge highlights,
- * glowing emerald/cyan energy nodes, and smooth scroll convergence.
+ * World-Class Apple-Caliber 3D Glass Document Showcase.
+ * Seamlessly matches the page theme without harsh color bands.
+ * True 3D perspective with realistic document layouts, glass refraction, and scroll convergence.
  */
 export function InteractiveGlassFilm() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,133 +17,176 @@ export function InteractiveGlassFilm() {
     offset: ["start end", "end end"],
   });
 
-  // Dynamic scroll separation -> convergence
-  const spread = useTransform(scrollYProgress, [0.1, 0.75], [65, 14]);
-  const rotateX = useTransform(scrollYProgress, [0.1, 0.8], [55, 60]);
-  const rotateZ = useTransform(scrollYProgress, [0.1, 0.8], [-45, -35]);
-  const stackScale = useTransform(scrollYProgress, [0.6, 1], [0.95, 1.1]);
-  const glowOpacity = useTransform(scrollYProgress, [0.4, 0.9], [0.4, 1]);
+  // Dynamic 3D space transformations
+  const zOffset1 = useTransform(scrollYProgress, [0.1, 0.75], [90, 0]);
+  const yOffset1 = useTransform(scrollYProgress, [0.1, 0.75], [-120, 0]);
+  const rotZ1 = useTransform(scrollYProgress, [0.1, 0.75], [-18, 0]);
+
+  const zOffset2 = useTransform(scrollYProgress, [0.1, 0.75], [45, 0]);
+  const yOffset2 = useTransform(scrollYProgress, [0.1, 0.75], [-60, 0]);
+  const rotZ2 = useTransform(scrollYProgress, [0.1, 0.75], [12, 0]);
+
+  const zOffset3 = useTransform(scrollYProgress, [0.1, 0.75], [0, 0]);
+
+  const sealOpacity = useTransform(scrollYProgress, [0.65, 0.9], [0, 1]);
+  const sealScale = useTransform(scrollYProgress, [0.65, 0.9], [0.6, 1]);
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full overflow-hidden text-white"
+      className="relative w-full overflow-hidden py-24 sm:py-32 transition-colors duration-300"
       style={{
-        background: "linear-gradient(180deg, var(--bg) 0%, #08060E 12%, #020204 50%, #08060E 88%, var(--bg) 100%)",
+        background: "radial-gradient(ellipse 80% 60% at 50% 50%, var(--glow), transparent 75%)",
       }}
     >
-      <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden px-6 py-8">
-        {/* Ambient Dark-Space Nebula */}
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 opacity-70"
-          style={{
-            background:
-              "radial-gradient(ellipse 75% 65% at 50% 45%, rgba(139, 92, 246, 0.3) 0%, rgba(34, 211, 238, 0.18) 45%, rgba(16, 185, 129, 0.1) 75%, transparent 100%)",
-          }}
-        />
+      <div className="mx-auto flex max-w-5xl flex-col items-center justify-center px-6">
+        {/* Section Pill */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="glass mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-[0.16em] text-[var(--accent)] uppercase"
+        >
+          <Sparkles className="size-3.5 text-[var(--accent)]" />
+          <span>Local Engine · Zero Latency</span>
+        </motion.div>
 
-        {/* 3D Isometric Stage Container */}
-        <div className="relative flex size-full max-h-[520px] max-w-3xl items-center justify-center [perspective:1600px]">
+        {/* Section Headline */}
+        <h2 className="text-center text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold tracking-[-0.03em] text-[var(--text)]">
+          Every page, in{" "}
+          <span className="animated-gradient-text italic font-serif font-normal inline-block">
+            one place.
+          </span>
+        </h2>
+        <p className="mt-4 max-w-lg text-center text-[15px] leading-relaxed text-[var(--text-dim)]">
+          Processed entirely on your device with sub-millisecond local WebAssembly execution. Nothing is ever uploaded.
+        </p>
+
+        {/* 3D Glass Document Stage */}
+        <div className="relative mt-16 flex h-[420px] sm:h-[480px] w-full max-w-2xl items-center justify-center [perspective:1400px]">
+          {/* Document 3 (Bottom Layer: Cryptographic Verification Sheet) */}
           <motion.div
             style={{
-              scale: stackScale,
+              translateZ: zOffset3,
+              rotateX: 45,
+              rotateZ: -15,
               transformStyle: "preserve-3d",
             }}
-            className="relative flex items-center justify-center"
+            className="absolute w-[300px] sm:w-[380px] h-[200px] sm:h-[240px] rounded-[22px] border border-[var(--border)] bg-[var(--bg-raised)]/70 backdrop-blur-[24px] p-5 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.3),inset_0_1.5px_1px_var(--glass-hi)] transition-all"
           >
-            {/* Luminous Floating Energy Spark Nodes */}
-            <motion.div
-              style={{ opacity: glowOpacity }}
-              animate={{
-                y: [-6, 6, -6],
-                scale: [1, 1.3, 1],
-              }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-              className="pointer-events-none absolute -top-24 -left-12 size-4 rounded-full bg-emerald-400 blur-[2px] shadow-[0_0_30px_8px_rgba(52,211,153,0.9)]"
-            />
-            <motion.div
-              style={{ opacity: glowOpacity }}
-              animate={{
-                y: [6, -6, 6],
-                scale: [1.2, 0.9, 1.2],
-              }}
-              transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-              className="pointer-events-none absolute -top-20 right-8 size-4 rounded-full bg-cyan-400 blur-[2px] shadow-[0_0_30px_8px_rgba(34,211,238,0.9)]"
-            />
+            <div className="flex h-full flex-col justify-between">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="grid size-6.5 place-items-center rounded-lg bg-[var(--accent)]/15 text-[var(--accent)]">
+                    <ShieldCheck className="size-3.5" />
+                  </div>
+                  <span className="text-[12px] font-semibold text-[var(--text)]">Security_Audit.pdf</span>
+                </div>
+                <span className="rounded bg-[var(--border)] px-1.5 py-0.5 text-[9.5px] font-mono text-[var(--text-dim)]">
+                  p. 03 / 03
+                </span>
+              </div>
+              <div className="space-y-2 opacity-50">
+                <div className="h-2 w-3/4 rounded-full bg-[var(--text)]" />
+                <div className="h-2 w-1/2 rounded-full bg-[var(--text-dim)]" />
+              </div>
+              <div className="flex items-center justify-between text-[10.5px] font-mono text-[var(--text-dim)]">
+                <span>SHA-256 Verified</span>
+                <span className="text-emerald-400">100% In-RAM</span>
+              </div>
+            </div>
+          </motion.div>
 
-            {/* Isometric Glass Stack: 5 Layered Prismatic Slabs */}
-            <motion.div
-              style={{
-                rotateX,
-                rotateZ,
-                transformStyle: "preserve-3d",
-              }}
-              className="relative w-[340px] sm:w-[460px] h-[220px] sm:h-[290px]"
-            >
-              {[0, 1, 2, 3, 4].map((layerIndex) => {
-                const isTop = layerIndex === 4;
-                return (
-                  <motion.div
-                    key={layerIndex}
-                    style={{
-                      transform: `translateZ(${layerIndex * 22}px)`,
-                      marginBottom: layerIndex * -12,
-                    }}
-                    className={`absolute inset-0 rounded-[28px] transition-all duration-300 ${
-                      isTop
-                        ? "border-[2px] border-cyan-300/80 bg-gradient-to-br from-white/[0.28] via-cyan-400/[0.15] to-violet-500/[0.12] backdrop-blur-[14px] shadow-[0_36px_90px_-15px_rgba(34,211,238,0.5),inset_0_2.5px_3px_rgba(255,255,255,0.95),inset_0_-3px_6px_rgba(0,0,0,0.5)]"
-                        : "border-[1.5px] border-cyan-400/40 bg-gradient-to-br from-white/[0.15] via-violet-500/[0.08] to-transparent backdrop-blur-[10px] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.8),inset_0_1.5px_2px_rgba(255,255,255,0.7)]"
-                    }`}
-                  >
-                    {/* Glass Prismatic Reflection Bevel */}
-                    <div className="absolute inset-0 rounded-[28px] bg-gradient-to-tr from-transparent via-white/[0.12] to-white/[0.25] pointer-events-none" />
+          {/* Document 2 (Middle Layer: Architecture Blueprint) */}
+          <motion.div
+            style={{
+              y: yOffset2,
+              translateZ: zOffset2,
+              rotateX: 45,
+              rotateZ: rotZ2,
+              transformStyle: "preserve-3d",
+            }}
+            className="absolute w-[300px] sm:w-[380px] h-[200px] sm:h-[240px] rounded-[22px] border border-[var(--border)] bg-[var(--bg-raised)]/80 backdrop-blur-[28px] p-5 shadow-[0_35px_80px_-20px_rgba(0,0,0,0.35),inset_0_1.5px_1px_var(--glass-hi)] transition-all"
+          >
+            <div className="flex h-full flex-col justify-between">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="grid size-6.5 place-items-center rounded-lg bg-[var(--accent-2)]/15 text-[var(--accent-2)]">
+                    <Layers className="size-3.5" />
+                  </div>
+                  <span className="text-[12px] font-semibold text-[var(--text)]">System_Architecture.pdf</span>
+                </div>
+                <span className="rounded bg-[var(--border)] px-1.5 py-0.5 text-[9.5px] font-mono text-[var(--text-dim)]">
+                  p. 02 / 03
+                </span>
+              </div>
+              <div className="space-y-2 opacity-60">
+                <div className="h-2 w-5/6 rounded-full bg-[var(--text)]" />
+                <div className="h-2 w-4/6 rounded-full bg-[var(--text-dim)]" />
+              </div>
+              <div className="flex items-center justify-between text-[10.5px] font-mono text-[var(--text-dim)]">
+                <span>Vector Layout</span>
+                <span>Lossless</span>
+              </div>
+            </div>
+          </motion.div>
 
-                    {/* Top Sheet Details */}
-                    {isTop && (
-                      <div className="flex h-full flex-col justify-between p-7 sm:p-9">
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-2 text-[12px] font-mono font-bold tracking-widest text-cyan-200 uppercase">
-                            <Layers className="size-4 text-cyan-300" />
-                            <span>Merged_Document_Master.pdf</span>
-                          </span>
-                          <span className="rounded-full bg-emerald-400/25 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300 uppercase tracking-wider shadow-[0_0_12px_rgba(52,211,153,0.5)]">
-                            Ready
-                          </span>
-                        </div>
+          {/* Document 1 (Top Master Layer: Executive Report with Metric Chart) */}
+          <motion.div
+            style={{
+              y: yOffset1,
+              translateZ: zOffset1,
+              rotateX: 45,
+              rotateZ: rotZ1,
+              transformStyle: "preserve-3d",
+            }}
+            className="relative w-[300px] sm:w-[380px] h-[200px] sm:h-[240px] rounded-[22px] border border-[var(--border)] bg-[var(--bg-raised)]/92 backdrop-blur-[36px] p-5 shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45),0_12px_28px_-10px_var(--glow),inset_0_2px_1.5px_var(--glass-hi)] transition-all"
+          >
+            <div className="flex h-full flex-col justify-between">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="grid size-6.5 place-items-center rounded-lg bg-[var(--accent-3)]/15 text-[var(--accent-3)]">
+                    <FileText className="size-3.5" />
+                  </div>
+                  <span className="text-[12px] font-bold text-[var(--text)]">Financial_Q3_Report.pdf</span>
+                </div>
+                <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9.5px] font-bold text-emerald-400 uppercase">
+                  Ready
+                </span>
+              </div>
 
-                        <div className="space-y-3 opacity-70">
-                          <div className="h-2.5 w-4/5 rounded-full bg-white/50 shadow-sm" />
-                          <div className="h-2.5 w-full rounded-full bg-white/35 shadow-sm" />
-                          <div className="h-2.5 w-3/5 rounded-full bg-white/25 shadow-sm" />
-                        </div>
+              <div className="flex items-center justify-between rounded-lg bg-[var(--bg)]/60 p-2.5">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="size-4 text-emerald-400" />
+                  <span className="text-[11.5px] font-medium text-[var(--text)]">+38.4% Efficiency</span>
+                </div>
+                <span className="text-[10.5px] font-mono text-[var(--text-dim)]">0.034s runtime</span>
+              </div>
 
-                        <div className="flex items-center justify-between border-t border-white/25 pt-3 text-[11px] text-white/80 font-mono">
-                          <span>100% In-Memory Sandbox</span>
-                          <span className="text-emerald-400">0 B Network Egress</span>
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </motion.div>
+              <div className="flex items-center justify-between border-t border-[var(--border)] pt-2 text-[10.5px] font-mono text-[var(--text-dim)]">
+                <span>Total: 3 Pages</span>
+                <span className="text-[var(--accent)]">Merged Output</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Cryptographic Seal of Verification */}
+          <motion.div
+            style={{ opacity: sealOpacity, scale: sealScale }}
+            className="pointer-events-none absolute -bottom-6 flex items-center gap-2 rounded-full border border-emerald-500/40 bg-[var(--bg-raised)]/95 px-4 py-2 text-[12px] font-bold text-emerald-400 shadow-[0_12px_36px_rgba(52,211,153,0.3)] backdrop-blur-xl"
+          >
+            <CheckCircle2 className="size-4 text-emerald-400" />
+            <span>Merged & Sealed Locally in RAM</span>
           </motion.div>
         </div>
 
-        {/* Bottom Headline & Call to Action */}
-        <div className="relative z-20 flex flex-col items-center gap-3.5 pb-6 text-center">
-          <h2 className="max-w-xl text-[clamp(2rem,4.5vw,3.25rem)] font-extrabold tracking-tight text-white [text-shadow:0_4px_35px_rgba(0,0,0,0.9)]">
-            Every page, in one place
-          </h2>
-          <p className="max-w-md text-[14.5px] leading-relaxed text-white/80">
-            Processed entirely on your device with sub-millisecond local WebAssembly execution. Nothing is ever uploaded.
-          </p>
-
+        {/* CTA Button */}
+        <div className="mt-10 flex items-center justify-center">
           <Link
             href="/pdf-merger"
-            className="clay mt-2 flex h-11.5 items-center gap-2 px-8 text-[14px] font-bold tracking-wide transition-transform hover:scale-105 active:scale-95"
+            className="clay flex h-11.5 items-center gap-2 px-8 text-[14px] font-bold tracking-wide transition-transform hover:scale-105 active:scale-95"
           >
-            <span>Merge a PDF Free</span>
+            <span>Launch PDF Merger</span>
             <ArrowRight className="size-4 stroke-[2.5]" />
           </Link>
         </div>

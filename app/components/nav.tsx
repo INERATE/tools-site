@@ -1,31 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Sparkles, Layers } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Nav() {
   return (
     <header className="sticky top-4 z-40 mx-auto w-full max-w-5xl px-4 sm:px-6">
-      <div className="nav-glass flex items-center justify-between px-4 py-2.5 sm:px-6 sm:py-3 transition-all duration-300">
-        {/* Brand Logo with Clay Jewel */}
-        <Link href="/" className="group flex items-center gap-3">
-          <div className="clay relative grid size-9 shrink-0 place-items-center rounded-xl text-[var(--on-accent)] transition-transform duration-300 group-hover:scale-105">
-            <Layers className="size-4.5 stroke-[2.2]" />
-            <span className="absolute -top-1 -right-1 flex size-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent-3)] opacity-75" />
-              <span className="relative inline-flex size-2.5 rounded-full bg-[var(--accent-3)]" />
-            </span>
+      <div className="nav-glass flex items-center justify-between px-4 py-2 sm:px-5 sm:py-2.5 transition-all duration-300">
+        {/* Brand Logo with Official Favicon */}
+        <Link href="/" className="group flex items-center gap-2.5">
+          <div className="relative size-8.5 shrink-0 overflow-hidden rounded-xl border border-[var(--border)] shadow-[0_2px_10px_rgba(0,0,0,0.18),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-transform duration-300 group-hover:scale-105">
+            <Image
+              src="/icon.png"
+              alt="Inerate Tools Logo"
+              width={34}
+              height={34}
+              className="h-full w-full object-cover"
+              priority
+            />
           </div>
 
           <div className="flex flex-col">
-            <span className="flex items-center gap-1.5 text-[13px] font-bold tracking-[0.16em] text-[var(--text)] uppercase">
+            <span className="flex items-center gap-1 text-[13px] font-bold tracking-[0.14em] text-[var(--text)] uppercase">
               Inerate
               <span className="bg-[linear-gradient(100deg,var(--accent),var(--accent-2)_50%,var(--accent-3))] bg-clip-text text-transparent">
                 Tools
               </span>
             </span>
-            <span className="text-[9.5px] font-medium tracking-[0.08em] text-[var(--text-dim)] uppercase">
+            <span className="text-[9px] font-medium tracking-[0.08em] text-[var(--text-dim)] uppercase">
               100% Client-Side
             </span>
           </div>
@@ -71,7 +75,7 @@ export function Nav() {
 
           <Link
             href="/pdf-merger"
-            className="clay flex h-9 items-center gap-1.5 px-4 text-[12.5px] font-semibold tracking-wide transition-all cursor-pointer"
+            className="clay flex h-8.5 items-center gap-1 px-3.5 text-[12px] font-semibold tracking-wide transition-all cursor-pointer"
           >
             <span>Launch PDF</span>
             <ArrowUpRight className="size-3.5 stroke-[2.5]" />

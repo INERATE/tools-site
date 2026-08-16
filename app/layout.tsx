@@ -10,11 +10,6 @@ export const metadata: Metadata = {
   title: "Inerate Tools — Free PDF, Image & Document Utilities",
   description:
     "Merge PDFs, convert images, build resumes, and more — fast, private, browser-based tools. No upload, no wait.",
-  icons: {
-    icon: "/assets/favicon.png",
-    shortcut: "/assets/favicon.png",
-    apple: "/assets/favicon.png",
-  },
   openGraph: {
     title: "Inerate Tools — Free PDF, Image & Document Utilities",
     description: "Fast, private, browser-based tools. No upload, no wait.",

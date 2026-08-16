@@ -16,16 +16,18 @@ import {
   ArrowRight,
   Sliders,
   Sparkles,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { useTilt } from "../lib/use-tilt";
 
-type ToolMode = "merge" | "split" | "watermark" | "convert";
+type ToolMode = "merge" | "split" | "watermark";
 
 export function MacOSWindow() {
+  const tilt = useTilt(5);
   const [activeTab, setActiveTab] = useState<ToolMode>("merge");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  const [activeThreadCount, setActiveThreadCount] = useState(3);
   const [execTime, setExecTime] = useState("0.034s");
   const [preserveBookmarks, setPreserveBookmarks] = useState(true);
   const [compressionMode, setCompressionMode] = useState<"lossless" | "fast">("lossless");
@@ -35,7 +37,7 @@ export function MacOSWindow() {
     setIsProcessing(true);
     setIsDone(false);
 
-    const time = (0.026 + Math.random() * 0.018).toFixed(3) + "s";
+    const time = (0.024 + Math.random() * 0.016).toFixed(3) + "s";
     setExecTime(time);
 
     setTimeout(() => {
@@ -46,10 +48,30 @@ export function MacOSWindow() {
 
   return (
     <div id="demo-stage" className="mt-12 w-full max-w-5xl mx-auto">
-      {/* macOS Window Outer Shell */}
-      <div className="relative rounded-[18px] border border-[var(--border)] bg-[var(--bg-raised)]/90 backdrop-blur-[32px] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.6),inset_0_1px_0_var(--glass-hi)] overflow-hidden transition-all">
+      {/* 3D Tilt Window Wrapper */}
+      <motion.div
+        onPointerMove={tilt.move}
+        onPointerEnter={tilt.enter}
+        onPointerDown={tilt.down}
+        onPointerUp={tilt.enter}
+        onPointerLeave={tilt.leave}
+        style={{
+          rotateX: tilt.rx,
+          rotateY: tilt.ry,
+          y: tilt.lift,
+          transformPerspective: 1000,
+        }}
+        className="relative rounded-[22px] border border-[var(--border)] bg-[var(--bg-raised)]/92 backdrop-blur-[36px] shadow-[0_36px_90px_-20px_rgba(0,0,0,0.55),0_12px_32px_-10px_var(--glow),inset_0_1.5px_1px_var(--glass-hi)] overflow-hidden transition-shadow duration-300"
+      >
+        {/* Specular Cursor Glare Layer */}
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300"
+          style={{ backgroundImage: tilt.glare, opacity: tilt.glow }}
+        />
+
         {/* macOS Window Titlebar */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3 sm:px-5">
+        <div className="relative z-10 flex items-center justify-between border-b border-[var(--border)] px-4 py-3 sm:px-5">
           {/* Traffic Lights */}
           <div className="flex items-center gap-2">
             <span className="size-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]" />
@@ -62,63 +84,86 @@ export function MacOSWindow() {
             </div>
           </div>
 
-          {/* macOS Segmented Mode Control */}
-          <div className="flex items-center rounded-lg border border-[var(--border)] bg-[var(--bg)]/60 p-1 text-[12px]">
+          {/* macOS Segmented Mode Control with Fluid Pill Animation */}
+          <div className="relative flex items-center rounded-lg border border-[var(--border)] bg-[var(--bg)]/60 p-1 text-[12px]">
             <button
               onClick={() => {
                 setActiveTab("merge");
                 setIsDone(false);
               }}
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1 font-medium transition-all ${
-                activeTab === "merge"
-                  ? "bg-[var(--glass-bg)] text-[var(--text)] shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.15)] font-semibold"
-                  : "text-[var(--text-dim)] hover:text-[var(--text)]"
+              className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-1 font-medium transition-colors cursor-pointer ${
+                activeTab === "merge" ? "text-[var(--text)] font-semibold" : "text-[var(--text-dim)] hover:text-[var(--text)]"
               }`}
             >
-              <Layers className="size-3.5" />
-              <span>PDF Merger</span>
+              {activeTab === "merge" && (
+                <motion.div
+                  layoutId="active-tab-indicator"
+                  className="absolute inset-0 rounded-md bg-[var(--glass-bg)] shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)]"
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1.5">
+                <Layers className="size-3.5" />
+                <span>PDF Merger</span>
+              </span>
             </button>
+
             <button
               onClick={() => {
                 setActiveTab("split");
                 setIsDone(false);
               }}
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1 font-medium transition-all ${
-                activeTab === "split"
-                  ? "bg-[var(--glass-bg)] text-[var(--text)] shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.15)] font-semibold"
-                  : "text-[var(--text-dim)] hover:text-[var(--text)]"
+              className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-1 font-medium transition-colors cursor-pointer ${
+                activeTab === "split" ? "text-[var(--text)] font-semibold" : "text-[var(--text-dim)] hover:text-[var(--text)]"
               }`}
             >
-              <Scissors className="size-3.5" />
-              <span>Splitter</span>
+              {activeTab === "split" && (
+                <motion.div
+                  layoutId="active-tab-indicator"
+                  className="absolute inset-0 rounded-md bg-[var(--glass-bg)] shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)]"
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1.5">
+                <Scissors className="size-3.5" />
+                <span>Splitter</span>
+              </span>
             </button>
+
             <button
               onClick={() => {
                 setActiveTab("watermark");
                 setIsDone(false);
               }}
-              className={`hidden sm:flex items-center gap-1.5 rounded-md px-3 py-1 font-medium transition-all ${
-                activeTab === "watermark"
-                  ? "bg-[var(--glass-bg)] text-[var(--text)] shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.15)] font-semibold"
-                  : "text-[var(--text-dim)] hover:text-[var(--text)]"
+              className={`relative z-10 hidden sm:flex items-center gap-1.5 rounded-md px-3 py-1 font-medium transition-colors cursor-pointer ${
+                activeTab === "watermark" ? "text-[var(--text)] font-semibold" : "text-[var(--text-dim)] hover:text-[var(--text)]"
               }`}
             >
-              <Eraser className="size-3.5" />
-              <span>Watermark</span>
+              {activeTab === "watermark" && (
+                <motion.div
+                  layoutId="active-tab-indicator"
+                  className="absolute inset-0 rounded-md bg-[var(--glass-bg)] shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)]"
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1.5">
+                <Eraser className="size-3.5" />
+                <span>Watermark</span>
+              </span>
             </button>
           </div>
 
           {/* Right Status Pill */}
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-semibold text-emerald-400">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
               0ms RTT
             </span>
           </div>
         </div>
 
         {/* macOS Main Window Body Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border)]">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border)]">
           {/* Left Column (7 cols): Native macOS Workspace */}
           <div className="lg:col-span-7 p-5 sm:p-6 flex flex-col justify-between gap-6">
             <div className="flex flex-col gap-4">
@@ -129,15 +174,18 @@ export function MacOSWindow() {
                   {activeTab === "split" && "Page Extraction Buffer"}
                   {activeTab === "watermark" && "Artifact Removal Canvas"}
                 </span>
-                <span className="font-mono text-[11px] text-[var(--text-dim)]">2 files selected · 2.7 MB</span>
+                <span className="font-mono text-[11px] text-[var(--text-dim)]">2 files loaded · 2.7 MB</span>
               </div>
 
-              {/* Native macOS File Stack Cards */}
+              {/* Native macOS File Stack Cards with subtle hover float */}
               <div className="flex flex-col gap-2.5">
                 {/* File Card 1 */}
-                <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)]/70 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] hover:border-[var(--accent)]/50 transition-colors">
+                <motion.div
+                  whileHover={{ y: -2, scale: 1.01 }}
+                  className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)]/70 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] hover:border-[var(--accent)]/50 transition-colors"
+                >
                   <div className="flex items-center gap-3">
-                    <div className="grid size-9 place-items-center rounded-lg bg-[var(--accent)]/15 text-[var(--accent)]">
+                    <div className="clay-icon grid size-9 place-items-center text-[var(--accent)]">
                       <FileText className="size-4.5" />
                     </div>
                     <div className="flex flex-col text-left">
@@ -148,12 +196,15 @@ export function MacOSWindow() {
                   <span className="rounded-md border border-[var(--border)] bg-[var(--bg-raised)] px-2 py-0.5 text-[10px] font-mono text-[var(--text-dim)]">
                     p. 1–4
                   </span>
-                </div>
+                </motion.div>
 
                 {/* File Card 2 */}
-                <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)]/70 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] hover:border-[var(--accent)]/50 transition-colors">
+                <motion.div
+                  whileHover={{ y: -2, scale: 1.01 }}
+                  className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)]/70 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] hover:border-[var(--accent)]/50 transition-colors"
+                >
                   <div className="flex items-center gap-3">
-                    <div className="grid size-9 place-items-center rounded-lg bg-[var(--accent)]/15 text-[var(--accent)]">
+                    <div className="clay-icon grid size-9 place-items-center text-[var(--accent)]">
                       <FileText className="size-4.5" />
                     </div>
                     <div className="flex flex-col text-left">
@@ -164,7 +215,7 @@ export function MacOSWindow() {
                   <span className="rounded-md border border-[var(--border)] bg-[var(--bg-raised)] px-2 py-0.5 text-[10px] font-mono text-[var(--text-dim)]">
                     p. 1–2
                   </span>
-                </div>
+                </motion.div>
               </div>
 
               {/* Native macOS Preference Toggles */}
@@ -249,7 +300,7 @@ export function MacOSWindow() {
                 </span>
               </div>
 
-              {/* Real-Time Thread Logs (Cloudflare Bento Aesthetic) */}
+              {/* Real-Time Thread Logs (Cloudflare Bento Aesthetic with Animated Pulses) */}
               <div className="flex flex-col gap-1.5 text-[11px] leading-relaxed text-[var(--text-dim)]">
                 <div className="text-[var(--text)] font-semibold flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
@@ -266,7 +317,7 @@ export function MacOSWindow() {
                   </div>
                   <div className="flex justify-between text-[10.5px]">
                     <span className="text-[var(--text-dim)]">↳ worker-03</span>
-                    <span className="text-[var(--text-dim)]">memory buffer seal</span>
+                    <span className="text-[var(--accent-3)]">memory buffer seal</span>
                   </div>
                 </div>
               </div>
@@ -287,7 +338,7 @@ export function MacOSWindow() {
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--border)]">
                       <motion.div
-                        className="h-full bg-[linear-gradient(90deg,var(--accent),var(--accent-2))]"
+                        className="h-full bg-[linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3))]"
                         initial={{ width: "0%" }}
                         animate={{ width: "100%" }}
                         transition={{ duration: 0.38, ease: "easeInOut" }}
@@ -326,7 +377,7 @@ export function MacOSWindow() {
               </AnimatePresence>
             </div>
 
-            {/* Interactive Terminal Prompt Box */}
+            {/* Interactive Terminal Prompt Box with Live Typing Cursor */}
             <div
               onClick={runWasmExecution}
               className="group flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--bg-raised)] px-3 py-2 text-[11px] cursor-pointer hover:border-[var(--accent)] transition-colors"
@@ -342,7 +393,7 @@ export function MacOSWindow() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

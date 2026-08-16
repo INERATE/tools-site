@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, Sparkles, Terminal } from "lucide-react";
+import { ShieldCheck, ArrowRight, Sparkles, Terminal, Zap, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import { Magnetic } from "./magnetic";
 import { MacOSWindow } from "./macos-window";
@@ -10,8 +10,32 @@ import { HeroAmbientGlow } from "./hero-ambient-glow";
 export function Hero() {
   return (
     <section className="relative mb-20 flex flex-col items-center text-center">
-      {/* Animated Liquid Aurora Halo & Mathematical Dot Grid */}
+      {/* Animated Liquid Aurora Halo & Floating Lights */}
       <HeroAmbientGlow />
+
+      {/* Floating Micro-Pill (Left) */}
+      <motion.div
+        className="pointer-events-none absolute top-6 left-0 hidden xl:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-raised)]/80 px-3.5 py-1.5 backdrop-blur-xl shadow-lg"
+        animate={{ y: [-4, 6, -4] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <Zap className="size-3.5 text-[var(--accent)]" />
+        <span className="text-[11.5px] font-mono font-semibold text-[var(--text)]">0.03s Execution</span>
+        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+      </motion.div>
+
+      {/* Floating Micro-Pill (Right) */}
+      <motion.div
+        className="pointer-events-none absolute top-6 right-0 hidden xl:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-raised)]/80 px-3.5 py-1.5 backdrop-blur-xl shadow-lg"
+        animate={{ y: [6, -5, 6] }}
+        transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+      >
+        <Lock className="size-3.5 text-emerald-400" />
+        <span className="text-[11.5px] font-mono font-semibold text-[var(--text)]">0 KB Uploaded</span>
+        <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-400 uppercase">
+          Air-Gapped
+        </span>
+      </motion.div>
 
       {/* Top Pill Badge */}
       <motion.div
@@ -24,7 +48,7 @@ export function Hero() {
         <span>100% Client-Side WebAssembly · Air-Gapped</span>
       </motion.div>
 
-      {/* Main Headline (Adheres to Inerate Design Law) */}
+      {/* Main Headline with Animated Iridescent Gradient Flow */}
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -32,7 +56,7 @@ export function Hero() {
         className="max-w-4xl text-[clamp(2.5rem,6vw,4.75rem)] leading-[1.08] font-extrabold tracking-[-0.03em] text-[var(--text)]"
       >
         Document utilities that{" "}
-        <span className="bg-[linear-gradient(100deg,var(--accent),var(--accent-2)_50%,var(--accent-3))] bg-clip-text text-transparent italic font-serif font-normal">
+        <span className="animated-gradient-text italic font-serif font-normal inline-block">
           feel macOS native.
         </span>
       </motion.h1>

@@ -4,7 +4,7 @@
   /* Apple Liquid Glass Navbar Capsule */
   .nav-glass {
     position: relative;
-    background: color-mix(in srgb, var(--bg-raised) 78%, transparent);
+    background: color-mix(in srgb, var(--bg-raised) 80%, transparent);
     backdrop-filter: blur(36px) saturate(220%);
     -webkit-backdrop-filter: blur(36px) saturate(220%);
     border-radius: 9999px;
@@ -61,7 +61,7 @@
   /* Liquid Glass Window */
   .liquid-card {
     position: relative;
-    background: color-mix(in srgb, var(--bg-raised) 82%, transparent);
+    background: color-mix(in srgb, var(--bg-raised) 85%, transparent);
     backdrop-filter: blur(36px) saturate(210%);
     -webkit-backdrop-filter: blur(36px) saturate(210%);
     border-radius: 24px;
@@ -91,7 +91,7 @@
   /* Apple Claymorphic Card */
   .clay-card {
     position: relative;
-    background: color-mix(in srgb, var(--bg-raised) 90%, transparent);
+    background: color-mix(in srgb, var(--bg-raised) 92%, transparent);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     border-radius: 26px;
@@ -207,6 +207,22 @@
   [data-theme="daylight"] .dot-matrix-bg {
     background-image: radial-gradient(rgba(24, 20, 45, 0.10) 1px, transparent 1px);
   }
+
+  /* Flowing Gradient Animation for Title */
+  .animated-gradient-text {
+    background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 40%, var(--accent-3) 70%, var(--accent) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flow 6s linear infinite;
+  }
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes sheen {
@@ -215,10 +231,10 @@
 }
 
 @keyframes hero-aurora {
-  0%, 100% { transform: scale(1) translate3d(0, 0, 0) rotate(0deg); opacity: 0.55; }
-  50% { transform: scale(1.18) translate3d(2%, 4%, 0) rotate(3deg); opacity: 0.85; }
+  0%, 100% { transform: scale(1) translate3d(0, 0, 0) rotate(0deg); opacity: 0.65; }
+  50% { transform: scale(1.22) translate3d(3%, 5%, 0) rotate(4deg); opacity: 0.95; }
 }
 
 .animate-hero-aurora {
-  animation: hero-aurora 14s ease-in-out infinite;
+  animation: hero-aurora 10s ease-in-out infinite;
 }

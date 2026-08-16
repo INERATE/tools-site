@@ -14,12 +14,14 @@ const DIR = "/frames/story";
 export function FilmSection() {
   const reducedMotion = useReducedMotion();
 
+  // The film is dark footage in every theme, so this copy is always light —
+  // wiring it to --text would render near-black on black under Daylight.
   const overlay = (
-    <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end gap-5 pb-24 text-center">
-      <h2 className="max-w-xl text-[clamp(1.75rem,4vw,3rem)] leading-[1.1] font-semibold tracking-[-0.02em]">
+    <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end gap-5 bg-gradient-to-t from-black/85 via-black/40 to-transparent pb-24 text-center text-white">
+      <h2 className="max-w-xl text-[clamp(1.75rem,4vw,3rem)] leading-[1.1] font-semibold tracking-[-0.02em] [text-shadow:0_2px_24px_rgba(0,0,0,0.6)]">
         Every page, in one place
       </h2>
-      <p className="max-w-sm text-[15px] leading-relaxed text-[var(--text-dim)]">
+      <p className="max-w-sm text-[15px] leading-relaxed text-white/70">
         Processed entirely on your device. Nothing is uploaded.
       </p>
       <Link

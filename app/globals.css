@@ -7,13 +7,20 @@
   box-sizing: border-box;
 }
 
-html,
-body {
+html {
   background: var(--bg);
+  transition: background-color 0.3s ease;
+}
+
+/* body MUST stay transparent. Negative-z-index children (.mesh) paint before
+   in-flow block backgrounds, so an opaque body background would cover the
+   gradient mesh entirely. The ground colour lives on <html>. */
+body {
+  background: transparent;
   color: var(--text);
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 a {

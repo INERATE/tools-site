@@ -26,8 +26,13 @@ export function applyTheme(choice: Choice) {
   localStorage.setItem("theme", choice);
 }
 
-/** SSR has no localStorage — callers get "auto" there, the real value on mount. */
+/**
+ * SSR has no localStorage — callers get the default there, the real value on
+ * mount. First-time visitors get Iridescence, NOT "auto": the brand look is the
+ * dark iridescent one, and auto would hand every light-mode OS the Daylight
+ * theme as its first impression. Opting into Daylight stays one click away.
+ */
 export function readStoredTheme(): Choice {
-  if (typeof window === "undefined") return "auto";
-  return (localStorage.getItem("theme") as Choice | null) ?? "auto";
+  if (typeof window === "undefined") return "iridescence";
+  return (localStorage.getItem("theme") as Choice | null) ?? "iridescence";
 }

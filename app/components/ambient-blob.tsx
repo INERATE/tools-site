@@ -26,15 +26,22 @@ export function AmbientBlob() {
 
   if (reducedMotion) {
     return (
-      <div className="mesh" aria-hidden>
-        {LOBES}
-      </div>
+      <>
+        <div className="mesh" aria-hidden>
+          {LOBES}
+        </div>
+        <div className="mesh-scrim" aria-hidden />
+      </>
     );
   }
 
   return (
-    <motion.div className="mesh" style={{ y }} aria-hidden>
-      {LOBES}
-    </motion.div>
+    <>
+      <motion.div className="mesh" style={{ y }} aria-hidden>
+        {LOBES}
+      </motion.div>
+      {/* Sibling, not a child: it must sit outside the mesh's opacity group. */}
+      <div className="mesh-scrim" aria-hidden />
+    </>
   );
 }

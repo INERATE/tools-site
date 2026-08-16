@@ -11,10 +11,16 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "routes": [
+    {
+      "pattern": "tools.inerate.com",
+      "custom_domain": true
+    }
+  ],
   "observability": {
     "enabled": true,
     "logs": {
-      "enabled": false,
+      "enabled": true,
       "invocation_logs": true
     }
   }

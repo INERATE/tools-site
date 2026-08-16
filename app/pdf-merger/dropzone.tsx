@@ -1,6 +1,6 @@
 export function Dropzone({ onFiles }: { onFiles: (list: FileList | null) => void }) {
   return (
-    <label className="mb-6 block cursor-pointer rounded-xl border border-dashed border-white/20 bg-[#141518] px-6 py-10 text-center transition-colors hover:border-white/40">
+    <label className="mb-6 block cursor-pointer rounded-xl glass border-dashed! px-6 py-10 text-center transition-colors hover:border-white/40">
       <input
         type="file"
         accept="application/pdf"

@@ -1,0 +1,55 @@
+/* Liquid-glass materials. Held in @layer components so Tailwind's rounded and
+   border utilities still win on elements that set their own shape. */
+
+@layer components {
+  .glass {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-radius: 20px;
+    border: 0;
+    box-shadow: 0 20px 50px -22px var(--glow), inset 0 1px 0 var(--glass-hi);
+  }
+
+  /* Luminous 1px gradient ring: a padding-box/border-box mask XOR. */
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--glass-border);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .clay {
+    border-radius: 28px;
+    color: var(--on-accent);
+    border: 0;
+    background: linear-gradient(160deg, var(--accent), var(--accent-2));
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, .55),
+      inset 0 -8px 14px rgba(0, 0, 0, .25),
+      0 14px 30px -10px var(--glow),
+      0 2px 6px rgba(0, 0, 0, .28);
+  }
+
+  .shimmer { position: relative; overflow: hidden; isolation: isolate; }
+
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 42%, var(--shimmer) 50%, transparent 58%);
+    transform: translate3d(-60%, 0, 0);
+    animation: sheen 7s linear infinite;
+  }
+}
+
+@keyframes sheen { to { transform: translate3d(60%, 0, 0); } }

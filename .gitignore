@@ -18,8 +18,12 @@ yarn-error.log*
 .pnpm-debug.log*
 
 .env*
+.dev.vars
 
 .vercel
+
+# Atelier local agent state (SQLite store) — machine-specific, never push
+/workspace/
 
 *.tsbuildinfo
 next-env.d.ts

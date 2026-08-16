@@ -2,10 +2,17 @@
 
 import { useLayoutEffect, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Flame, Monitor, Moon, Sparkles, Sun } from "lucide-react";
+import { Flame, Gem, Monitor, Moon, Sparkles, Sun } from "lucide-react";
 import { applyTheme, LABEL, ORDER, readStoredTheme, resolve, type Choice } from "../lib/theme";
 
-const ICON = { auto: Monitor, obsidian: Moon, daylight: Sun, aurora: Sparkles, ember: Flame };
+const ICON: Record<Choice, typeof Monitor> = {
+  auto: Monitor,
+  iridescence: Gem,
+  obsidian: Moon,
+  daylight: Sun,
+  aurora: Sparkles,
+  ember: Flame,
+};
 
 export function ThemeToggle() {
   const [choice, setChoice] = useState<Choice>(readStoredTheme);
@@ -52,7 +59,7 @@ export function ThemeToggle() {
       onClick={cycle}
       title={`Appearance: ${LABEL[choice]}`}
       aria-label={`Appearance: ${LABEL[choice]}. Click to change.`}
-      className="glass grid size-8 shrink-0 place-items-center rounded-full text-[var(--text-dim)] transition-colors hover:text-[var(--text)]"
+      className="glass grid size-11 shrink-0 cursor-pointer place-items-center rounded-full text-[var(--text-dim)] transition-colors hover:text-[var(--text)]"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
@@ -63,7 +70,7 @@ export function ThemeToggle() {
           transition={reducedMotion ? { duration: 0.15 } : { type: "spring", bounce: 0, duration: 0.35 }}
           className="grid place-items-center"
         >
-          <Icon size={15} strokeWidth={1.75} />
+          <Icon size={17} strokeWidth={1.75} />
         </motion.span>
       </AnimatePresence>
     </button>

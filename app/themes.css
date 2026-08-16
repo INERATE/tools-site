@@ -1,0 +1,58 @@
+/* Design tokens. Every theme is verified WCAG AA (worst pair 4.99:1).
+   Adding a theme? Mirror it in app/lib/theme.ts AND layout.tsx's THEME_BOOT. */
+
+:root,
+[data-theme="iridescence"] {
+  --bg:#0B0A14; --bg-raised:#161422;
+  --border:rgba(255,255,255,.10);
+  --text:#F4F2FF; --text-dim:#ADA6C9;
+  --accent:#A78BFA; --accent-2:#D946EF; --accent-3:#22D3EE;
+  --on-accent:#0B0A14;
+  --blob-a:#7C3AED; --blob-b:#D946EF; --blob-c:#22D3EE;
+  --glass-bg:rgba(22,20,34,.55);
+  --glass-hi:rgba(255,255,255,.22);
+  --glass-border:linear-gradient(140deg,rgba(167,139,250,.75),rgba(217,70,239,.35) 40%,rgba(34,211,238,.6) 75%,rgba(255,255,255,.10));
+  --glow:rgba(124,58,237,.35);
+  --shimmer:rgba(255,255,255,.14);
+  --mesh-opacity:.55;
+}
+
+[data-theme="obsidian"] {
+  --bg:#0A0A0C; --bg-raised:#17181C; --border:rgba(255,255,255,.09);
+  --text:#F2F3F5; --text-dim:#A2A6AD;
+  --accent:#8FB6FF; --accent-2:#B9C6D8; --accent-3:#6E7A8A; --on-accent:#0A0A0C;
+  --blob-a:#4C6076; --blob-b:#8FB6FF; --blob-c:#2A2E36;
+  --glass-bg:rgba(23,24,28,.55); --glass-hi:rgba(255,255,255,.16);
+  --glass-border:linear-gradient(140deg,rgba(255,255,255,.28),rgba(143,182,255,.30) 55%,rgba(255,255,255,.06));
+  --glow:rgba(0,0,0,.55); --shimmer:rgba(255,255,255,.10); --mesh-opacity:.35;
+}
+
+[data-theme="daylight"] {
+  --bg:#F2F1F7; --bg-raised:#FFFFFF; --border:rgba(24,20,45,.10);
+  --text:#191722; --text-dim:#54506B;
+  --accent:#6D28D9; --accent-2:#BE1FC7; --accent-3:#0E7490; --on-accent:#FFFFFF;
+  --blob-a:#A78BFA; --blob-b:#F0ABFC; --blob-c:#67E8F9;
+  --glass-bg:rgba(255,255,255,.62); --glass-hi:rgba(255,255,255,.95);
+  --glass-border:linear-gradient(140deg,rgba(124,58,237,.35),rgba(217,70,239,.22) 45%,rgba(34,211,238,.30) 80%,rgba(255,255,255,.6));
+  --glow:rgba(109,40,217,.18); --shimmer:rgba(255,255,255,.55); --mesh-opacity:.45;
+}
+
+[data-theme="aurora"] {
+  --bg:#050F14; --bg-raised:#0C1A20; --border:rgba(255,255,255,.10);
+  --text:#EAFBFF; --text-dim:#93B8C4;
+  --accent:#5EEAD4; --accent-2:#34D399; --accent-3:#60A5FA; --on-accent:#04131A;
+  --blob-a:#14B8A6; --blob-b:#22C55E; --blob-c:#3B82F6;
+  --glass-bg:rgba(12,26,32,.55); --glass-hi:rgba(210,255,250,.20);
+  --glass-border:linear-gradient(140deg,rgba(94,234,212,.65),rgba(52,211,153,.30) 45%,rgba(96,165,250,.55) 80%,rgba(255,255,255,.08));
+  --glow:rgba(20,184,166,.30); --shimmer:rgba(190,255,246,.14); --mesh-opacity:.5;
+}
+
+[data-theme="ember"] {
+  --bg:#120A08; --bg-raised:#1E1210; --border:rgba(255,255,255,.10);
+  --text:#FFF3EC; --text-dim:#C9A296;
+  --accent:#FDBA74; --accent-2:#FB7185; --accent-3:#F97316; --on-accent:#1A0B06;
+  --blob-a:#F97316; --blob-b:#F43F5E; --blob-c:#FBBF24;
+  --glass-bg:rgba(30,18,16,.55); --glass-hi:rgba(255,225,205,.20);
+  --glass-border:linear-gradient(140deg,rgba(253,186,116,.65),rgba(251,113,133,.35) 45%,rgba(249,115,22,.5) 80%,rgba(255,255,255,.08));
+  --glow:rgba(249,115,22,.28); --shimmer:rgba(255,220,190,.14); --mesh-opacity:.5;
+}

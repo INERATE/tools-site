@@ -1,23 +1,24 @@
 // Theme choices + resolution. Mirrors the boot script in app/layout.tsx —
 // keep both in sync if you add a theme or change auto-resolution.
 
-export type Choice = "auto" | "obsidian" | "daylight" | "aurora" | "ember";
+export type Choice = "auto" | "iridescence" | "obsidian" | "daylight" | "aurora" | "ember";
 export type Resolved = Exclude<Choice, "auto">;
 
-export const ORDER: Choice[] = ["auto", "obsidian", "daylight", "aurora", "ember"];
+export const ORDER: Choice[] = ["auto", "iridescence", "obsidian", "daylight", "aurora", "ember"];
 
 export const LABEL: Record<Choice, string> = {
   auto: "Auto",
+  iridescence: "Iridescence",
   obsidian: "Obsidian",
   daylight: "Daylight",
   aurora: "Aurora",
   ember: "Ember",
 };
 
-/** Auto never resolves to a gradient theme — only ever Obsidian or Daylight. */
+/** Auto resolves to the two house defaults only — Iridescence or Daylight. */
 export function resolve(choice: Choice): Resolved {
   if (choice !== "auto") return choice;
-  return matchMedia("(prefers-color-scheme: dark)").matches ? "obsidian" : "daylight";
+  return matchMedia("(prefers-color-scheme: dark)").matches ? "iridescence" : "daylight";
 }
 
 export function applyTheme(choice: Choice) {

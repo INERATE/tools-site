@@ -1,0 +1,39 @@
+/* Tool-card idle float + hover ring. Markup: app/components/tool-card.tsx.
+   Imported by the component rather than globals.css so the rule and the
+   element that needs it stay in one place.
+
+   The float owns its own node. A CSS animation on `transform` and a Framer
+   spring on `transform` cannot share an element — the last writer each frame
+   wins — so the loop sits one level above the tilt and they compose. */
+
+@keyframes card-float {
+  50% {
+    transform: translate3d(0, calc(var(--amp, 8px) * -1), 0);
+  }
+}
+
+.card-float {
+  animation: card-float var(--dur, 5.6s) ease-in-out infinite var(--delay, 0s);
+  will-change: transform;
+}
+
+/* Luminous edge, brightened on hover. Same padding-box XOR mask as .glass. */
+.card-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(130deg, var(--accent), var(--accent-2), var(--accent-3));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-float {
+    animation: none;
+    will-change: auto;
+  }
+}

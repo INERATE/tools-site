@@ -110,42 +110,28 @@ a {
   pointer-events: none;
 }
 
-.ambient-blob::before,
-.ambient-blob::after {
-  content: "";
+.ambient-blob .blob {
   position: absolute;
   width: 60vw;
   height: 60vw;
   border-radius: 50%;
   filter: blur(120px);
   opacity: 0.16;
-  animation: drift 24s ease-in-out infinite alternate;
 }
 
-.ambient-blob::before {
+.ambient-blob .blob-a {
   top: -20%;
   left: -10%;
   background: var(--blob-a);
 }
 
-.ambient-blob::after {
+.ambient-blob .blob-b {
   bottom: -20%;
   right: -10%;
   background: var(--blob-b);
-  animation-delay: -12s;
-}
-
-@keyframes drift {
-  to {
-    transform: translate(6vw, 6vh) scale(1.1);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ambient-blob::before,
-  .ambient-blob::after {
-    animation: none;
-  }
   html,
   body {
     transition: none;

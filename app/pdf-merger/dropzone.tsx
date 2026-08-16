@@ -8,7 +8,7 @@ export function Dropzone({ onFiles }: { onFiles: (list: FileList | null) => void
         onChange={(e) => onFiles(e.target.files)}
         className="hidden"
       />
-      <span className="text-sm text-[#9b9b98]">Click to add PDF files</span>
+      <span className="text-sm text-[var(--text-dim)]">Click to add PDF files</span>
     </label>
   );
 }

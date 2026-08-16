@@ -28,11 +28,11 @@ export function ToolCard({
       transition={spring}
       className="glass group flex h-full flex-col gap-3 rounded-2xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
     >
-      <div className="text-[#25be74] [&>svg]:size-5">{icon}</div>
+      <div className="text-[var(--accent)] [&>svg]:size-5">{icon}</div>
       <h3 className="text-[15px] font-medium tracking-[-0.01em]">{title}</h3>
-      <p className="flex-1 text-[13.5px] leading-relaxed text-[#9b9b98]">{description}</p>
+      <p className="flex-1 text-[13.5px] leading-relaxed text-[var(--text-dim)]">{description}</p>
       {!live && (
-        <span className="self-start rounded-full border border-white/10 px-2.5 py-1 text-[10px] tracking-wide text-[#9b9b98] uppercase">
+        <span className="self-start rounded-full border border-white/10 px-2.5 py-1 text-[10px] tracking-wide text-[var(--text-dim)] uppercase">
           Soon
         </span>
       )}

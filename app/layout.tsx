@@ -22,9 +22,15 @@ export const metadata: Metadata = {
   },
 };
 
+// Runs before first paint — no FOUC. Keep in sync with app/lib/theme.ts's `resolve()`.
+const THEME_BOOT = `(function(){try{var t=localStorage.getItem('theme');if(!t||t==='auto'){t=matchMedia('(prefers-color-scheme: dark)').matches?'obsidian':'daylight';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body>
         <SmoothScroll />
         {children}

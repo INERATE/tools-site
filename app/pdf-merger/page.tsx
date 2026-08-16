@@ -49,10 +49,10 @@ export default function PdfMergerPage() {
       <Nav />
       <main className="mx-auto max-w-2xl px-6 py-16">
         <div className="mb-10 flex items-center gap-3">
-          <FileStack className="size-6 text-[#25be74]" />
+          <FileStack className="size-6 text-[var(--accent)]" />
           <h1 className="text-2xl font-semibold">PDF Merger</h1>
         </div>
-        <p className="mb-8 text-[14.5px] text-[#9b9b98]">
+        <p className="mb-8 text-[14.5px] text-[var(--text-dim)]">
           Add PDFs in the order you want them merged. Everything runs in your browser — nothing is uploaded.
         </p>
 
@@ -63,7 +63,7 @@ export default function PdfMergerPage() {
           <button
             onClick={merge}
             disabled={merging}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#f5f5f3] px-6 py-3 text-sm font-medium text-[#0a0a0b] transition-opacity disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--text)] px-6 py-3 text-sm font-medium text-[var(--bg)] transition-opacity disabled:opacity-50"
           >
             {merging && <Loader2 className="size-4 animate-spin" />}
             {merging ? "Merging…" : `Merge ${files.length} PDFs`}
@@ -74,7 +74,7 @@ export default function PdfMergerPage() {
           <a
             href={resultUrl}
             download="merged.pdf"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25be74] px-6 py-3 text-sm font-medium text-[#0a0a0b]"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-[var(--bg)]"
           >
             <Download className="size-4" />
             Download merged.pdf

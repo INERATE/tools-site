@@ -55,9 +55,9 @@ export function Hero() {
         transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-4xl text-[clamp(2.5rem,6vw,4.75rem)] leading-[1.08] font-extrabold tracking-[-0.03em] text-[var(--text)]"
       >
-        Document utilities that{" "}
+        Document tools that{" "}
         <span className="animated-gradient-text italic font-serif font-normal inline-block">
-          feel macOS native.
+          feel premium.
         </span>
       </motion.h1>
 

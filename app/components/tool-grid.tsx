@@ -1,3 +1,5 @@
+"use client";
+
 import { ToolCard } from "./tool-card";
 import { MergeIcon } from "./icons/merge-icon";
 import { SplitIcon } from "./icons/split-icon";
@@ -6,8 +8,9 @@ import { ToImageIcon } from "./icons/to-image-icon";
 import { DocxIcon } from "./icons/docx-icon";
 import { ResumeIcon } from "./icons/resume-icon";
 import { Sparkles } from "lucide-react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 
-/** Icons are passed as components, not elements — the card owns hover state. */
 const TOOLS = [
   {
     href: "/pdf-merger",
@@ -55,8 +58,19 @@ const TOOLS = [
 ];
 
 export function ToolGrid() {
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Staggered column-based scroll parallax for tactile 3D depth
+  const col1Y = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const col2Y = useTransform(scrollYProgress, [0, 1], [-20, 20]);
+  const col3Y = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
   return (
-    <section id="tools" className="mt-28 flex flex-col gap-8">
+    <section ref={containerRef} id="tools" className="mt-28 flex flex-col gap-8">
       {/* Section Header */}
       <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
         <div className="flex flex-col gap-1.5">
@@ -73,11 +87,18 @@ export function ToolGrid() {
         </p>
       </div>
 
-      {/* Grid */}
+      {/* Grid with Staggered Parallax Columns */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {TOOLS.map((tool, i) => (
-          <ToolCard key={tool.href} {...tool} index={i} />
-        ))}
+        {TOOLS.map((tool, i) => {
+          const colIndex = i % 3;
+          const colTransform = colIndex === 0 ? col1Y : colIndex === 1 ? col2Y : col3Y;
+
+          return (
+            <motion.div key={tool.href} style={{ y: colTransform }}>
+              <ToolCard {...tool} index={i} />
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );

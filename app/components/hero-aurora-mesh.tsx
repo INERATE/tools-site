@@ -3,9 +3,8 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Generative Prismatic Fluid Aurora Mesh.
- * Renders 3 layered liquid glass wave ribbons that smoothly undulate and ripple with mouse interaction.
- * 100% unique, buttery 60fps, and zero cheap particles.
+ * Ultra-Premium Prismatic Chromatic Fluid Light Wave & Caustics Engine.
+ * 60fps high-DPI generative fluid light ribbons with interactive cursor refraction vortex.
  */
 export function HeroAuroraMesh() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,13 +18,13 @@ export function HeroAuroraMesh() {
 
     let animId: number;
     let time = 0;
-    let lastMouseX = 0;
-    let lastMouseY = 0;
+    let lastX = 0;
+    let lastY = 0;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = window.innerWidth;
-      const h = 950;
+      const h = 1050;
       cvs.width = w * dpr;
       cvs.height = h * dpr;
       ctx.scale(dpr, dpr);
@@ -36,17 +35,17 @@ export function HeroAuroraMesh() {
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = cvs.getBoundingClientRect();
-      const currentX = e.clientX - rect.left;
-      const currentY = e.clientY - rect.top;
+      const curX = e.clientX - rect.left;
+      const curY = e.clientY - rect.top;
 
-      const dist = Math.hypot(currentX - lastMouseX, currentY - lastMouseY);
-      mouseRef.current.speed = Math.min(dist * 0.1, 8);
-      mouseRef.current.targetX = currentX;
-      mouseRef.current.targetY = currentY;
+      const dist = Math.hypot(curX - lastX, curY - lastY);
+      mouseRef.current.speed = Math.min(dist * 0.15, 12);
+      mouseRef.current.targetX = curX;
+      mouseRef.current.targetY = curY;
       mouseRef.current.active = true;
 
-      lastMouseX = currentX;
-      lastMouseY = currentY;
+      lastX = curX;
+      lastY = curY;
     };
 
     const onMouseLeave = () => {
@@ -65,46 +64,48 @@ export function HeroAuroraMesh() {
     };
 
     const draw = () => {
-      time += 0.008;
+      time += 0.009;
       const w = window.innerWidth;
-      const h = 950;
+      const h = 1050;
       ctx.clearRect(0, 0, w, h);
 
-      // Smooth mouse interpolation & speed damping
+      // Smooth mouse spring & damping
       const m = mouseRef.current;
-      m.x += (m.targetX - m.x) * 0.06;
-      m.y += (m.targetY - m.y) * 0.06;
-      m.speed *= 0.92;
+      m.x += (m.targetX - m.x) * 0.07;
+      m.y += (m.targetY - m.y) * 0.07;
+      m.speed *= 0.94;
 
       const colors = getColors();
 
-      // Render 3 undulating prismatic liquid ribbons
-      const waveConfigs = [
-        { baseHeight: 280, amp: 55, freq: 0.0022, speed: 1.0, colorA: colors[0], colorB: colors[1], opacity: 0.28 },
-        { baseHeight: 340, amp: 75, freq: 0.0018, speed: 0.75, colorA: colors[1], colorB: colors[2], opacity: 0.22 },
-        { baseHeight: 400, amp: 65, freq: 0.0025, speed: 1.25, colorA: colors[2], colorB: colors[0], opacity: 0.18 },
+      // 4 Layered Multi-Chromatic Fluid Waves
+      const waves = [
+        { base: 260, amp: 65, freq: 0.0019, speed: 1.0, colA: colors[0], colB: colors[1], op: 0.32 },
+        { base: 330, amp: 85, freq: 0.0015, speed: 0.7, colA: colors[1], colB: colors[2], op: 0.26 },
+        { base: 410, amp: 75, freq: 0.0022, speed: 1.2, colA: colors[2], colB: colors[0], op: 0.22 },
+        { base: 490, amp: 95, freq: 0.0014, speed: 0.5, colA: colors[0], colB: colors[2], op: 0.18 },
       ];
 
-      waveConfigs.forEach((cfg, idx) => {
+      waves.forEach((wv, i) => {
         ctx.beginPath();
         ctx.moveTo(0, h);
 
-        const step = 20;
+        const step = 16;
         for (let x = 0; x <= w + step; x += step) {
-          // Harmonic wave calculations
+          // Harmonic wave equation with multi-frequency modulation
           let y =
-            cfg.baseHeight +
-            Math.sin(x * cfg.freq + time * cfg.speed + idx) * cfg.amp +
-            Math.cos(x * cfg.freq * 1.5 - time * 0.6) * (cfg.amp * 0.4);
+            wv.base +
+            Math.sin(x * wv.freq + time * wv.speed + i * 1.2) * wv.amp +
+            Math.cos(x * wv.freq * 1.8 - time * 0.8) * (wv.amp * 0.45);
 
-          // Interactive mouse fluid disturbance
+          // Interactive fluid cursor disturbance
           if (m.active) {
             const dx = x - m.x;
             const dy = y - m.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const influence = Math.max(0, 1 - dist / 320);
-            if (influence > 0) {
-              const push = Math.sin(influence * Math.PI) * (35 + m.speed * 6);
+            const radius = 360;
+            if (dist < radius) {
+              const force = Math.pow(1 - dist / radius, 2);
+              const push = force * (45 + m.speed * 8);
               y += (dy > 0 ? 1 : -1) * push;
             }
           }
@@ -119,15 +120,21 @@ export function HeroAuroraMesh() {
         ctx.lineTo(w, h);
         ctx.closePath();
 
-        // Prismatic horizontal gradient
-        const grad = ctx.createLinearGradient(0, cfg.baseHeight - 80, w, cfg.baseHeight + 120);
-        grad.addColorStop(0, cfg.colorA);
-        grad.addColorStop(0.5, cfg.colorB);
-        grad.addColorStop(1, cfg.colorA);
+        // Prismatic fluid gradient fill
+        const grad = ctx.createLinearGradient(0, wv.base - 90, w, wv.base + 140);
+        grad.addColorStop(0, wv.colA);
+        grad.addColorStop(0.5, wv.colB);
+        grad.addColorStop(1, wv.colA);
 
         ctx.fillStyle = grad;
-        ctx.globalAlpha = cfg.opacity;
+        ctx.globalAlpha = wv.op;
         ctx.fill();
+
+        // Specular illuminated wave crest line
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = wv.colB;
+        ctx.globalAlpha = wv.op * 1.4;
+        ctx.stroke();
       });
 
       ctx.globalAlpha = 1.0;
@@ -146,19 +153,19 @@ export function HeroAuroraMesh() {
 
   return (
     <div
-      className="pointer-events-none absolute top-[-120px] left-1/2 -translate-x-1/2 w-screen h-[950px] -z-10 overflow-hidden"
+      className="pointer-events-none absolute top-[-120px] left-1/2 -translate-x-1/2 w-screen h-[1050px] -z-10 overflow-hidden"
       aria-hidden
     >
-      {/* Central Luminous Ambient Aurora Glow */}
-      <div className="absolute top-[28%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] sm:w-[1250px] h-[550px] sm:h-[750px] rounded-full blur-[140px] opacity-70 animate-hero-aurora bg-[radial-gradient(ellipse_at_center,var(--blob-b)_0%,var(--blob-a)_45%,var(--blob-c)_80%,transparent_100%)]" />
+      {/* Central Luminous Ambient Aurora Glow Bloom */}
+      <div className="absolute top-[26%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] sm:w-[1350px] h-[580px] sm:h-[800px] rounded-full blur-[140px] opacity-75 animate-hero-aurora bg-[radial-gradient(ellipse_at_center,var(--blob-b)_0%,var(--blob-a)_45%,var(--blob-c)_80%,transparent_100%)]" />
 
       {/* 60fps Generative Prismatic Fluid Aurora Canvas */}
       <canvas
         ref={canvasRef}
         className="h-full w-full opacity-90"
         style={{
-          maskImage: "radial-gradient(ellipse 95% 80% at 50% 35%, #000 65%, transparent 100%)",
-          WebkitMaskImage: "radial-gradient(ellipse 95% 80% at 50% 35%, #000 65%, transparent 100%)",
+          maskImage: "radial-gradient(ellipse 95% 82% at 50% 32%, #000 65%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse 95% 82% at 50% 32%, #000 65%, transparent 100%)",
         }}
       />
     </div>

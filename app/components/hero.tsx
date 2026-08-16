@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, Terminal } from "lucide-react";
+import { ShieldCheck, ArrowRight, Terminal, Zap, Lock, Cpu } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { Magnetic } from "./magnetic";
@@ -12,17 +12,48 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
 
-  // Multi-plane scroll parallax
-  const textY = useTransform(scrollY, [0, 500], [0, -40]);
-  const textOpacity = useTransform(scrollY, [0, 450], [1, 0.85]);
-  const windowScale = useTransform(scrollY, [0, 600], [1, 0.97]);
+  // Multi-plane deep scroll parallax
+  const textY = useTransform(scrollY, [0, 600], [0, -65]);
+  const textOpacity = useTransform(scrollY, [0, 500], [1, 0.75]);
+  const windowY = useTransform(scrollY, [0, 700], [0, 45]);
+  const windowRotateX = useTransform(scrollY, [0, 700], [0, 8]);
+  const windowScale = useTransform(scrollY, [0, 700], [1, 0.96]);
+
+  const chipLeftY = useTransform(scrollY, [0, 600], [0, -110]);
+  const chipRightY = useTransform(scrollY, [0, 600], [0, -90]);
 
   return (
     <section ref={sectionRef} className="relative mb-20 flex flex-col items-center text-center">
-      {/* 60fps Generative Prismatic Fluid Aurora Background */}
+      {/* 60fps Generative Prismatic Fluid Aurora Mesh */}
       <HeroAuroraMesh />
 
-      {/* Top Air-Gapped Trust Badge with Entrance Animation */}
+      {/* Floating Holographic Micro-Chip (Left) */}
+      <motion.div
+        style={{ y: chipLeftY }}
+        animate={{ y: [-6, 6, -6] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute top-12 left-0 hidden xl:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-raised)]/85 px-4 py-2 backdrop-blur-2xl shadow-[0_12px_30px_-8px_rgba(0,0,0,0.3),inset_0_1px_1px_var(--glass-hi)]"
+      >
+        <Zap className="size-3.5 text-[var(--accent)]" />
+        <span className="text-[11.5px] font-mono font-semibold text-[var(--text)]">0.034s Execution</span>
+        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+      </motion.div>
+
+      {/* Floating Holographic Micro-Chip (Right) */}
+      <motion.div
+        style={{ y: chipRightY }}
+        animate={{ y: [6, -6, 6] }}
+        transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
+        className="pointer-events-none absolute top-12 right-0 hidden xl:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-raised)]/85 px-4 py-2 backdrop-blur-2xl shadow-[0_12px_30px_-8px_rgba(0,0,0,0.3),inset_0_1px_1px_var(--glass-hi)]"
+      >
+        <Lock className="size-3.5 text-emerald-400" />
+        <span className="text-[11.5px] font-mono font-semibold text-[var(--text)]">0 KB Uploaded</span>
+        <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-400 uppercase">
+          Air-Gapped
+        </span>
+      </motion.div>
+
+      {/* Top Air-Gapped Trust Badge */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
@@ -58,7 +89,7 @@ export function Hero() {
           Merge, split, and convert files with sub-millisecond local execution. No server queues, no cloud storage, and zero telemetry.
         </motion.p>
 
-        {/* Primary Actions with Magnetic Hover */}
+        {/* Primary Actions with Magnetic Springs */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -96,8 +127,16 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Interactive Application Workstation Centerpiece with Scroll Scaling */}
-      <motion.div style={{ scale: windowScale }} className="w-full">
+      {/* Interactive Application Workstation Centerpiece with Dynamic 3D Scroll Parallax */}
+      <motion.div
+        style={{
+          y: windowY,
+          rotateX: windowRotateX,
+          scale: windowScale,
+          transformPerspective: 1200,
+        }}
+        className="w-full"
+      >
         <MacOSWindow />
       </motion.div>
     </section>

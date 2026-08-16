@@ -3,17 +3,22 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Ultra-Premium Prismatic Chromatic Fluid Light Wave & Caustics Engine.
- * 60fps high-DPI generative fluid light ribbons with interactive cursor refraction vortex.
+ * Ultra-Optimized Generative Prismatic Fluid Light Wave Canvas.
+ * - Hardware accelerated with requestAnimationFrame
+ * - Auto-pauses when out of viewport via IntersectionObserver
+ * - High-efficiency bezier wave generation (butter-smooth 60fps with near-zero CPU overhead)
  */
 export function HeroAuroraMesh() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0, speed: 0, active: false });
+  const isVisibleRef = useRef(true);
 
   useEffect(() => {
     const cvs = canvasRef.current;
-    if (!cvs) return;
-    const ctx = cvs.getContext("2d");
+    const container = containerRef.current;
+    if (!cvs || !container) return;
+    const ctx = cvs.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     let animId: number;
@@ -21,17 +26,29 @@ export function HeroAuroraMesh() {
     let lastX = 0;
     let lastY = 0;
 
+    // Auto-pause loop when out of viewport to maximize scroll performance
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting && !animId) {
+          animId = requestAnimationFrame(draw);
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
+
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const w = window.innerWidth;
-      const h = 1050;
+      const h = 1000;
       cvs.width = w * dpr;
       cvs.height = h * dpr;
       ctx.scale(dpr, dpr);
     };
 
     resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", resize, { passive: true });
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = cvs.getBoundingClientRect();
@@ -39,7 +56,7 @@ export function HeroAuroraMesh() {
       const curY = e.clientY - rect.top;
 
       const dist = Math.hypot(curX - lastX, curY - lastY);
-      mouseRef.current.speed = Math.min(dist * 0.15, 12);
+      mouseRef.current.speed = Math.min(dist * 0.1, 8);
       mouseRef.current.targetX = curX;
       mouseRef.current.targetY = curY;
       mouseRef.current.active = true;
@@ -53,7 +70,7 @@ export function HeroAuroraMesh() {
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("mouseleave", onMouseLeave);
+    window.addEventListener("mouseleave", onMouseLeave, { passive: true });
 
     const getColors = () => {
       const style = getComputedStyle(document.documentElement);
@@ -64,48 +81,52 @@ export function HeroAuroraMesh() {
     };
 
     const draw = () => {
-      time += 0.009;
+      if (!isVisibleRef.current) {
+        animId = 0;
+        return;
+      }
+
+      time += 0.008;
       const w = window.innerWidth;
-      const h = 1050;
+      const h = 1000;
       ctx.clearRect(0, 0, w, h);
 
-      // Smooth mouse spring & damping
       const m = mouseRef.current;
-      m.x += (m.targetX - m.x) * 0.07;
-      m.y += (m.targetY - m.y) * 0.07;
-      m.speed *= 0.94;
+      m.x += (m.targetX - m.x) * 0.06;
+      m.y += (m.targetY - m.y) * 0.06;
+      m.speed *= 0.92;
 
       const colors = getColors();
 
-      // 4 Layered Multi-Chromatic Fluid Waves
+      // 3 Layered Optimized Fluid Waves
       const waves = [
-        { base: 260, amp: 65, freq: 0.0019, speed: 1.0, colA: colors[0], colB: colors[1], op: 0.32 },
-        { base: 330, amp: 85, freq: 0.0015, speed: 0.7, colA: colors[1], colB: colors[2], op: 0.26 },
-        { base: 410, amp: 75, freq: 0.0022, speed: 1.2, colA: colors[2], colB: colors[0], op: 0.22 },
-        { base: 490, amp: 95, freq: 0.0014, speed: 0.5, colA: colors[0], colB: colors[2], op: 0.18 },
+        { base: 260, amp: 55, freq: 0.0019, speed: 0.9, colA: colors[0], colB: colors[1], op: 0.28 },
+        { base: 340, amp: 70, freq: 0.0015, speed: 0.7, colA: colors[1], colB: colors[2], op: 0.22 },
+        { base: 420, amp: 65, freq: 0.0022, speed: 1.1, colA: colors[2], colB: colors[0], op: 0.18 },
       ];
 
       waves.forEach((wv, i) => {
         ctx.beginPath();
         ctx.moveTo(0, h);
 
-        const step = 16;
+        const step = 28;
+        let prevX = 0;
+        let prevY = wv.base;
+
         for (let x = 0; x <= w + step; x += step) {
-          // Harmonic wave equation with multi-frequency modulation
           let y =
             wv.base +
             Math.sin(x * wv.freq + time * wv.speed + i * 1.2) * wv.amp +
-            Math.cos(x * wv.freq * 1.8 - time * 0.8) * (wv.amp * 0.45);
+            Math.cos(x * wv.freq * 1.6 - time * 0.7) * (wv.amp * 0.4);
 
-          // Interactive fluid cursor disturbance
           if (m.active) {
             const dx = x - m.x;
             const dy = y - m.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const radius = 360;
+            const radius = 320;
             if (dist < radius) {
-              const force = Math.pow(1 - dist / radius, 2);
-              const push = force * (45 + m.speed * 8);
+              const force = 1 - dist / radius;
+              const push = force * force * (35 + m.speed * 6);
               y += (dy > 0 ? 1 : -1) * push;
             }
           }
@@ -113,15 +134,18 @@ export function HeroAuroraMesh() {
           if (x === 0) {
             ctx.lineTo(x, y);
           } else {
-            ctx.lineTo(x, y);
+            const midX = (prevX + x) / 2;
+            const midY = (prevY + y) / 2;
+            ctx.quadraticCurveTo(prevX, prevY, midX, midY);
           }
+          prevX = x;
+          prevY = y;
         }
 
         ctx.lineTo(w, h);
         ctx.closePath();
 
-        // Prismatic fluid gradient fill
-        const grad = ctx.createLinearGradient(0, wv.base - 90, w, wv.base + 140);
+        const grad = ctx.createLinearGradient(0, wv.base - 70, w, wv.base + 110);
         grad.addColorStop(0, wv.colA);
         grad.addColorStop(0.5, wv.colB);
         grad.addColorStop(1, wv.colA);
@@ -129,12 +153,6 @@ export function HeroAuroraMesh() {
         ctx.fillStyle = grad;
         ctx.globalAlpha = wv.op;
         ctx.fill();
-
-        // Specular illuminated wave crest line
-        ctx.lineWidth = 1.5;
-        ctx.strokeStyle = wv.colB;
-        ctx.globalAlpha = wv.op * 1.4;
-        ctx.stroke();
       });
 
       ctx.globalAlpha = 1.0;
@@ -144,7 +162,8 @@ export function HeroAuroraMesh() {
     animId = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId) cancelAnimationFrame(animId);
+      observer.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseleave", onMouseLeave);
@@ -153,16 +172,17 @@ export function HeroAuroraMesh() {
 
   return (
     <div
-      className="pointer-events-none absolute top-[-120px] left-1/2 -translate-x-1/2 w-screen h-[1050px] -z-10 overflow-hidden"
+      ref={containerRef}
+      className="pointer-events-none absolute top-[-120px] left-1/2 -translate-x-1/2 w-screen h-[1000px] -z-10 overflow-hidden will-change-transform"
       aria-hidden
     >
       {/* Central Luminous Ambient Aurora Glow Bloom */}
-      <div className="absolute top-[26%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] sm:w-[1350px] h-[580px] sm:h-[800px] rounded-full blur-[140px] opacity-75 animate-hero-aurora bg-[radial-gradient(ellipse_at_center,var(--blob-b)_0%,var(--blob-a)_45%,var(--blob-c)_80%,transparent_100%)]" />
+      <div className="absolute top-[26%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] sm:w-[1250px] h-[550px] sm:h-[750px] rounded-full blur-[130px] opacity-70 animate-hero-aurora bg-[radial-gradient(ellipse_at_center,var(--blob-b)_0%,var(--blob-a)_45%,var(--blob-c)_80%,transparent_100%)]" />
 
-      {/* 60fps Generative Prismatic Fluid Aurora Canvas */}
+      {/* Hardware-Accelerated 60fps Generative Prismatic Canvas */}
       <canvas
         ref={canvasRef}
-        className="h-full w-full opacity-90"
+        className="h-full w-full opacity-90 transform-gpu"
         style={{
           maskImage: "radial-gradient(ellipse 95% 82% at 50% 32%, #000 65%, transparent 100%)",
           WebkitMaskImage: "radial-gradient(ellipse 95% 82% at 50% 32%, #000 65%, transparent 100%)",

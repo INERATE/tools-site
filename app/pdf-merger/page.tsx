@@ -1,95 +1,75 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Loader2 } from "lucide-react";
-import { motion } from "motion/react";
 import { AmbientBlob } from "../components/ambient-blob";
+import { Dropzone } from "../components/dropzone";
 import { Nav } from "../components/nav";
+import { RunAction } from "../components/run-action";
+import { ToolHead } from "../components/tool-head";
 import { MergeIcon } from "../components/icons/merge-icon";
-import { mergePdfs } from "../lib/merge-pdfs";
-import { Dropzone } from "./dropzone";
-import { FileList, type Item } from "./file-list";
-
-const ACTION = "clay flex h-12 w-full cursor-pointer items-center justify-center gap-2 text-[15px] font-semibold";
+import { ToolBoard } from "../components/page-board/tool-board";
+import { usePageBoard } from "../components/page-board/use-page-board";
+import { assemblePdf } from "../lib/assemble-pdf";
 
 export default function PdfMergerPage() {
-  const [items, setItems] = useState<Item[]>([]);
-  const [merging, setMerging] = useState(false);
-  const [hot, setHot] = useState(false);
-  const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const board = usePageBoard();
+  const [busy, setBusy] = useState(false);
+  const [url, setUrl] = useState<string | null>(null);
 
-  function addFiles(files: File[]) {
-    const picked = files.filter((f) => f.type === "application/pdf");
-    setItems((prev) => [...prev, ...picked.map((file) => ({ id: crypto.randomUUID(), file }))]);
-    setResultUrl(null);
-  }
-
-  function move(index: number, dir: -1 | 1) {
-    setItems((prev) => {
-      const next = [...prev];
-      const target = index + dir;
-      if (target < 0 || target >= next.length) return prev;
-      [next[index], next[target]] = [next[target], next[index]];
-      return next;
-    });
-  }
-
-  function remove(index: number) {
-    setItems((prev) => prev.filter((_, i) => i !== index));
-    setResultUrl(null);
-  }
-
-  async function merge() {
-    setMerging(true);
+  async function run() {
+    setBusy(true);
     try {
-      const blob = await mergePdfs(items.map((i) => i.file));
-      setResultUrl(URL.createObjectURL(blob));
+      const blob = await assemblePdf(board.files, board.slots);
+      setUrl(URL.createObjectURL(blob));
+    } catch (e) {
+      board.setError(e instanceof Error ? e.message : "The merge failed.");
     } finally {
-      setMerging(false);
+      setBusy(false);
     }
   }
+
+  /* Any edit invalidates a finished file — keeping it would offer a download
+     that no longer matches what is on screen. */
+  const edit = <A extends unknown[]>(fn: (...a: A) => void) => (...a: A) => {
+    setUrl(null);
+    fn(...a);
+  };
 
   return (
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
-      <main className="mx-auto max-w-2xl px-6 py-16">
-        <div
-          className="mb-6 flex items-center gap-3.5"
-          onPointerEnter={() => setHot(true)}
-          onPointerLeave={() => setHot(false)}
-        >
-          <span className="glass grid size-12 shrink-0 place-items-center text-[var(--accent)]">
-            <MergeIcon active={hot || merging} size={24} />
-          </span>
-          <h1 className="text-[28px] font-semibold tracking-[-0.025em]">PDF Merger</h1>
-        </div>
-        <p className="mb-8 text-[14.5px] leading-[1.6] text-[var(--text-dim)]">
-          Add PDFs in the order you want them merged. Everything runs in your browser — nothing is uploaded.
-        </p>
+      <main className="mx-auto max-w-4xl px-6 py-16">
+        <ToolHead
+          title="PDF Merger"
+          busy={busy || board.pending > 0}
+          icon={(active) => <MergeIcon active={active} size={24} />}
+          blurb="Add as many PDFs as you like, then arrange the result page by page — drag to reorder, rotate, duplicate or delete any page before you save. Everything runs in your browser; nothing is uploaded."
+        />
 
-        <Dropzone onFiles={addFiles} />
-        <FileList items={items} onMove={move} onRemove={remove} />
+        <Dropzone
+          multiple
+          onFiles={edit(board.addFiles)}
+          label={board.slots.length ? "Add more PDFs" : "Drop PDFs here, or click to choose"}
+        />
 
-        {items.length >= 2 && !resultUrl && (
-          <button onClick={merge} disabled={merging} className={`${ACTION} disabled:opacity-60`}>
-            {merging && <Loader2 aria-hidden className="size-4 animate-spin" />}
-            {merging ? "Merging…" : `Merge ${items.length} PDFs`}
-          </button>
+        {board.error && (
+          <p role="alert" className="mb-4 text-[13.5px] font-medium text-[#ff8fa3]">
+            {board.error}
+          </p>
         )}
 
-        {resultUrl && (
-          <motion.a
-            href={resultUrl}
-            download="merged.pdf"
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-            className={ACTION}
-          >
-            <Download aria-hidden className="size-4" />
-            Download merged.pdf
-          </motion.a>
+        <ToolBoard board={board} invalidate={() => setUrl(null)} />
+
+        {board.slots.length > 0 && (
+          <RunAction
+            label={`Save ${board.slots.length} page${board.slots.length === 1 ? "" : "s"} as one PDF`}
+            busyLabel="Assembling…"
+            busy={busy}
+            url={url}
+            fileName="merged.pdf"
+            onRun={run}
+          />
         )}
       </main>
     </div>

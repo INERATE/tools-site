@@ -1,11 +1,15 @@
+"use client";
+
+import { useState } from "react";
+import { UploadCloud } from "lucide-react";
+import { motion } from "motion/react";
+
 /* Glass material without .glass's gradient ring — a dashed edge and a luminous
    hairline on the same 1px read as noise. Same pattern the nav bar uses. */
 const ZONE =
-  "mb-6 block cursor-pointer rounded-[20px] border-2 border-dashed border-[var(--border)] " +
-  "bg-[var(--glass-bg)] px-6 py-12 text-center backdrop-blur-[24px] backdrop-saturate-[180%] " +
-  "transition-[border-color,transform,box-shadow] duration-300 will-change-transform " +
-  "hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[0_20px_50px_-22px_var(--glow)] " +
-  "has-[:focus-visible]:border-[var(--accent)] motion-reduce:transition-colors motion-reduce:hover:translate-y-0";
+  "mb-6 block cursor-pointer rounded-[20px] border-2 border-dashed bg-[var(--glass-bg)] px-6 py-11 " +
+  "text-center backdrop-blur-[24px] backdrop-saturate-[180%] will-change-transform " +
+  "transition-[border-color,box-shadow] duration-300 has-[:focus-visible]:border-[var(--accent)]";
 
 export function Dropzone({
   onFiles,
@@ -20,8 +24,32 @@ export function Dropzone({
   hint?: string;
   accept?: string;
 }) {
+  const [over, setOver] = useState(false);
+
   return (
-    <label className={ZONE}>
+    <motion.label
+      animate={{ scale: over ? 1.015 : 1, y: over ? -2 : 0 }}
+      transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+      /* dragover must be cancelled on every event or the browser navigates to the file. */
+      onDragOver={(e) => {
+        e.preventDefault();
+        setOver(true);
+      }}
+      /* Leaving for a child still fires dragleave here — that guard stops the flicker. */
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOver(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setOver(false);
+        onFiles(Array.from(e.dataTransfer.files));
+      }}
+      className={`${ZONE} ${
+        over
+          ? "border-[var(--accent)] shadow-[0_28px_60px_-20px_var(--glow)]"
+          : "border-[var(--border)] hover:border-[var(--accent)] hover:shadow-[0_20px_50px_-22px_var(--glow)]"
+      }`}
+    >
       <input
         type="file"
         accept={accept}
@@ -32,8 +60,16 @@ export function Dropzone({
           e.target.value = ""; // re-picking the same file must still fire change
         }}
       />
-      <span className="block text-[15px] font-medium">{label}</span>
+      <motion.span
+        aria-hidden
+        animate={{ y: over ? -3 : 0, scale: over ? 1.12 : 1 }}
+        transition={{ type: "spring", bounce: 0.25, duration: 0.4 }}
+        className="mb-2.5 inline-grid size-11 place-items-center rounded-2xl text-[var(--accent)]"
+      >
+        <UploadCloud className="size-6" />
+      </motion.span>
+      <span className="block text-[15px] font-medium">{over ? "Drop to add" : label}</span>
       <span className="mt-1.5 block text-[13px] text-[var(--text-dim)]">{hint}</span>
-    </label>
+    </motion.label>
   );
 }

@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { renderPages, type Format, type Rendered } from "../lib/pdf-to-image";
+import { assemblePdf, type Slot } from "../lib/assemble-pdf";
 
 /** Rasterization state. Revokes object URLs so a re-run cannot leak blobs. */
 export function useRender() {
-  const [file, setFile] = useState<File | null>(null);
   const [format, setFormat] = useState<Format>("png");
   const [scale, setScale] = useState(2);
   const [pages, setPages] = useState<Rendered[]>([]);
@@ -25,21 +25,14 @@ export function useRender() {
 
   useEffect(() => () => urls.current.forEach(URL.revokeObjectURL), []);
 
-  function pick(files: File[]) {
-    const pdf = files.find((f) => f.type === "application/pdf");
-    if (!pdf) return;
-    clear();
-    setError(null);
-    setFile(pdf);
-  }
-
-  async function run() {
-    if (!file) return;
+  /* Renders the arrangement, not the original file: assembling first is what
+     makes deleted pages stay gone and rotations come out baked in. */
+  async function run(files: File[], slots: Slot[]) {
     clear();
     setBusy(true);
     setError(null);
     try {
-      const out = await renderPages(file, {
+      const out = await renderPages(await assemblePdf(files, slots), {
         format,
         scale,
         onProgress: (d, t) => {
@@ -57,7 +50,7 @@ export function useRender() {
   }
 
   return {
-    file, format, scale, pages, busy, done, total, error,
-    pick, run, setFormat, setScale, reset: clear,
+    format, scale, pages, busy, done, total, error,
+    run, setFormat, setScale, reset: clear,
   };
 }

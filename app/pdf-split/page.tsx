@@ -1,69 +1,78 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Loader2 } from "lucide-react";
-import { motion } from "motion/react";
 import { AmbientBlob } from "../components/ambient-blob";
-import { Nav } from "../components/nav";
 import { Dropzone } from "../components/dropzone";
+import { Nav } from "../components/nav";
+import { RunAction } from "../components/run-action";
+import { ToolHead } from "../components/tool-head";
 import { SplitIcon } from "../components/icons/split-icon";
-import { SplitControls } from "./split-controls";
-import { useSplit } from "./use-split";
-
-const ACTION = "clay flex h-12 w-full cursor-pointer items-center justify-center gap-2 text-[15px] font-semibold";
+import { ToolBoard } from "../components/page-board/tool-board";
+import { usePageBoard } from "../components/page-board/use-page-board";
+import { assemblePdf } from "../lib/assemble-pdf";
+import { QuickPick } from "./quick-pick";
 
 export default function PdfSplitPage() {
-  const { file, pages, range, busy, error, url, pick, run, editRange } = useSplit();
-  const [hot, setHot] = useState(false);
+  const board = usePageBoard({ single: true });
+  const [busy, setBusy] = useState(false);
+  const [url, setUrl] = useState<string | null>(null);
+  const name = board.files[0]?.name.replace(/\.pdf$/i, "") ?? "split";
+
+  async function run() {
+    setBusy(true);
+    try {
+      const blob = await assemblePdf(board.files, board.slots);
+      setUrl(URL.createObjectURL(blob));
+    } catch (e) {
+      board.setError(e instanceof Error ? e.message : "The split failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const edit = <A extends unknown[]>(fn: (...a: A) => void) => (...a: A) => {
+    setUrl(null); // a finished file would no longer match the board
+    fn(...a);
+  };
 
   return (
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
-      <main className="mx-auto max-w-2xl px-6 py-16">
-        <div
-          className="mb-6 flex items-center gap-3.5"
-          onPointerEnter={() => setHot(true)}
-          onPointerLeave={() => setHot(false)}
-        >
-          <span className="glass grid size-12 shrink-0 place-items-center text-[var(--accent)]">
-            <SplitIcon active={hot || busy} size={24} />
-          </span>
-          <h1 className="text-[28px] font-semibold tracking-[-0.025em]">PDF Splitter</h1>
-        </div>
-        <p className="mb-8 text-[14.5px] leading-[1.6] text-[var(--text-dim)]">
-          Pull out the pages you want. Everything runs in your browser — nothing is uploaded.
-        </p>
+      <main className="mx-auto max-w-4xl px-6 py-16">
+        <ToolHead
+          title="PDF Splitter"
+          busy={busy || board.pending > 0}
+          icon={(active) => <SplitIcon active={active} size={24} />}
+          blurb="Pull out exactly the pages you want. Type a range for speed, or drop pages straight off the board — you can reorder and rotate what is left before saving. Everything runs in your browser; nothing is uploaded."
+        />
 
-        <Dropzone onFiles={pick} label={file ? "Choose a different PDF" : "Click to add a PDF"} />
+        <Dropzone
+          onFiles={edit(board.addFiles)}
+          label={board.files.length ? "Choose a different PDF" : "Drop a PDF here, or click to choose"}
+        />
 
-        {file && <SplitControls name={file.name} pages={pages} range={range} onRange={editRange} />}
-
-        {error && (
+        {board.error && (
           <p role="alert" className="mb-4 text-[13.5px] font-medium text-[#ff8fa3]">
-            {error}
+            {board.error}
           </p>
         )}
 
-        {file && !url && (
-          <button onClick={run} disabled={busy} className={`${ACTION} disabled:opacity-60`}>
-            {busy && <Loader2 aria-hidden className="size-4 animate-spin" />}
-            {busy ? "Splitting…" : "Extract pages"}
-          </button>
+        {board.files.length > 0 && (
+          <QuickPick total={board.total} onKeep={edit(board.keepOnly)} />
         )}
 
-        {url && (
-          <motion.a
-            href={url}
-            download={`${file?.name.replace(/\.pdf$/i, "") ?? "split"}-pages.pdf`}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-            className={ACTION}
-          >
-            <Download aria-hidden className="size-4" />
-            Download extracted PDF
-          </motion.a>
+        <ToolBoard board={board} invalidate={() => setUrl(null)} />
+
+        {board.slots.length > 0 && (
+          <RunAction
+            label={`Extract ${board.slots.length} page${board.slots.length === 1 ? "" : "s"}`}
+            busyLabel="Extracting…"
+            busy={busy}
+            url={url}
+            fileName={`${name}-pages.pdf`}
+            onRun={run}
+          />
         )}
       </main>
     </div>

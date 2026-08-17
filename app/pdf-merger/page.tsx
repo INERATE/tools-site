@@ -1,41 +1,30 @@
 "use client";
 
-import { useState } from "react";
 import { AmbientBlob } from "../components/ambient-blob";
 import { Dropzone } from "../components/dropzone";
 import { Nav } from "../components/nav";
 import { RunAction } from "../components/run-action";
+import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
 import { ToolWindow } from "../components/tool-window";
 import { MergeIcon } from "../components/icons/merge-icon";
 import { ToolBoard } from "../components/page-board/tool-board";
+import { thumbKey } from "../components/page-board/types";
 import { usePageBoard } from "../components/page-board/use-page-board";
-import { assemblePdf } from "../lib/assemble-pdf";
+import { invalidateEdit } from "../lib/invalidate-edit";
+import { useAssembleRun } from "../lib/use-assemble-run";
 import { STEPS } from "./pipeline-steps";
 
 export default function PdfMergerPage() {
   const board = usePageBoard();
-  const [busy, setBusy] = useState(false);
-  const [url, setUrl] = useState<string | null>(null);
+  const { busy, url, run, clearUrl } = useAssembleRun(board.files, board.slots, board.setError, "The merge failed.");
   const step = url ? 2 : board.slots.length > 0 ? 1 : 0;
+  const count = board.slots.length;
+  const first = board.slots[0];
+  const thumb = first && board.thumbs[thumbKey(first.src, first.page)];
 
-  async function run() {
-    setBusy(true);
-    try {
-      const blob = await assemblePdf(board.files, board.slots);
-      setUrl(URL.createObjectURL(blob));
-    } catch (e) {
-      board.setError(e instanceof Error ? e.message : "The merge failed.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  const edit = <A extends unknown[]>(fn: (...a: A) => void) => (...a: A) => {
-    setUrl(null); // a finished file would no longer match the board
-    fn(...a);
-  };
+  const edit = invalidateEdit(clearUrl);
 
   return (
     <div className="min-h-screen">
@@ -52,9 +41,10 @@ export default function PdfMergerPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
           <ToolWindow path="pdf-merger">
             <Dropzone
+              id="merger-input"
               multiple
               onFiles={edit(board.addFiles)}
-              label={board.slots.length ? "Add more PDFs" : "Drop PDFs here, or click to choose"}
+              label={count ? "Add more PDFs" : "Drop PDFs here, or click to choose"}
             />
 
             {board.error && (
@@ -63,21 +53,30 @@ export default function PdfMergerPage() {
               </p>
             )}
 
-            <ToolBoard board={board} invalidate={() => setUrl(null)} />
-
-            {board.slots.length > 0 && (
-              <RunAction
-                label={`Save ${board.slots.length} page${board.slots.length === 1 ? "" : "s"} as one PDF`}
-                busyLabel="Assembling…"
-                busy={busy}
-                url={url}
-                fileName="merged.pdf"
-                onRun={run}
-              />
-            )}
+            <ToolBoard board={board} invalidate={clearUrl} />
           </ToolWindow>
 
-          <ToolPipeline active={step} steps={STEPS} />
+          <div className="flex flex-col gap-5 lg:sticky lg:top-28">
+            <ToolActionRail
+              thumbUrl={thumb?.url}
+              ratio={thumb ? thumb.w / thumb.h : undefined}
+              count={count}
+              itemLabel={`page${count === 1 ? "" : "s"}`}
+              addInputId="merger-input"
+              action={
+                <RunAction
+                  label={count ? `Save ${count} as one PDF` : "Save as one PDF"}
+                  busyLabel="Assembling…"
+                  busy={busy}
+                  disabled={count === 0}
+                  url={url}
+                  fileName="merged.pdf"
+                  onRun={run}
+                />
+              }
+            />
+            <ToolPipeline active={step} steps={STEPS} />
+          </div>
         </div>
       </main>
     </div>

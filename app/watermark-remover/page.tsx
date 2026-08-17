@@ -4,6 +4,7 @@ import { AmbientBlob } from "../components/ambient-blob";
 import { Dropzone } from "../components/dropzone";
 import { Nav } from "../components/nav";
 import { RunAction } from "../components/run-action";
+import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
 import { ToolWindow } from "../components/tool-window";
@@ -34,6 +35,7 @@ export default function WatermarkRemoverPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
           <ToolWindow path="watermark-remover">
             <Dropzone
+              id="wm-input"
               onFiles={c.pick}
               label={c.file ? "Choose a different PDF" : "Drop a PDF here, or click to choose"}
             />
@@ -66,20 +68,30 @@ export default function WatermarkRemoverPage() {
                     <div className="shimmer aspect-[595/842] w-full rounded-xl bg-white/[0.06]" />
                   )}
                 </div>
-
-                <RunAction
-                  label={c.marks || c.boxes.length ? "Save the cleaned PDF" : "Save a copy"}
-                  busyLabel="Writing…"
-                  busy={c.busy}
-                  url={c.url}
-                  fileName={`${name}-clean.pdf`}
-                  onRun={c.run}
-                />
               </>
             )}
           </ToolWindow>
 
-          <ToolPipeline active={step} steps={STEPS} />
+          <div className="flex flex-col gap-5 lg:sticky lg:top-28">
+            <ToolActionRail
+              thumbUrl={c.view ?? undefined}
+              count={c.pages}
+              itemLabel={c.pages === 1 ? "page" : "pages"}
+              addInputId="wm-input"
+              action={
+                <RunAction
+                  label={c.marks || c.boxes.length ? "Save the cleaned PDF" : "Save a copy"}
+                  busyLabel="Writing…"
+                  busy={c.busy}
+                  disabled={!c.file}
+                  url={c.url}
+                  fileName={`${name}-clean.pdf`}
+                  onRun={c.run}
+                />
+              }
+            />
+            <ToolPipeline active={step} steps={STEPS} />
+          </div>
         </div>
       </main>
     </div>

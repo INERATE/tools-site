@@ -39,7 +39,7 @@
   --blob-a:#A78BFA; --blob-b:#F0ABFC; --blob-c:#67E8F9;
   --glass-bg:rgba(255,255,255,.62); --glass-hi:rgba(255,255,255,.95);
   --glass-border:linear-gradient(140deg,rgba(124,58,237,.35),rgba(217,70,239,.22) 45%,rgba(34,211,238,.30) 80%,rgba(255,255,255,.6));
-  --glow:rgba(109,40,217,.18); --shimmer:rgba(255,255,255,.55);
+  --glow:rgba(109,40,217,.26); --shimmer:rgba(255,255,255,.55);
   --scrollbar-thumb:rgba(24,20,45,.22);
   --scrollbar-thumb-hover:rgba(109,40,217,.5);
   --mesh-opacity:.75; --mesh-blend:normal;

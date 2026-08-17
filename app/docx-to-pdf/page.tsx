@@ -4,6 +4,8 @@ import { Loader2 } from "lucide-react";
 import { AmbientBlob } from "../components/ambient-blob";
 import { Dropzone } from "../components/dropzone";
 import { Nav } from "../components/nav";
+import { RunAction } from "../components/run-action";
+import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
 import { ToolWindow } from "../components/tool-window";
@@ -15,6 +17,7 @@ import { STEPS } from "./pipeline-steps";
 export default function DocxToPdfPage() {
   const d = useDocx();
   const step = d.url && !d.busy ? 2 : d.name ? 1 : 0;
+  const thumb = d.pages[0];
 
   return (
     <div className="min-h-screen">
@@ -31,6 +34,7 @@ export default function DocxToPdfPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
           <ToolWindow path="docx-to-pdf">
             <Dropzone
+              id="docx-input"
               onFiles={d.pick}
               accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               label={d.name ? "Choose a different document" : "Drop a .docx here, or click to choose"}
@@ -50,17 +54,30 @@ export default function DocxToPdfPage() {
               </p>
             )}
 
-            {d.url && !d.busy && (
-              <ResultPages
-                url={d.url}
-                fileName={`${d.name?.replace(/\.docx?$/i, "") ?? "document"}.pdf`}
-                blocks={d.blocks}
-                pages={d.pages}
-              />
-            )}
+            {d.url && !d.busy && <ResultPages blocks={d.blocks} pages={d.pages} />}
           </ToolWindow>
 
-          <ToolPipeline active={step} steps={STEPS} />
+          <div className="flex flex-col gap-5 lg:sticky lg:top-28">
+            <ToolActionRail
+              thumbUrl={thumb?.url}
+              ratio={thumb ? thumb.width / thumb.height : undefined}
+              count={d.pages.length}
+              itemLabel={d.pages.length === 1 ? "page" : "pages"}
+              addInputId="docx-input"
+              action={
+                <RunAction
+                  label="Download the PDF"
+                  busyLabel="Converting…"
+                  busy={d.busy}
+                  disabled={!d.url}
+                  url={d.url}
+                  fileName={`${d.name?.replace(/\.docx?$/i, "") ?? "document"}.pdf`}
+                  onRun={() => {}}
+                />
+              }
+            />
+            <ToolPipeline active={step} steps={STEPS} />
+          </div>
         </div>
       </main>
     </div>

@@ -17,12 +17,16 @@ export function Dropzone({
   label,
   hint = "PDFs only — they never leave this tab",
   accept = "application/pdf",
+  id,
 }: {
   onFiles: (files: File[]) => void;
   multiple?: boolean;
   label: string;
   hint?: string;
   accept?: string;
+  /** Lets another element (e.g. a sticky rail's "Add" button) open this same
+      picker via a native `<label htmlFor>` — no ref plumbing required. */
+  id?: string;
 }) {
   const [over, setOver] = useState(false);
 
@@ -51,6 +55,7 @@ export function Dropzone({
       }`}
     >
       <input
+        id={id}
         type="file"
         accept={accept}
         multiple={multiple}

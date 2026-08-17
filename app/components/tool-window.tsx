@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
  */
 export function ToolWindow({ path, children }: { path: string; children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-[22px] border border-[var(--border)] bg-[var(--bg-raised)]/92 shadow-[0_30px_80px_-24px_rgba(0,0,0,0.4),inset_0_1.5px_1px_var(--glass-hi)] backdrop-blur-[36px]">
+    <div className="overflow-hidden rounded-[22px] border border-[var(--border)] bg-[var(--bg-raised)]/92 shadow-[0_30px_80px_-24px_rgba(0,0,0,0.22),0_16px_38px_-12px_var(--glow),inset_0_1.5px_1px_var(--glass-hi)] backdrop-blur-[36px]">
       <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3 sm:px-5">
         <div className="flex items-center gap-2">
           <span className="size-3 rounded-full border border-[#E0443E]/50 bg-[#FF5F56] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]" />

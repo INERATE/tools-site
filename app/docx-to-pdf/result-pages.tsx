@@ -1,23 +1,13 @@
 "use client";
 
-import { Download, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { motion } from "motion/react";
 import type { Rendered } from "../lib/pdf-to-image";
 
 const SPRING = { type: "spring", bounce: 0, duration: 0.35 } as const;
 
-/** The honest note, the download, and a preview of every page produced. */
-export function ResultPages({
-  url,
-  fileName,
-  blocks,
-  pages,
-}: {
-  url: string;
-  fileName: string;
-  blocks: number;
-  pages: Rendered[];
-}) {
+/** The honest note plus a preview of every page produced. Download lives in the sticky rail. */
+export function ResultPages({ blocks, pages }: { blocks: number; pages: Rendered[] }) {
   return (
     <>
       <div className="glass mb-4 flex items-start gap-2 rounded-2xl p-4 text-[12.5px] leading-[1.55] text-[var(--text-dim)]">
@@ -31,18 +21,6 @@ export function ResultPages({
           reproduced, so the page breaks will not match Word exactly.
         </span>
       </div>
-
-      <motion.a
-        href={url}
-        download={fileName}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={SPRING}
-        className="clay mb-6 flex h-12 w-full cursor-pointer items-center justify-center gap-2 text-[15px] font-semibold"
-      >
-        <Download aria-hidden className="size-4" />
-        Download the PDF
-      </motion.a>
 
       <ul className={`grid gap-4 ${pages.length > 1 ? "sm:grid-cols-2" : ""}`}>
         {pages.map((p, i) => (

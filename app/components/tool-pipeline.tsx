@@ -20,7 +20,7 @@ const TRUST = [
  */
 export function ToolPipeline({ active, steps }: { active: number; steps: PipelineStep[] }) {
   return (
-    <aside className="flex flex-col gap-5 lg:sticky lg:top-28">
+    <div className="flex flex-col gap-5">
       <div className="glass rounded-2xl p-4">
         <p className="mb-3 text-[11px] font-semibold tracking-[0.12em] text-[var(--text-dim)] uppercase">How it works</p>
         <ol className="flex flex-col gap-3">
@@ -62,6 +62,6 @@ export function ToolPipeline({ active, steps }: { active: number; steps: Pipelin
           </div>
         ))}
       </div>
-    </aside>
+    </div>
   );
 }

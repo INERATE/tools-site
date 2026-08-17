@@ -21,10 +21,23 @@ export function resolve(choice: Choice): Resolved {
   return matchMedia("(prefers-color-scheme: dark)").matches ? "iridescence" : "daylight";
 }
 
+/** localStorage is external mutable state — expose it as a useSyncExternalStore
+ *  source so components read it without a setState-in-effect cascade. */
+const listeners = new Set<() => void>();
+
+export function subscribeTheme(cb: () => void) {
+  listeners.add(cb);
+  return () => void listeners.delete(cb);
+}
+
 export function applyTheme(choice: Choice) {
   document.documentElement.setAttribute("data-theme", resolve(choice));
   localStorage.setItem("theme", choice);
+  listeners.forEach((l) => l());
 }
+
+/** Hydration snapshot: the server cannot know the stored choice. */
+export const serverTheme = (): Choice => "iridescence";
 
 /**
  * SSR has no localStorage — callers get the default there, the real value on

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   FileText,
@@ -11,12 +11,9 @@ import {
   RefreshCw,
   CheckCircle2,
   Terminal,
-  Cpu,
   Shield,
   ArrowRight,
-  Sliders,
   Sparkles,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useTilt } from "../lib/use-tilt";
@@ -28,18 +25,15 @@ export function MacOSWindow() {
   const [activeTab, setActiveTab] = useState<ToolMode>("merge");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  const [execTime, setExecTime] = useState("0.034s");
   const [preserveBookmarks, setPreserveBookmarks] = useState(true);
   const [compressionMode, setCompressionMode] = useState<"lossless" | "fast">("lossless");
 
-  const runWasmExecution = () => {
+  // Illustrative demo of the real flow. It deliberately reports no timing:
+  // the previous version rendered a random 0.024-0.040s as if measured.
+  const runDemo = () => {
     if (isProcessing) return;
     setIsProcessing(true);
     setIsDone(false);
-
-    const time = (0.024 + Math.random() * 0.016).toFixed(3) + "s";
-    setExecTime(time);
-
     setTimeout(() => {
       setIsProcessing(false);
       setIsDone(true);
@@ -80,7 +74,7 @@ export function MacOSWindow() {
 
             <div className="ml-3 hidden md:flex items-center gap-1.5 text-[11.5px] font-mono text-[var(--text-dim)]">
               <Lock className="size-3 text-emerald-400" />
-              <span>sandbox://client-ram/wasm-engine.dylib</span>
+              <span>local://this-browser-tab/pdf-merger</span>
             </div>
           </div>
 
@@ -104,7 +98,7 @@ export function MacOSWindow() {
               )}
               <span className="relative z-10 flex items-center gap-1.5">
                 <Layers className="size-3.5" />
-                <span>PDF Merger</span>
+                <span className="whitespace-nowrap">PDF Merger</span>
               </span>
             </button>
 
@@ -126,7 +120,7 @@ export function MacOSWindow() {
               )}
               <span className="relative z-10 flex items-center gap-1.5">
                 <Scissors className="size-3.5" />
-                <span>Splitter</span>
+                <span className="whitespace-nowrap">Splitter</span>
               </span>
             </button>
 
@@ -148,7 +142,7 @@ export function MacOSWindow() {
               )}
               <span className="relative z-10 flex items-center gap-1.5">
                 <Eraser className="size-3.5" />
-                <span>Watermark</span>
+                <span className="whitespace-nowrap">Watermark</span>
               </span>
             </button>
           </div>
@@ -157,7 +151,7 @@ export function MacOSWindow() {
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-semibold text-emerald-400">
               <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
-              0ms RTT
+              <span className="whitespace-nowrap">No network</span>
             </span>
           </div>
         </div>
@@ -267,7 +261,7 @@ export function MacOSWindow() {
               </div>
 
               <button
-                onClick={runWasmExecution}
+                onClick={runDemo}
                 disabled={isProcessing}
                 className="clay flex h-9.5 items-center gap-2 px-5 text-[13px] font-semibold tracking-wide transition-transform active:scale-95 disabled:opacity-75 cursor-pointer"
               >
@@ -286,14 +280,15 @@ export function MacOSWindow() {
             </div>
           </div>
 
-          {/* Right Column (5 cols): Cloudflare-Grade Telemetry & Execution Stream */}
+          {/* Right column: illustrative activity panel — labels describe the real
+              pdf-lib merge steps, not invented worker/WASM internals. */}
           <div className="lg:col-span-5 bg-[var(--bg)]/90 p-5 sm:p-6 flex flex-col justify-between gap-4 font-mono text-left">
             <div className="flex flex-col gap-3">
               {/* Telemetry Header */}
               <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5 text-[11px] text-[var(--text-dim)]">
                 <div className="flex items-center gap-1.5">
                   <Terminal className="size-3.5 text-[var(--accent)]" />
-                  <span className="text-[var(--text)] font-bold">WASM Telemetry</span>
+                  <span className="text-[var(--text)] font-bold">Local activity</span>
                 </div>
                 <span className="rounded bg-[var(--border)] px-1.5 py-0.5 text-[9.5px] text-[var(--text-dim)]">
                   v1.4.2
@@ -304,20 +299,20 @@ export function MacOSWindow() {
               <div className="flex flex-col gap-1.5 text-[11px] leading-relaxed text-[var(--text-dim)]">
                 <div className="text-[var(--text)] font-semibold flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  <span>3 background workers active</span>
+                  <span>Running on your device</span>
                 </div>
                 <div className="pl-3 border-l border-[var(--border)] space-y-1">
                   <div className="flex justify-between text-[10.5px]">
-                    <span className="text-[var(--text-dim)]">↳ worker-01</span>
-                    <span className="text-emerald-400">xref parsing (18 obj)</span>
+                    <span className="text-[var(--text-dim)]">↳ read</span>
+                    <span className="text-emerald-400">pages parsed</span>
                   </div>
                   <div className="flex justify-between text-[10.5px]">
-                    <span className="text-[var(--text-dim)]">↳ worker-02</span>
-                    <span className="text-[var(--accent)]">stream byte-align</span>
+                    <span className="text-[var(--text-dim)]">↳ merge</span>
+                    <span className="text-[var(--accent)]">order preserved</span>
                   </div>
                   <div className="flex justify-between text-[10.5px]">
-                    <span className="text-[var(--text-dim)]">↳ worker-03</span>
-                    <span className="text-[var(--accent-3)]">memory buffer seal</span>
+                    <span className="text-[var(--text-dim)]">↳ save</span>
+                    <span className="text-[var(--accent-3)]">download ready</span>
                   </div>
                 </div>
               </div>
@@ -354,7 +349,7 @@ export function MacOSWindow() {
                   >
                     <div className="flex items-center gap-2 text-emerald-400 text-[11.5px] font-bold">
                       <CheckCircle2 className="size-4 shrink-0" />
-                      <span>Complete in {execTime}</span>
+                      <span>Merged on this device</span>
                     </div>
                     <div className="flex justify-between text-[10px] text-[var(--text-dim)]">
                       <span>Egress: 0 B</span>
@@ -370,8 +365,8 @@ export function MacOSWindow() {
                   </motion.div>
                 ) : (
                   <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-raised)]/50 p-2.5 text-[10.5px] text-[var(--text-dim)] flex items-center justify-between">
-                    <span>Sandboxed heap:</span>
-                    <span className="text-[var(--text)] font-bold">4.2 MB RAM allocated</span>
+                    <span>Where it runs:</span>
+                    <span className="text-[var(--text)] font-bold">This browser tab</span>
                   </div>
                 )}
               </AnimatePresence>
@@ -379,12 +374,12 @@ export function MacOSWindow() {
 
             {/* Interactive Terminal Prompt Box with Live Typing Cursor */}
             <div
-              onClick={runWasmExecution}
+              onClick={runDemo}
               className="group flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--bg-raised)] px-3 py-2 text-[11px] cursor-pointer hover:border-[var(--accent)] transition-colors"
             >
               <div className="flex items-center gap-2 text-[var(--text-dim)] group-hover:text-[var(--text)]">
                 <span className="text-[var(--accent)] font-bold">&gt;</span>
-                <span>wasm.execute({activeTab})</span>
+                <span>run {activeTab}</span>
                 <span className="inline-block size-1.5 bg-[var(--accent)] animate-pulse" />
               </div>
               <span className="rounded bg-[var(--border)] px-1.5 py-0.5 text-[9.5px] text-[var(--text-dim)] group-hover:text-[var(--text)]">

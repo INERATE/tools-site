@@ -1,9 +1,18 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState, type MouseEvent } from "react";
+import { useEffect, useSyncExternalStore, type MouseEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Flame, Gem, Monitor, Moon, Sparkles, Sun } from "lucide-react";
-import { applyTheme, LABEL, ORDER, readStoredTheme, resolve, type Choice } from "../lib/theme";
+import {
+  applyTheme,
+  LABEL,
+  ORDER,
+  readStoredTheme,
+  resolve,
+  serverTheme,
+  subscribeTheme,
+  type Choice,
+} from "../lib/theme";
 
 const ICON: Record<Choice, typeof Monitor> = {
   auto: Monitor,
@@ -15,32 +24,25 @@ const ICON: Record<Choice, typeof Monitor> = {
 };
 
 export function ThemeToggle() {
-  const [choice, setChoice] = useState<Choice>("auto");
-  const [mounted, setMounted] = useState(false);
+  // No setState-in-effect: localStorage is read as an external store, so the
+  // stored choice arrives on the first client render instead of a second one.
+  const choice = useSyncExternalStore(subscribeTheme, readStoredTheme, serverTheme);
   const reducedMotion = useReducedMotion();
 
+  // Only "auto" needs to follow the OS live; the boot script owns first paint.
   useEffect(() => {
-    setMounted(true);
-    setChoice(readStoredTheme());
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!mounted) return;
-    document.documentElement.setAttribute("data-theme", resolve(choice));
     if (choice !== "auto") return;
-
     const mq = matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => document.documentElement.setAttribute("data-theme", resolve("auto"));
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, [choice, mounted]);
+    const sync = () => document.documentElement.setAttribute("data-theme", resolve("auto"));
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, [choice]);
 
   function cycle(e: MouseEvent<HTMLButtonElement>) {
     const next = ORDER[(ORDER.indexOf(choice) + 1) % ORDER.length];
-    const commit = () => {
-      applyTheme(next);
-      setChoice(next);
-    };
+    // applyTheme notifies the store, which re-renders this component.
+    const commit = () => applyTheme(next);
 
     if (!document.startViewTransition || reducedMotion) {
       commit();
@@ -62,8 +64,8 @@ export function ThemeToggle() {
   return (
     <button
       onClick={cycle}
-      title={mounted ? `Appearance: ${LABEL[choice]}` : "Appearance"}
-      aria-label={mounted ? `Appearance: ${LABEL[choice]}. Click to change.` : "Appearance. Click to change."}
+      title={`Appearance: ${LABEL[choice]}`}
+      aria-label={`Appearance: ${LABEL[choice]}. Click to change.`}
       suppressHydrationWarning
       className="glass grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-[var(--text-dim)] transition-colors hover:text-[var(--text)]"
     >

@@ -77,7 +77,7 @@ export function Nav() {
             href="/pdf-merger"
             className="clay flex h-8.5 items-center gap-1 px-3.5 text-[12px] font-semibold tracking-wide transition-all cursor-pointer"
           >
-            <span>Launch PDF</span>
+            <span className="whitespace-nowrap">Launch PDF</span>
             <ArrowUpRight className="size-3.5 stroke-[2.5]" />
           </Link>
         </div>

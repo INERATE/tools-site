@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "motion/react";
-import { ArrowRight, CheckCircle2, FileText, Lock, ShieldCheck, Sparkles, TrendingUp, Layers } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileText, ShieldCheck, Sparkles, TrendingUp, Layers } from "lucide-react";
 
 /**
  * World-Class Apple-Caliber 3D Glass Document Showcase at the bottom of the page.
@@ -52,7 +52,7 @@ export function InteractiveGlassFilm() {
           </span>
         </h2>
         <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-[var(--text-dim)]">
-          Processed entirely on your device with sub-millisecond local WebAssembly execution. Nothing is ever uploaded.
+          Processed entirely on your device, right inside this browser tab. Nothing is ever uploaded.
         </p>
 
         {/* 3D Glass Document Stage */}
@@ -153,7 +153,7 @@ export function InteractiveGlassFilm() {
                   <TrendingUp className="size-4.5 text-emerald-400" />
                   <span className="text-[12.5px] font-semibold text-[var(--text)]">+38.4% Efficiency</span>
                 </div>
-                <span className="text-[11px] font-mono text-[var(--text-dim)]">0.034s runtime</span>
+                <span className="text-[11px] font-mono text-[var(--text-dim)]">no upload</span>
               </div>
 
               <div className="flex items-center justify-between border-t border-[var(--border)] pt-2.5 text-[11px] font-mono text-[var(--text-dim)]">

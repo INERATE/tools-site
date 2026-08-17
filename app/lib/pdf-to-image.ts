@@ -1,9 +1,7 @@
 /**
- * PDF page rasterization via pdf.js.
- *
- * pdf.js is imported dynamically so its ~1MB bundle only loads on this tool's
- * route, and its worker is served from /public (kept in sync by the
- * `pdfjs:worker` prebuild script) rather than resolved through the bundler.
+ * PDF page rasterization via pdf.js. Dynamically imported so its ~1MB only
+ * loads on routes that need it; worker served from /public, kept in sync by
+ * the `pdfjs:worker` prebuild script.
  */
 export type Rendered = { page: number; url: string; width: number; height: number };
 
@@ -16,17 +14,15 @@ async function loadPdfjs() {
   return pdfjs;
 }
 
-/**
- * Renders every page to an image object URL.
- * `scale` 2 ≈ 144dpi — a readable default without exploding memory.
- * `onProgress` fires per finished page so the UI can show real progress.
- */
+/** Renders pages to image object URLs. scale 2 ≈ 144dpi. */
 export async function renderPages(
-  file: File,
-  { format = "png", scale = 2, quality = 0.92, onProgress }: {
+  file: File | Blob,
+  { format = "png", scale = 2, quality = 0.92, limit, onProgress }: {
     format?: Format;
     scale?: number;
     quality?: number;
+    /** Stop after this many pages — the resume preview only needs page 1. */
+    limit?: number;
     onProgress?: (done: number, total: number) => void;
   } = {},
 ): Promise<Rendered[]> {
@@ -38,7 +34,8 @@ export async function renderPages(
   const out: Rendered[] = [];
 
   try {
-    for (let n = 1; n <= doc.numPages; n++) {
+    const last = Math.min(doc.numPages, limit ?? doc.numPages);
+    for (let n = 1; n <= last; n++) {
       const page = await doc.getPage(n);
       const viewport = page.getViewport({ scale });
       const canvas = document.createElement("canvas");
@@ -61,7 +58,7 @@ export async function renderPages(
       if (!blob) throw new Error(`Page ${n} could not be encoded.`);
 
       out.push({ page: n, url: URL.createObjectURL(blob), width: canvas.width, height: canvas.height });
-      onProgress?.(n, doc.numPages);
+      onProgress?.(n, last);
     }
   } finally {
     await task.destroy();

@@ -53,9 +53,10 @@ const TOOLS = [
   {
     href: "/resume-builder",
     icon: ResumeIcon,
-    title: "Resume Builder",
-    description: "Generate and export ATS-friendly resume PDFs tailored for tech roles.",
+    title: "Résumé Builder",
+    description: "Fill in a form and export a clean PDF résumé — updates as you type.",
     category: "Document Studio",
+    live: true,
   },
 ];
 

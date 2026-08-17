@@ -24,8 +24,9 @@ const TOOLS = [
     href: "/pdf-split",
     icon: SplitIcon,
     title: "PDF Splitter",
-    description: "Extract specific page ranges or burst a multi-page document apart.",
+    description: "Extract exactly the pages you want from a multi-page document.",
     category: "PDF Suite",
+    live: true,
   },
   {
     href: "/watermark-remover",

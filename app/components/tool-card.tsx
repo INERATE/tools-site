@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
 import type { ComponentType, CSSProperties } from "react";
 import type { IconProps } from "./icons/icon-shell";
 import { useTilt } from "../lib/use-tilt";
+import { ToolCardBody } from "./tool-card-body";
 import "./card.css";
 
 export type ToolCardProps = {
@@ -19,9 +19,7 @@ export type ToolCardProps = {
   index: number;
 };
 
-/**
- * Enhanced Apple Claymorphic & Liquid Glass Tool Card
- */
+/** Apple claymorphic + liquid glass tool card: tilt, glare, and a gentle float. */
 export function ToolCard({ href, icon: Icon, title, description, live, category, index }: ToolCardProps) {
   const tilt = useTilt();
   const reduced = useReducedMotion();
@@ -49,47 +47,14 @@ export function ToolCard({ href, icon: Icon, title, description, live, category,
           style={{ rotateX: tilt.rx, rotateY: tilt.ry, y: tilt.lift, transformPerspective: 900 }}
           className="clay-card relative flex h-full flex-col justify-between overflow-hidden p-6"
         >
-          {/* Dynamic Glare on Hover */}
           <motion.span
             aria-hidden
-            className="pointer-events-none absolute inset-0 transition-opacity duration-300 rounded-[26px]"
+            className="pointer-events-none absolute inset-0 rounded-[26px] transition-opacity duration-300"
             style={{ backgroundImage: tilt.glare, opacity: tilt.glow }}
           />
 
-          {/* Top Row: Clay Icon + Status Badge */}
-          <div className="relative flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div className="clay-icon relative grid size-12 place-items-center text-[var(--accent)] transition-transform duration-300 group-hover:scale-105">
-                <Icon active={tilt.active} size={24} />
-              </div>
+          <ToolCardBody Icon={Icon} active={tilt.active} live={live} title={title} description={description} />
 
-              {live ? (
-                <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-emerald-400 uppercase shadow-sm">
-                  <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Live
-                </span>
-              ) : (
-                <span className="rounded-full border border-[var(--border)] bg-[var(--bg)]/50 px-2.5 py-1 text-[10px] font-semibold tracking-[0.12em] text-[var(--text-dim)] uppercase">
-                  Soon
-                </span>
-              )}
-            </div>
-
-            {/* Title & Description */}
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[16px] font-bold tracking-tight text-[var(--text)] transition-colors group-hover:text-[var(--accent)]">
-                  {title}
-                </h3>
-                {live && (
-                  <ArrowUpRight className="size-4 text-[var(--text-dim)] opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-hover:text-[var(--accent)]" />
-                )}
-              </div>
-              <p className="text-[13.5px] leading-[1.6] text-[var(--text-dim)]">{description}</p>
-            </div>
-          </div>
-
-          {/* Bottom Footer Info */}
           <div className="mt-5 flex items-center justify-between border-t border-[var(--border)]/70 pt-3 text-[11px] font-medium text-[var(--text-dim)]">
             <span className="text-[var(--text-dim)]">{category || "Document Utility"}</span>
             <span className="font-mono text-[10px] text-[var(--accent)]">100% Client-Side</span>

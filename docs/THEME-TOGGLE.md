@@ -15,10 +15,10 @@
    tuned to *look* spring-like (View Transitions only accept CSS easing, not
    real spring physics).
 5. The choice is written to `localStorage` (`theme`:
-   `obsidian | daylight | aurora | ember | auto`).
+   `auto | iridescence | obsidian | daylight | aurora | ember`).
 
-Themes advance in a fixed cycle on each click — no dropdown, one button, same
-glass material as the rest of `Nav`.
+Themes advance in a fixed cycle on each click (`ORDER` in `app/lib/theme.ts`)
+— no dropdown, one button, same glass material as the rest of `Nav`.
 
 ## No-FOUC on load
 An inline `<script>` in `app/layout.tsx`'s `<head>` (before any hydration)
@@ -29,10 +29,18 @@ blocking script is correct — the alternative is a flash of the wrong theme.
 
 ## Auto mode
 `auto` doesn't store a fixed theme — `app/lib/theme.ts`'s `resolve()` checks
-`matchMedia('(prefers-color-scheme: dark)')` live, and the toggle's
-`useLayoutEffect` re-subscribes to OS changes whenever `auto` is active, so
-it updates mid-session with no reload. It only ever resolves to Obsidian or
-Daylight, never Aurora/Ember.
+`matchMedia('(prefers-color-scheme: dark)')` live, and the toggle's `useEffect`
+re-subscribes to OS changes whenever `auto` is active, so it updates
+mid-session with no reload. It only ever resolves to **Iridescence** (dark) or
+**Daylight** (light) — Obsidian, Aurora and Ember are manual-only, the same
+way macOS never auto-picks an accent color.
+
+## First-time default
+A first-time visitor gets **Iridescence** directly, not `auto`:
+`readStoredTheme()` falls back to `"iridescence"` rather than `"auto"` when
+`localStorage` is empty. Iridescence is the brand look; resolving new visitors
+through `auto` would hand every light-mode OS the Daylight theme as its first
+impression instead. Opting into Daylight or `auto` stays one click away.
 
 ## Fallbacks, in order of precedence
 - **`prefers-reduced-motion: reduce`** — checked first (`useReducedMotion`),

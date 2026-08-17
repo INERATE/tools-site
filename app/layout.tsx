@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 // Runs before first paint — no FOUC. Keep in sync with app/lib/theme.ts's `resolve()`.
-const THEME_BOOT = `(function(){try{var s=localStorage.getItem('theme');var t=s==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'iridescence':'daylight'):(s||'iridescence');document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','iridescence');}})();`;
+const THEME_BOOT = `(function(){try{var s=localStorage.getItem('theme');var t=s==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'iridescence':'daylight'):(s||'daylight');document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','daylight');}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

@@ -6,15 +6,19 @@ import { Dropzone } from "../components/dropzone";
 import { Nav } from "../components/nav";
 import { RunAction } from "../components/run-action";
 import { ToolHead } from "../components/tool-head";
+import { ToolPipeline } from "../components/tool-pipeline";
+import { ToolWindow } from "../components/tool-window";
 import { MergeIcon } from "../components/icons/merge-icon";
 import { ToolBoard } from "../components/page-board/tool-board";
 import { usePageBoard } from "../components/page-board/use-page-board";
 import { assemblePdf } from "../lib/assemble-pdf";
+import { STEPS } from "./pipeline-steps";
 
 export default function PdfMergerPage() {
   const board = usePageBoard();
   const [busy, setBusy] = useState(false);
   const [url, setUrl] = useState<string | null>(null);
+  const step = url ? 2 : board.slots.length > 0 ? 1 : 0;
 
   async function run() {
     setBusy(true);
@@ -28,10 +32,8 @@ export default function PdfMergerPage() {
     }
   }
 
-  /* Any edit invalidates a finished file — keeping it would offer a download
-     that no longer matches what is on screen. */
   const edit = <A extends unknown[]>(fn: (...a: A) => void) => (...a: A) => {
-    setUrl(null);
+    setUrl(null); // a finished file would no longer match the board
     fn(...a);
   };
 
@@ -39,7 +41,7 @@ export default function PdfMergerPage() {
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
-      <main className="mx-auto max-w-4xl px-6 py-16">
+      <main className="mx-auto max-w-6xl px-6 py-16">
         <ToolHead
           title="PDF Merger"
           busy={busy || board.pending > 0}
@@ -47,30 +49,36 @@ export default function PdfMergerPage() {
           blurb="Add as many PDFs as you like, then arrange the result page by page — drag to reorder, rotate, duplicate or delete any page before you save. Everything runs in your browser; nothing is uploaded."
         />
 
-        <Dropzone
-          multiple
-          onFiles={edit(board.addFiles)}
-          label={board.slots.length ? "Add more PDFs" : "Drop PDFs here, or click to choose"}
-        />
+        <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
+          <ToolWindow path="pdf-merger">
+            <Dropzone
+              multiple
+              onFiles={edit(board.addFiles)}
+              label={board.slots.length ? "Add more PDFs" : "Drop PDFs here, or click to choose"}
+            />
 
-        {board.error && (
-          <p role="alert" className="mb-4 text-[13.5px] font-medium text-[#ff8fa3]">
-            {board.error}
-          </p>
-        )}
+            {board.error && (
+              <p role="alert" className="mb-4 text-[13.5px] font-medium text-[#ff8fa3]">
+                {board.error}
+              </p>
+            )}
 
-        <ToolBoard board={board} invalidate={() => setUrl(null)} />
+            <ToolBoard board={board} invalidate={() => setUrl(null)} />
 
-        {board.slots.length > 0 && (
-          <RunAction
-            label={`Save ${board.slots.length} page${board.slots.length === 1 ? "" : "s"} as one PDF`}
-            busyLabel="Assembling…"
-            busy={busy}
-            url={url}
-            fileName="merged.pdf"
-            onRun={run}
-          />
-        )}
+            {board.slots.length > 0 && (
+              <RunAction
+                label={`Save ${board.slots.length} page${board.slots.length === 1 ? "" : "s"} as one PDF`}
+                busyLabel="Assembling…"
+                busy={busy}
+                url={url}
+                fileName="merged.pdf"
+                onRun={run}
+              />
+            )}
+          </ToolWindow>
+
+          <ToolPipeline active={step} steps={STEPS} />
+        </div>
       </main>
     </div>
   );

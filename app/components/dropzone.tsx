@@ -62,13 +62,13 @@ export function Dropzone({
       />
       <motion.span
         aria-hidden
-        animate={{ y: over ? -3 : 0, scale: over ? 1.12 : 1 }}
-        transition={{ type: "spring", bounce: 0.25, duration: 0.4 }}
-        className="mb-2.5 inline-grid size-11 place-items-center rounded-2xl text-[var(--accent)]"
+        animate={{ y: over ? -3 : 0, scale: over ? 1.1 : 1, rotate: over ? -6 : 0 }}
+        transition={{ type: "spring", bounce: 0.3, duration: 0.4 }}
+        className="clay-icon mb-3 inline-grid size-14 place-items-center text-[var(--accent)]"
       >
-        <UploadCloud className="size-6" />
+        <UploadCloud className="size-6" strokeWidth={2} />
       </motion.span>
-      <span className="block text-[15px] font-medium">{over ? "Drop to add" : label}</span>
+      <span className="block text-[16px] font-semibold">{over ? "Drop to add" : label}</span>
       <span className="mt-1.5 block text-[13px] text-[var(--text-dim)]">{hint}</span>
     </motion.label>
   );

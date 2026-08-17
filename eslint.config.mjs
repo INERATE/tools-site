@@ -5,7 +5,8 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  // public/ holds pdfjs' prebuilt minified worker — vendored, not ours to lint.
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "public/**"]),
 ]);
 
 export default eslintConfig;

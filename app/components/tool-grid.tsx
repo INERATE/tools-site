@@ -39,8 +39,9 @@ const TOOLS = [
     href: "/pdf-to-image",
     icon: ToImageIcon,
     title: "PDF to Image",
-    description: "Render high-resolution vector PDF pages directly into PNG or JPG.",
+    description: "Export every page as a PNG or JPG, at the quality you choose.",
     category: "Convert & Export",
+    live: true,
   },
   {
     href: "/docx-to-pdf",

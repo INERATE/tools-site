@@ -5,6 +5,7 @@ import { ToImageIcon } from "./icons/to-image-icon";
 import { DocxIcon } from "./icons/docx-icon";
 import { ResumeIcon } from "./icons/resume-icon";
 import { JpgToPdfIcon } from "./icons/jpg-to-pdf-icon";
+import { CompressPdfIcon } from "./icons/compress-pdf-icon";
 
 export const TOOLS = [
   {
@@ -45,6 +46,14 @@ export const TOOLS = [
     title: "DOCX to PDF",
     description: "Convert a Word document to a clean A4 PDF, with a preview before you download.",
     category: "Convert & Export",
+    live: true,
+  },
+  {
+    href: "/compress-pdf",
+    icon: CompressPdfIcon,
+    title: "Compress PDF",
+    description: "Shrink a scanned or image-heavy PDF by re-encoding its pages.",
+    category: "Optimize & Secure",
     live: true,
   },
   {

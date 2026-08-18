@@ -4,6 +4,9 @@ import { ExtractImagesIcon } from "./icons/extract-images-icon";
 import { CompressImageIcon } from "./icons/compress-image-icon";
 import { ResizeImageIcon } from "./icons/resize-image-icon";
 import { ConvertImageIcon } from "./icons/convert-image-icon";
+import { CropImageIcon } from "./icons/crop-image-icon";
+import { WatermarkImageIcon } from "./icons/watermark-image-icon";
+import { RemoveBackgroundIcon } from "./icons/remove-background-icon";
 
 /** Later-phase tools — split out of tool-list.ts to stay under the file-size cap. */
 export const TOOLS_MORE = [
@@ -52,6 +55,30 @@ export const TOOLS_MORE = [
     icon: ConvertImageIcon,
     title: "Convert Image",
     description: "Switch photos between JPG, PNG and WEBP.",
+    category: "Image Tools",
+    live: true,
+  },
+  {
+    href: "/crop-image",
+    icon: CropImageIcon,
+    title: "Crop Image",
+    description: "Trim the same margin off every photo, set live on a preview.",
+    category: "Image Tools",
+    live: true,
+  },
+  {
+    href: "/watermark-image",
+    icon: WatermarkImageIcon,
+    title: "Watermark Image",
+    description: "Stamp a text watermark onto your photos, tiled or placed once.",
+    category: "Image Tools",
+    live: true,
+  },
+  {
+    href: "/remove-background",
+    icon: RemoveBackgroundIcon,
+    title: "Remove Background",
+    description: "Segments the subject from its background, entirely on-device.",
     category: "Image Tools",
     live: true,
   },

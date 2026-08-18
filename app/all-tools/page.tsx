@@ -1,6 +1,7 @@
 import { AmbientBlob } from "../components/ambient-blob";
 import { Nav } from "../components/nav";
 import { ToolCard } from "../components/tool-card";
+import { AdSlot } from "../components/ad-slot";
 import { TOOLS } from "../components/tool-list";
 
 const CATEGORIES = [...new Set(TOOLS.map((t) => t.category))];
@@ -30,6 +31,10 @@ export default function AllToolsPage() {
               </div>
             </section>
           ))}
+        </div>
+
+        <div className="mt-14">
+          <AdSlot slot="all-tools" />
         </div>
       </main>
     </div>

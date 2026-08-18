@@ -7,6 +7,7 @@ import { RunAction } from "../components/run-action";
 import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
+import { AdSlot } from "../components/ad-slot";
 import { ToolWindow } from "../components/tool-window";
 import { CompressImageIcon } from "../components/icons/compress-image-icon";
 import { ImageGrid } from "../components/image-board/image-grid";
@@ -94,6 +95,7 @@ export default function CompressImagePage() {
               }
             />
             <ToolPipeline active={step} steps={STEPS} />
+            <AdSlot slot="tool-rail" />
           </div>
         </div>
       </main>

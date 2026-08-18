@@ -8,6 +8,7 @@ import { RunAction } from "../components/run-action";
 import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
+import { AdSlot } from "../components/ad-slot";
 import { ToolWindow } from "../components/tool-window";
 import { RemoveBackgroundIcon } from "../components/icons/remove-background-icon";
 import { TransparentPreview } from "./transparent-preview";
@@ -74,6 +75,7 @@ export default function RemoveBackgroundPage() {
               }
             />
             <ToolPipeline active={step} steps={STEPS} />
+            <AdSlot slot="tool-rail" />
           </div>
         </div>
       </main>

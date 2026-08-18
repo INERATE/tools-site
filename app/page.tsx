@@ -3,6 +3,7 @@ import { Nav } from "./components/nav";
 import { Hero } from "./components/hero";
 import { ToolGrid } from "./components/tool-grid";
 import { InteractiveGlassFilm } from "./components/story/interactive-glass-film";
+import { AdSlot } from "./components/ad-slot";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <Hero />
         <ToolGrid />
         <InteractiveGlassFilm />
+        <AdSlot slot="homepage" />
       </main>
     </div>
   );

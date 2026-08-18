@@ -6,6 +6,7 @@ import { RunAction } from "../components/run-action";
 import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
+import { AdSlot } from "../components/ad-slot";
 import { ToolWindow } from "../components/tool-window";
 import { MarkdownToPdfIcon } from "../components/icons/markdown-to-pdf-icon";
 import { ResultPages } from "../docx-to-pdf/result-pages";
@@ -72,6 +73,7 @@ export default function MarkdownToPdfPage() {
               }
             />
             <ToolPipeline active={step} steps={STEPS} />
+            <AdSlot slot="tool-rail" />
           </div>
         </div>
       </main>

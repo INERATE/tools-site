@@ -8,6 +8,7 @@ import { RunAction } from "../components/run-action";
 import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
+import { AdSlot } from "../components/ad-slot";
 import { ToolWindow } from "../components/tool-window";
 import { PdfToPptxIcon } from "../components/icons/pdf-to-pptx-icon";
 import { usePdfToPptx } from "./use-pdf-to-pptx";
@@ -81,6 +82,7 @@ export default function PdfToPowerPointPage() {
               }
             />
             <ToolPipeline active={step} steps={STEPS} />
+            <AdSlot slot="tool-rail" />
           </div>
         </div>
       </main>

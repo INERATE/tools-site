@@ -7,6 +7,7 @@ import { RunAction } from "../components/run-action";
 import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
+import { AdSlot } from "../components/ad-slot";
 import { ToolWindow } from "../components/tool-window";
 import { RepairPdfIcon } from "../components/icons/repair-pdf-icon";
 import { useRepair } from "./use-repair";
@@ -70,6 +71,7 @@ export default function RepairPdfPage() {
               }
             />
             <ToolPipeline active={step} steps={STEPS} />
+            <AdSlot slot="tool-rail" />
           </div>
         </div>
       </main>

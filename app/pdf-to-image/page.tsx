@@ -6,6 +6,7 @@ import { Nav } from "../components/nav";
 import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
+import { AdSlot } from "../components/ad-slot";
 import { ToolWindow } from "../components/tool-window";
 import { ToImageIcon } from "../components/icons/to-image-icon";
 import { ToolBoard } from "../components/page-board/tool-board";
@@ -90,6 +91,7 @@ export default function PdfToImagePage() {
               }
             />
             <ToolPipeline active={step} steps={STEPS} />
+            <AdSlot slot="tool-rail" />
           </div>
         </div>
       </main>

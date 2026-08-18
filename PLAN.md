@@ -2,8 +2,21 @@
 
 ## 1. Where we honestly are
 
-**6 tools shipped**, all client-side, all live at tools.inerate.com:
-PDF Merger, PDF Split, PDF → Image, Watermark Remover, DOCX → PDF, Résumé Builder.
+**27 tools shipped**, all client-side, all live at tools.inerate.com,
+spanning Phases 1-8 below (PDF organize/convert/optimize/security plus a
+full image-tools suite). Started this file at 6 tools; kept the original
+phase log intact underneath as the record of how we got here.
+
+**Monetization scaffolding is live**: `AdSlot` (`app/components/ad-slot.tsx`)
+is wired into every one of the 29 tool pages plus the homepage and
+`/all-tools`, always below the primary upload→result→download action,
+never inside it. It renders nothing until `NEXT_PUBLIC_ADSENSE_CLIENT` is
+set (verified both states: off by default, a real client ID activates the
+`adsbygoogle` script and unit in the prerendered output) and nothing for
+Pro users. `useIsPro()` (`app/lib/use-is-pro.ts`) is the entitlement stub
+every ad slot and future paywall checks — always `false` until a real
+payment gateway exists, at which point it's a one-line change, not a
+site-wide search-and-replace.
 
 ## 2. Rule for every phase from here on
 - **3 tools per phase.** Small enough to give each one real depth — its own

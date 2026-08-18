@@ -3,12 +3,12 @@
 import { Trash2 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import { useCoarsePointer } from "../components/page-board/use-coarse-pointer";
-import type { ImageItem } from "../lib/assemble-images-pdf";
+import { useCoarsePointer } from "../page-board/use-coarse-pointer";
+import type { ImageItem } from "../../lib/image-item";
 
 const SPRING = { type: "spring", bounce: 0, duration: 0.3 } as const;
 
-/** One photo in the JPG-to-PDF grid — same drag/hover language as the PDF page board, minus rotate/duplicate. */
+/** One photo in an image grid — same drag/hover language as the PDF page board, minus rotate/duplicate. */
 export function ImageTile({
   image,
   index,

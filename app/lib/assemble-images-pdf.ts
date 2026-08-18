@@ -1,6 +1,7 @@
 import { PDFDocument } from "pdf-lib";
+import type { ImageItem } from "./image-item";
 
-export type ImageItem = { id: string; file: File; url: string; w: number; h: number };
+export type { ImageItem } from "./image-item";
 
 /** One PDF page per image, sized to the image itself so nothing is cropped or stretched. */
 export async function assembleImagesToPdf(images: ImageItem[]): Promise<Blob> {

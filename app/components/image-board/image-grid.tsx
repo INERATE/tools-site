@@ -2,10 +2,10 @@
 
 import { AnimatePresence } from "motion/react";
 import { useEffect } from "react";
-import { GRID } from "../components/page-board/board";
-import { useSortable } from "../components/page-board/use-sortable";
+import { GRID } from "../page-board/board";
+import { useSortable } from "../page-board/use-sortable";
 import { ImageTile } from "./image-tile";
-import type { ImageItem } from "../lib/assemble-images-pdf";
+import type { ImageItem } from "../../lib/image-item";
 
 export function ImageGrid({
   images,

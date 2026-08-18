@@ -9,7 +9,7 @@ import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
 import { ToolWindow } from "../components/tool-window";
 import { JpgToPdfIcon } from "../components/icons/jpg-to-pdf-icon";
-import { ImageGrid } from "./image-grid";
+import { ImageGrid } from "../components/image-board/image-grid";
 import { useImageToPdf } from "./use-image-to-pdf";
 import { STEPS } from "./pipeline-steps";
 

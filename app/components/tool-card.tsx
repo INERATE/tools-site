@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 import type { ComponentType, CSSProperties } from "react";
 import type { IconProps } from "./icons/icon-shell";
 import { useTilt } from "../lib/use-tilt";
+import { useAutoPulse } from "../lib/use-auto-pulse";
 import { ToolCardBody } from "./tool-card-body";
 import "./card.css";
 
@@ -22,6 +23,7 @@ export type ToolCardProps = {
 /** Apple claymorphic + liquid glass tool card: tilt, glare, and a gentle float. */
 export function ToolCard({ href, icon: Icon, title, description, live, category, index }: ToolCardProps) {
   const tilt = useTilt();
+  const pulse = useAutoPulse(1600, 2600, index * 260);
   const reduced = useReducedMotion();
   const phase = {
     "--dur": `${5.2 + index * 0.55}s`,
@@ -53,7 +55,7 @@ export function ToolCard({ href, icon: Icon, title, description, live, category,
             style={{ backgroundImage: tilt.glare, opacity: tilt.glow }}
           />
 
-          <ToolCardBody Icon={Icon} active={tilt.active} live={live} title={title} description={description} />
+          <ToolCardBody Icon={Icon} active={tilt.active || pulse} live={live} title={title} description={description} />
 
           <div className="mt-5 flex items-center justify-between border-t border-[var(--border)]/70 pt-3 text-[11px] font-medium text-[var(--text-dim)]">
             <span className="text-[var(--text-dim)]">{category || "Document Utility"}</span>

@@ -6,6 +6,7 @@ import { DocxIcon } from "./icons/docx-icon";
 import { ResumeIcon } from "./icons/resume-icon";
 import { JpgToPdfIcon } from "./icons/jpg-to-pdf-icon";
 import { CompressPdfIcon } from "./icons/compress-pdf-icon";
+import { PdfToWordIcon } from "./icons/pdf-to-word-icon";
 
 export const TOOLS = [
   {
@@ -45,6 +46,14 @@ export const TOOLS = [
     icon: DocxIcon,
     title: "DOCX to PDF",
     description: "Convert a Word document to a clean A4 PDF, with a preview before you download.",
+    category: "Convert & Export",
+    live: true,
+  },
+  {
+    href: "/pdf-to-word",
+    icon: PdfToWordIcon,
+    title: "PDF to Word",
+    description: "Pulls the text out of a PDF and rebuilds it as an editable .docx.",
     category: "Convert & Export",
     live: true,
   },

@@ -1,7 +1,8 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
+import Link from "next/link";
 import { useRef } from "react";
 import { ToolCard } from "./tool-card";
 import { TOOLS } from "./tool-list";
@@ -30,9 +31,18 @@ export function ToolGrid() {
             Explore All Document Tools
           </h2>
         </div>
-        <p className="max-w-[32ch] text-[13.5px] text-[var(--text-dim)]">
-          Fast, sandboxed, and engineered to execute completely inside your browser tab.
-        </p>
+        <div className="flex flex-col items-center gap-3 sm:items-end">
+          <p className="max-w-[32ch] text-[13.5px] text-[var(--text-dim)]">
+            Fast, sandboxed, and engineered to execute completely inside your browser tab.
+          </p>
+          <Link
+            href="/all-tools"
+            className="flex items-center gap-1 text-[13px] font-semibold text-[var(--accent)] transition-transform hover:translate-x-0.5"
+          >
+            View all tools
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

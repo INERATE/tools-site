@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, Sparkles } from "lucide-react";
+import { SearchLauncher } from "./search-overlay";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Nav() {
@@ -38,7 +39,7 @@ export function Nav() {
         {/* Center Links */}
         <nav className="hidden items-center gap-1 md:flex">
           <Link
-            href="#tools"
+            href="/all-tools"
             className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-[var(--text-dim)] transition-all hover:bg-[var(--glass-bg)] hover:text-[var(--text)]"
           >
             All Tools
@@ -71,6 +72,9 @@ export function Nav() {
 
         {/* Right Controls */}
         <div className="flex items-center gap-2.5">
+          <div className="hidden sm:block">
+            <SearchLauncher />
+          </div>
           <ThemeToggle />
 
           <Link

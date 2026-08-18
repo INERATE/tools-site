@@ -5,98 +5,93 @@
 **6 tools shipped**, all client-side, all live at tools.inerate.com:
 PDF Merger, PDF Split, PDF → Image, Watermark Remover, DOCX → PDF, Résumé Builder.
 
-Not 110+. That number was a guess, not a fact — correcting it here so this plan
-is built on real ground.
+## 2. Rule for every phase from here on
+- **3 tools per phase.** Small enough to give each one real depth — its own
+  animated "how it works" pipeline, its own icon, its own liquid-glass
+  polish — instead of stamping out six shallow tools a day.
+- Each phase ships to production and gets a real Playwright pass (desktop +
+  mobile) before the next phase starts. No permission checkpoint between
+  phases — once a phase is verified live, the next one starts automatically.
+- 🟢 client-only · 🟡 client-only but heavier (WASM) · 🔴 needs a server
+  (LLM calls) — kept last, own trust copy, gated behind Pro.
+- Ordered by real-world search volume (what people actually type into
+  Google — "compress pdf" and "pdf to word" dwarf "redact pdf").
 
-## 2. What "200+ tools" actually is, at iLovePDF/CloudConvert
+## 3. The phases
 
-Two different shapes, both worth copying:
+**Phase 1 — 🟢 Compress PDF · PDF to Word · JPG to PDF**
+Highest-search-volume trio not yet built. Compress reuses pdf-lib's stream
+recompression; PDF→Word is pdf.js text/layout extraction into docx.js (ship
+with an honest "best effort on complex layouts" note, like every competitor
+does); JPG→PDF is the inverse of our PDF→Image pipeline.
 
-- **iLovePDF (~30 real tools)**: one PDF *engine* per card — merge, split,
-  compress, rotate, sign, watermark, unlock, OCR. Each is genuinely one
-  feature.
-- **CloudConvert (200+ nav entries)**: one *converter* engine, wearing a
-  different costume per format pair — Word→PDF, PDF→Word, Excel→PDF, PDF→PPT…
-  212 formats × plausible pairs = hundreds of landing pages, but maybe 15
-  underlying conversion engines.
+**Phase 2 — 🟢 Rotate PDF · Unlock PDF · Protect PDF**
+All three already sit on capabilities pdf-lib exposes; the page-board
+rotate control already exists for pages, this generalizes it to a whole-doc
+action plus a password modal (add) and password prompt (remove).
 
-So "200 tools" for us realistically means: **~50-60 real engines**, several of
-which (format conversion, image ops) get 3-6 landing-page variants each for
-SEO — matching how competitors actually reach 150-200 nav entries without
-building 200 different pieces of logic.
+**Phase 3 — 🟢 Sign PDF · Page Numbers · HTML to PDF**
+Sign PDF: draw/type/upload a signature, place and resize it on a page.
+Page Numbers: stamp a running number with position/style options. HTML to
+PDF: paste a URL or markup, render via `<iframe>` + print-to-canvas.
 
-## 3. The constraint that actually matters: 100% client-side
+**Phase 4 — 🟢/🟡 PDF to PowerPoint · Excel to PDF · PowerPoint to PDF**
+Office round-trips using the same extraction approach as DOCX↔PDF.
 
-Our whole brand is "nothing is uploaded." That's a real moat (privacy-first
-beats every incumbent that phones a server) but it rules tools out. Every
-tool below is tagged:
+**Phase 5 — 🟡 OCR PDF · Repair PDF · Crop PDF**
+OCR via tesseract.js (flag as slower on-device); Repair re-serializes
+through pdf-lib; Crop reuses the page-board rotate/duplicate pattern for a
+new "crop box" op.
 
-- 🟢 **client-only** — a WASM/JS library does the real work in the tab, keeps
-  the brand promise intact.
-- 🟡 **client-only, heavier** — doable, but bigger bundle / slower on low-end
-  phones (ffmpeg.wasm, tesseract.js, onnxruntime-web). Ship behind a
-  "this may take a moment on your device" note.
-- 🔴 **needs a server** — an LLM call (Summarize, Translate) or something no
-  WASM lib covers well. These break "nothing uploaded" unless scoped tightly
-  (send only extracted text, not the file; disclose it in the UI). Treat as
-  a deliberate, separate product line — not silently bolted onto the rest.
+**Phase 6 — 🟡 Compare PDF · Redact PDF · PDF Forms**
+Compare: text-extract both docs, diff, side-by-side highlight. Redact: real
+redaction — strip the underlying text run, not just paint a box over it.
+Forms: fill + flatten AcroForm fields pdf-lib already parses.
 
-## 4. Phases
+**Phase 7 — 🟢 Compress Image · Resize Image · Convert Image**
+New `image-board` sibling to `page-board`. Canvas-based, no new heavy deps.
+Highest-search-volume image trio (mirrors iLoveIMG's top 3).
 
-### Phase 1 — PDF Organize & Convert core (🟢, pdf-lib we already use)
-Compress PDF, Rotate PDF, Page Numbers, Unlock PDF (remove open-password),
-Protect PDF (add password), JPG → PDF, Extract Images from PDF, Sign PDF
-(draw/type signature, place on page), PDF → PDF/A. ~9 tools, all built on
-the page-board component we already have.
+**Phase 8 — 🟢/🟡 Crop Image · Watermark Image · Remove Background**
+Crop/Watermark reuse Phase 7's image-board. Remove Background needs
+onnxruntime-web + a small segmentation model — flag as the heaviest tool
+in the suite, lazy-loaded so it doesn't tax every other page's bundle.
 
-### Phase 2 — iLoveIMG-style image suite (🟢/🟡)
-Compress Image, Resize Image, Convert Image (PNG/JPG/WEBP/AVIF via
-`<canvas>`), Crop Image, Rotate Image, Watermark Image (reuse the PDF
-watermark logic against a canvas instead of a page), Remove Background
-(🟡 — onnxruntime-web + a small segmentation model). ~7 tools, new
-`image-board` sibling to `page-board`.
+**Phase 9 — 🟢 PDF to Markdown · Markdown to PDF · PDF to PDF/A**
+Rounds out conversions; PDF→Markdown is a nice organic-search/OSS magnet.
 
-### Phase 3 — Advanced PDF (🟡)
-OCR PDF (tesseract.js — searchable text layer over scanned pages), Repair
-PDF (re-serialize via pdf-lib, drops most corruption), Compare PDF
-(side-by-side diff, text-extract + diff algorithm), Redact PDF (draw solid
-boxes + strip underlying text, not just paint over it — real redaction),
-Crop PDF, PDF Forms (fill/flatten AcroForm fields pdf-lib already exposes).
-~6 tools.
+**Phase 10 — 🔴 AI Summarizer · Translate PDF · Smart PDF Forms**
+The one phase that calls a server (Cloudflare Worker + LLM key) — own trust
+copy explaining exactly what leaves the device (extracted text only, never
+the file), gated behind the Pro flag from day one. This is the actual
+revenue page, not a bonus.
 
-### Phase 4 — Office round-trips (🟢/🟡)
-We already have DOCX→PDF (mammoth). Add PDF→DOCX (harder: pdf.js text
-extraction → docx.js reconstruction, imperfect layout — ship with a "best
-effort, complex layouts may shift" disclaimer, exactly like every
-competitor's fine print), PPTX→PDF, XLSX→PDF, Markdown→PDF, PDF→Markdown
-(nice OSS-friendly one). ~5-6 tools.
+Beyond Phase 10: format-pair landing-page multiplication (`/word-to-pdf`,
+`/pdf-to-word`, …) templated off the engines above — this is how the nav
+count grows from ~35 real engines toward the 150-200 iLovePDF/CloudConvert
+show, without new logic. Templating task, scheduled after Phase 9.
 
-### Phase 5 — 🔴 AI tools (separate track, own trust copy)
-AI Summarizer, Translate PDF, PDF Forms auto-detect. These need an LLM API
-key and a real backend endpoint (Cloudflare Worker + your Anthropic/OpenAI
-key), so they're the one place the site legitimately calls out. Gate them
-behind the Pro-tier flag from the start — this is the actual money page,
-not the free client-side tools.
+## 4. Design bar for every tool (non-negotiable, not just phase 1)
+- Liquid-glass premium surfaces — matches the existing `ToolWindow` macOS
+  chrome and `.glass`/`.liquid-card` system already in `themes.css`.
+- **Animated pipeline, not a static 3-step list.** Replace the current
+  static `ToolPipeline` icons with a looped, keyframed SVG animation per
+  tool — the shapes it manipulates (a page, a lock, a signature) animate
+  through the tool's actual steps on a loop, silent, no video file, so nothing
+  is ever "downloadable" — pure CSS/SVG `@keyframes`, cheap to ship, infinite
+  loop, matches Apple's own product-page style (e.g. iCloud Keychain's
+  looping diagrams).
+- Every icon gets its own hover/active micro-animation (spring physics per
+  `apple-design`), not a shared generic hover state.
+- Verified in a real browser (upload → result → download, desktop + mobile)
+  before a phase counts as shipped — not just typecheck/lint.
 
-### Phase 6 — Monetization (parallel, not sequential — do this alongside Phase 1-2, not after)
-Ad-slot components + placement (never between upload and download), a
-`useIsPro()` stub that Phase 5's AI tools check against, Pro upsell copy.
-This was already scoped and is still the next concrete task — see below.
-
-## 5. Landing-page multiplication (how we get from ~35 engines to 150-200 pages)
-Once Phase 1+4 conversion engines exist, generate format-pair landing pages
-(`/word-to-pdf`, `/pdf-to-word`, `/jpg-to-pdf`, `/pdf-to-jpg`…) that each
-render the *same* underlying tool with different copy/OG tags for SEO —
-this is literally how iLovePDF/CloudConvert get their nav count. Don't build
-this until Phase 1-2 engines exist; it's a templating task, not new logic.
-
-## 6. Suggested build order
-1. Finish Phase 6 (monetization scaffolding) — next up, unblocks revenue on
-   the 6 tools already live.
-2. Phase 1 (9 tools) — cheapest wins, reuses page-board entirely.
-3. Phase 2 (7 tools) — new but small surface, high search volume
-   ("compress image", "resize image").
-4. Phase 3 → Phase 4 → landing-page multiplication → Phase 5.
-
-Each phase is its own `/atelier:build` pass — ship and verify one phase in
-production before starting the next, same as tools 1-6.
+## 5. Landing page overhaul (own workstream, runs alongside Phase 1)
+- Hero keeps today's 6 recommended tools, gets a **"View all →"** that
+  opens `/all-tools` — grid of every shipped tool, same card style, grouped
+  by category (Organize / Convert / Edit / Security / Image / Intelligence).
+- Premium command-palette search: a pill in the hero that, on click, opens
+  a full-screen overlay (backdrop blur, glass panel) with an input;
+  typing live-filters the tool list beneath it by name/keyword, arrow keys
+  + Enter to jump straight to a tool, `Esc` to close. Same visual language
+  as the macOS `ToolWindow` chrome already in place.

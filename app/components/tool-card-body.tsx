@@ -2,6 +2,7 @@
 
 import { ArrowUpRight } from "lucide-react";
 import type { ComponentType } from "react";
+import { CardFlowLine } from "./card-flow-line";
 import type { IconProps } from "./icons/icon-shell";
 
 /** Icon, status badge, title and description — the static content of a card. */
@@ -48,6 +49,8 @@ export function ToolCardBody({
         </div>
         <p className="text-[13.5px] leading-[1.6] text-[var(--text-dim)]">{description}</p>
       </div>
+
+      <CardFlowLine />
     </div>
   );
 }

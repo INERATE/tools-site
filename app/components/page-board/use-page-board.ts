@@ -2,10 +2,9 @@
 
 import { useCallback } from "react";
 import { moveItem } from "../../lib/arrange";
-import { isPdf, loadFile } from "./load-pages";
-import { duplicateSlot, removeSlot, rotateEvery, rotateSlot } from "./slot-ops";
+import { addFilesToBoard } from "./add-files";
+import { duplicateSlot, moveFileBlock, removeSlot, rotateEvery, rotateSlot } from "./slot-ops";
 import { useBoardState } from "./use-board-state";
-import { thumbKey } from "./types";
 
 /**
  * Every page of every added file, as one arrangeable list.
@@ -17,36 +16,7 @@ export function usePageBoard({ single = false }: { single?: boolean } = {}) {
   const { setSlots } = s;
 
   const addFiles = useCallback(
-    async (picked: File[]) => {
-      const pdfs = picked.filter(isPdf);
-      if (pdfs.length === 0) return s.setError(picked.length ? "Those files were not PDFs." : null);
-      if (single) s.wipe();
-      else s.setError(null);
-
-      for (const file of single ? pdfs.slice(0, 1) : pdfs) {
-        const src = s.takeSrc();
-        s.setFiles((prev) => Object.assign([...prev], { [src]: file }));
-        try {
-          await loadFile(
-            file,
-            src,
-            (fresh) => {
-              s.addPristine(fresh);
-              s.setSlots((prev) => [...prev, ...fresh]);
-              s.setPending((n) => n + fresh.length);
-            },
-            (page, thumb) => {
-              s.keepUrl(thumb.url);
-              s.setThumbs((t) => ({ ...t, [thumbKey(src, page)]: thumb }));
-              s.setPending((n) => Math.max(0, n - 1));
-            },
-          );
-        } catch {
-          s.setError(`${file.name} could not be opened — it may be encrypted or damaged.`);
-          s.setPending(0);
-        }
-      }
-    },
+    (picked: File[]) => addFilesToBoard(picked, single, s),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [single],
   );
@@ -62,6 +32,8 @@ export function usePageBoard({ single = false }: { single?: boolean } = {}) {
     total: s.pristineCount,
     addFiles,
     move: (from: number, to: number) => setSlots((v) => moveItem(v, from, to)),
+    /** Reorders whole documents (not just pages) — used by the merger's file list. */
+    moveFile: (src: number, dir: 1 | -1) => setSlots((v) => moveFileBlock(v, src, dir)),
     remove: (id: string) => setSlots((v) => removeSlot(v, id)),
     rotate: (id: string, dir: 1 | -1) => setSlots((v) => rotateSlot(v, id, dir)),
     rotateAll: (dir: 1 | -1) => setSlots((v) => rotateEvery(v, dir)),

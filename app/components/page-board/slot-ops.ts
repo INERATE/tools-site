@@ -17,3 +17,14 @@ export function duplicateSlot(slots: Slot[], id: string, newId: string) {
   if (i < 0) return slots;
   return [...slots.slice(0, i + 1), { ...slots[i], id: newId }, ...slots.slice(i + 1)];
 }
+
+/** Swaps two whole-file blocks — every slot for `src` moves as one unit, page order kept within it. */
+export function moveFileBlock(slots: Slot[], src: number, dir: 1 | -1) {
+  const order = [...new Set(slots.map((s) => s.src))];
+  const i = order.indexOf(src);
+  const j = i + dir;
+  if (i < 0 || j < 0 || j >= order.length) return slots;
+  [order[i], order[j]] = [order[j], order[i]];
+  const groups = new Map(order.map((k) => [k, slots.filter((s) => s.src === k)]));
+  return order.flatMap((k) => groups.get(k)!);
+}

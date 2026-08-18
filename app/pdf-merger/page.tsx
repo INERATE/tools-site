@@ -9,6 +9,7 @@ import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
 import { ToolWindow } from "../components/tool-window";
 import { MergeIcon } from "../components/icons/merge-icon";
+import { FileOrderList } from "../components/page-board/file-order-list";
 import { ToolBoard } from "../components/page-board/tool-board";
 import { thumbKey } from "../components/page-board/types";
 import { usePageBoard } from "../components/page-board/use-page-board";
@@ -23,6 +24,7 @@ export default function PdfMergerPage() {
   const count = board.slots.length;
   const first = board.slots[0];
   const thumb = first && board.thumbs[thumbKey(first.src, first.page)];
+  const fileOrder = [...new Set(board.slots.map((s) => s.src))];
 
   const edit = invalidateEdit(clearUrl);
 
@@ -75,6 +77,7 @@ export default function PdfMergerPage() {
                 />
               }
             />
+            <FileOrderList files={board.files} order={fileOrder} onMove={board.moveFile} />
             <ToolPipeline active={step} steps={STEPS} />
           </div>
         </div>

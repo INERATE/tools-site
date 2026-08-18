@@ -61,3 +61,7 @@ export const TOOLS = [
   ...TOOLS_CONVERT,
   ...TOOLS_MORE,
 ];
+
+/** The homepage's curated 6, ordered by real-world search volume — see PLAN.md §7. Everything else lives at /all-tools. */
+const RECOMMENDED_HREFS = ["/pdf-merger", "/pdf-split", "/compress-pdf", "/pdf-to-word", "/jpg-to-pdf", "/sign-pdf"];
+export const RECOMMENDED_TOOLS = RECOMMENDED_HREFS.map((href) => TOOLS.find((t) => t.href === href)!);

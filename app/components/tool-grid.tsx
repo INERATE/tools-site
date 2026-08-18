@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { useRef } from "react";
 import { ToolCard } from "./tool-card";
-import { TOOLS } from "./tool-list";
+import { RECOMMENDED_TOOLS, TOOLS } from "./tool-list";
 
 export function ToolGrid() {
   const containerRef = useRef<HTMLElement>(null);
@@ -25,10 +25,10 @@ export function ToolGrid() {
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-[var(--accent)] uppercase">
             <Sparkles className="size-3.5" />
-            <span>Complete Suite</span>
+            <span>Most Used</span>
           </div>
           <h2 className="text-[28px] font-extrabold tracking-tight text-[var(--text)] sm:text-[34px]">
-            Explore All Document Tools
+            Recommended Tools
           </h2>
         </div>
         <div className="flex flex-col items-center gap-3 sm:items-end">
@@ -39,14 +39,14 @@ export function ToolGrid() {
             href="/all-tools"
             className="flex items-center gap-1 text-[13px] font-semibold text-[var(--accent)] transition-transform hover:translate-x-0.5"
           >
-            View all tools
+            View all {TOOLS.length} tools
             <ArrowRight className="size-3.5" />
           </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {TOOLS.map((tool, i) => {
+        {RECOMMENDED_TOOLS.map((tool, i) => {
           const colIndex = i % 3;
           const colTransform = colIndex === 0 ? col1Y : colIndex === 1 ? col2Y : col3Y;
 

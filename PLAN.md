@@ -171,3 +171,26 @@ compliant is worse than no tool at all for the people who'd use it.
 All three scheduled once Phase 1-6 build a large-enough base that this
 harder, riskier work is worth prioritizing over another easy conversion
 tool.
+
+## 7. Priority tiers (what actually gets homepage placement)
+
+The homepage shows a **curated 6**, not all 27 — `RECOMMENDED_TOOLS` in
+`app/components/tool-list.ts`, ordered by real-world search volume, with
+everything else one click away at `/all-tools`:
+
+1. PDF Merger — "merge pdf" is the single highest-volume query in the
+   whole category
+2. PDF Splitter — "split pdf" is a close second
+3. Compress PDF — "compress pdf" — the #1 pain point once someone already
+   has a PDF (email size limits, upload limits)
+4. PDF to Word — "pdf to word" — the most-searched conversion, by a wide
+   margin over every other format pair
+5. JPG to PDF — "jpg to pdf" — the most-searched image→PDF direction
+   (receipts, scanned docs, ID photos)
+6. Sign PDF — "sign pdf" / e-signature demand, and unlike the other five
+   it's a repeat-use tool (contracts, forms), which matters for return
+   visits, not just first-click volume
+
+Everything past these six is real, useful, and fully built — just not
+first-click material. Re-rank this list, not the tool set, if traffic
+data later shows a different top 6.

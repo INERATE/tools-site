@@ -3,6 +3,9 @@ import { DocxIcon } from "./icons/docx-icon";
 import { PdfToWordIcon } from "./icons/pdf-to-word-icon";
 import { JpgToPdfIcon } from "./icons/jpg-to-pdf-icon";
 import { ResumeIcon } from "./icons/resume-icon";
+import { HtmlToPdfIcon } from "./icons/html-to-pdf-icon";
+import { PdfToPptxIcon } from "./icons/pdf-to-pptx-icon";
+import { ExcelToPdfIcon } from "./icons/excel-to-pdf-icon";
 
 /** Convert/export and studio tools — split out of tool-list.ts to stay under the file-size cap. */
 export const TOOLS_CONVERT = [
@@ -35,6 +38,30 @@ export const TOOLS_CONVERT = [
     icon: JpgToPdfIcon,
     title: "JPG to PDF",
     description: "Turn photos into one PDF — one page per image, in the order you set.",
+    category: "Convert & Export",
+    live: true,
+  },
+  {
+    href: "/excel-to-pdf",
+    icon: ExcelToPdfIcon,
+    title: "Excel to PDF",
+    description: "Reads the first sheet of an .xlsx workbook and lays it out as a PDF grid.",
+    category: "Convert & Export",
+    live: true,
+  },
+  {
+    href: "/pdf-to-powerpoint",
+    icon: PdfToPptxIcon,
+    title: "PDF to PowerPoint",
+    description: "Turns each page into a full-bleed slide image, pixel-exact.",
+    category: "Convert & Export",
+    live: true,
+  },
+  {
+    href: "/html-to-pdf",
+    icon: HtmlToPdfIcon,
+    title: "HTML to PDF",
+    description: "Paste HTML markup and convert it to a clean A4 PDF, with a preview.",
     category: "Convert & Export",
     live: true,
   },

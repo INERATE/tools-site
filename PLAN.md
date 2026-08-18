@@ -39,10 +39,16 @@ on a page; Page Numbers stamps a running number with position/style
 options; Rotate PDF is the single-file page-board already built, wrapped in
 its own dedicated page.
 
-**Phase 3 — 🟢 HTML to PDF · PDF to PowerPoint · Excel to PDF**
-HTML to PDF: paste a URL or markup, render via `<iframe>` + print-to-canvas.
-PDF to PowerPoint / Excel to PDF: office round-trips using the same
-extraction approach as DOCX↔PDF.
+**Phase 3 — 🟢 HTML to PDF · PDF to PowerPoint · Excel to PDF** *(shipped)*
+HTML to PDF: paste markup only, not a URL — checked before building, and
+fetching an arbitrary external URL from the browser hits CORS on almost
+every real site; a URL-fetch mode would need a server, breaking "nothing
+uploaded." Reuses the same block-layout pipeline as DOCX to PDF. PDF to
+PowerPoint: image-per-slide (visual-exact, text not editable after) rather
+than text/layout reconstruction — slide design is visual-first, so this is
+the more honest trade for this format. Excel to PDF: first sheet only,
+drawn as a plain grid via a new `xlsx` (SheetJS) dependency; other sheets,
+merges, colors and formulas are not reproduced.
 
 **Phase 4 — 🟡 PowerPoint to PDF · OCR PDF · Repair PDF**
 PowerPoint to PDF rounds out the office trio. OCR via tesseract.js (flag as

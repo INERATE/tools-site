@@ -7,18 +7,29 @@ import type { Rendered } from "../lib/pdf-to-image";
 const SPRING = { type: "spring", bounce: 0, duration: 0.35 } as const;
 
 /** The honest note plus a preview of every page produced. Download lives in the sticky rail. */
-export function ResultPages({ blocks, pages }: { blocks: number; pages: Rendered[] }) {
+export function ResultPages({
+  blocks,
+  unit = "block of text",
+  pages,
+  note = "This is a text conversion: images, tables, columns and the source's own fonts are not reproduced, so page breaks will not match the original exactly.",
+}: {
+  blocks: number;
+  /** Singular noun for what `blocks` counts — "row", "block of text", etc. */
+  unit?: string;
+  pages: Rendered[];
+  note?: string;
+}) {
   return (
     <>
       <div className="glass mb-4 flex items-start gap-2 rounded-2xl p-4 text-[12.5px] leading-[1.55] text-[var(--text-dim)]">
         <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" />
         <span>
           <strong className="font-semibold text-[var(--text)]">
-            {blocks} block{blocks === 1 ? "" : "s"} of text laid out over {pages.length} page
+            {blocks} {unit}
+            {blocks === 1 ? "" : "s"} laid out over {pages.length} page
             {pages.length === 1 ? "" : "s"}.
           </strong>{" "}
-          This is a text conversion: images, tables, columns and Word&rsquo;s own fonts are not
-          reproduced, so the page breaks will not match Word exactly.
+          {note}
         </span>
       </div>
 

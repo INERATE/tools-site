@@ -1,12 +1,11 @@
 import { MergeIcon } from "./icons/merge-icon";
 import { SplitIcon } from "./icons/split-icon";
 import { WatermarkIcon } from "./icons/watermark-icon";
-import { ToImageIcon } from "./icons/to-image-icon";
-import { DocxIcon } from "./icons/docx-icon";
-import { ResumeIcon } from "./icons/resume-icon";
-import { JpgToPdfIcon } from "./icons/jpg-to-pdf-icon";
+import { RotatePdfIcon } from "./icons/rotate-pdf-icon";
 import { CompressPdfIcon } from "./icons/compress-pdf-icon";
-import { PdfToWordIcon } from "./icons/pdf-to-word-icon";
+import { PageNumbersIcon } from "./icons/page-numbers-icon";
+import { SignPdfIcon } from "./icons/sign-pdf-icon";
+import { TOOLS_CONVERT } from "./tool-list-convert";
 
 export const TOOLS = [
   {
@@ -26,35 +25,35 @@ export const TOOLS = [
     live: true,
   },
   {
+    href: "/rotate-pdf",
+    icon: RotatePdfIcon,
+    title: "Rotate PDF",
+    description: "Fix sideways or upside-down pages, one at a time or all at once.",
+    category: "Organize PDF",
+    live: true,
+  },
+  {
+    href: "/sign-pdf",
+    icon: SignPdfIcon,
+    title: "Sign PDF",
+    description: "Draw your signature, drag it onto the page, and save.",
+    category: "Organize PDF",
+    live: true,
+  },
+  {
+    href: "/page-numbers",
+    icon: PageNumbersIcon,
+    title: "Page Numbers",
+    description: "Stamp a running page number onto every page, styled your way.",
+    category: "Organize PDF",
+    live: true,
+  },
+  {
     href: "/watermark-remover",
     icon: WatermarkIcon,
     title: "Watermark Remover",
     description: "Delete watermark and stamp annotations, and cover marks printed into the page.",
     category: "Clean & Polish",
-    live: true,
-  },
-  {
-    href: "/pdf-to-image",
-    icon: ToImageIcon,
-    title: "PDF to Image",
-    description: "Choose your pages, then export them as PNG or JPG at any quality.",
-    category: "Convert & Export",
-    live: true,
-  },
-  {
-    href: "/docx-to-pdf",
-    icon: DocxIcon,
-    title: "DOCX to PDF",
-    description: "Convert a Word document to a clean A4 PDF, with a preview before you download.",
-    category: "Convert & Export",
-    live: true,
-  },
-  {
-    href: "/pdf-to-word",
-    icon: PdfToWordIcon,
-    title: "PDF to Word",
-    description: "Pulls the text out of a PDF and rebuilds it as an editable .docx.",
-    category: "Convert & Export",
     live: true,
   },
   {
@@ -65,20 +64,5 @@ export const TOOLS = [
     category: "Optimize & Secure",
     live: true,
   },
-  {
-    href: "/jpg-to-pdf",
-    icon: JpgToPdfIcon,
-    title: "JPG to PDF",
-    description: "Turn photos into one PDF — one page per image, in the order you set.",
-    category: "Convert & Export",
-    live: true,
-  },
-  {
-    href: "/resume-builder",
-    icon: ResumeIcon,
-    title: "Résumé Builder",
-    description: "Fill in a form and export a clean PDF résumé — updates as you type.",
-    category: "Document Studio",
-    live: true,
-  },
+  ...TOOLS_CONVERT,
 ];

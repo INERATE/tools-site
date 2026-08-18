@@ -25,28 +25,37 @@ recompression; PDF→Word is pdf.js text/layout extraction into docx.js (ship
 with an honest "best effort on complex layouts" note, like every competitor
 does); JPG→PDF is the inverse of our PDF→Image pipeline.
 
-**Phase 2 — 🟢 Rotate PDF · Unlock PDF · Protect PDF**
-All three already sit on capabilities pdf-lib exposes; the page-board
-rotate control already exists for pages, this generalizes it to a whole-doc
-action plus a password modal (add) and password prompt (remove).
+**Phase 2 — 🟢 Rotate PDF · Page Numbers · Sign PDF** *(revised — see note)*
+Originally planned as Rotate/Unlock/Protect. Checked before building: pdf-lib
+has **no password support at all** — it cannot decrypt an encrypted PDF
+(`ignoreEncryption` just skips the content, it doesn't unlock it) and cannot
+write encryption either. Unlock/Protect PDF need a real PDF security-handler
+implementation (RC4/AES per ISO 32000) or a different dependency — a bigger,
+security-sensitive decision on its own, not a quick pdf-lib call as first
+assumed. Pulled from this phase and tracked separately (see §6) instead of
+shipped half-working. Sign PDF and Page Numbers moved up from Phase 3 to
+fill the slots: Sign PDF is draw/type/upload a signature, place and resize
+on a page; Page Numbers stamps a running number with position/style
+options; Rotate PDF is the single-file page-board already built, wrapped in
+its own dedicated page.
 
-**Phase 3 — 🟢 Sign PDF · Page Numbers · HTML to PDF**
-Sign PDF: draw/type/upload a signature, place and resize it on a page.
-Page Numbers: stamp a running number with position/style options. HTML to
-PDF: paste a URL or markup, render via `<iframe>` + print-to-canvas.
+**Phase 3 — 🟢 HTML to PDF · PDF to PowerPoint · Excel to PDF**
+HTML to PDF: paste a URL or markup, render via `<iframe>` + print-to-canvas.
+PDF to PowerPoint / Excel to PDF: office round-trips using the same
+extraction approach as DOCX↔PDF.
 
-**Phase 4 — 🟢/🟡 PDF to PowerPoint · Excel to PDF · PowerPoint to PDF**
-Office round-trips using the same extraction approach as DOCX↔PDF.
+**Phase 4 — 🟡 PowerPoint to PDF · OCR PDF · Repair PDF**
+PowerPoint to PDF rounds out the office trio. OCR via tesseract.js (flag as
+slower on-device); Repair re-serializes through pdf-lib.
 
-**Phase 5 — 🟡 OCR PDF · Repair PDF · Crop PDF**
-OCR via tesseract.js (flag as slower on-device); Repair re-serializes
-through pdf-lib; Crop reuses the page-board rotate/duplicate pattern for a
-new "crop box" op.
-
-**Phase 6 — 🟡 Compare PDF · Redact PDF · PDF Forms**
+**Phase 5 — 🟡 Crop PDF · Compare PDF · Redact PDF**
+Crop reuses the page-board rotate/duplicate pattern for a new "crop box" op.
 Compare: text-extract both docs, diff, side-by-side highlight. Redact: real
 redaction — strip the underlying text run, not just paint a box over it.
-Forms: fill + flatten AcroForm fields pdf-lib already parses.
+
+**Phase 6 — 🟢 PDF Forms · PDF to Markdown · Markdown to PDF**
+Forms: fill + flatten AcroForm fields pdf-lib already parses. Markdown
+round-trip rounds out conversions and is a nice organic-search/OSS magnet.
 
 **Phase 7 — 🟢 Compress Image · Resize Image · Convert Image**
 New `image-board` sibling to `page-board`. Canvas-based, no new heavy deps.
@@ -57,19 +66,16 @@ Crop/Watermark reuse Phase 7's image-board. Remove Background needs
 onnxruntime-web + a small segmentation model — flag as the heaviest tool
 in the suite, lazy-loaded so it doesn't tax every other page's bundle.
 
-**Phase 9 — 🟢 PDF to Markdown · Markdown to PDF · PDF to PDF/A**
-Rounds out conversions; PDF→Markdown is a nice organic-search/OSS magnet.
-
-**Phase 10 — 🔴 AI Summarizer · Translate PDF · Smart PDF Forms**
+**Phase 9 — 🔴 AI Summarizer · Translate PDF · Smart PDF Forms**
 The one phase that calls a server (Cloudflare Worker + LLM key) — own trust
 copy explaining exactly what leaves the device (extracted text only, never
 the file), gated behind the Pro flag from day one. This is the actual
 revenue page, not a bonus.
 
-Beyond Phase 10: format-pair landing-page multiplication (`/word-to-pdf`,
+Beyond Phase 9: format-pair landing-page multiplication (`/word-to-pdf`,
 `/pdf-to-word`, …) templated off the engines above — this is how the nav
 count grows from ~35 real engines toward the 150-200 iLovePDF/CloudConvert
-show, without new logic. Templating task, scheduled after Phase 9.
+show, without new logic. Templating task, scheduled after Phase 8.
 
 ## 4. Design bar for every tool (non-negotiable, not just phase 1)
 - Liquid-glass premium surfaces — matches the existing `ToolWindow` macOS
@@ -95,3 +101,12 @@ show, without new logic. Templating task, scheduled after Phase 9.
   typing live-filters the tool list beneath it by name/keyword, arrow keys
   + Enter to jump straight to a tool, `Esc` to close. Same visual language
   as the macOS `ToolWindow` chrome already in place.
+
+## 6. Deferred, not dropped: Unlock PDF · Protect PDF
+Needs a decision, not just a build slot: either (a) implement the PDF
+standard security handler (RC4-40/128, AES-128/256, per ISO 32000-1 §7.6)
+by hand on top of pdf-lib's low-level object access, which is real
+cryptography code that has to be right, or (b) pull in a library that
+already does it (evaluate size/maintenance before adding). Scheduled once
+Phase 1-6 build a large-enough base that the harder security work is worth
+prioritizing over another easy conversion tool.

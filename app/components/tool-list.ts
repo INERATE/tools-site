@@ -2,10 +2,10 @@ import { MergeIcon } from "./icons/merge-icon";
 import { SplitIcon } from "./icons/split-icon";
 import { WatermarkIcon } from "./icons/watermark-icon";
 import { RotatePdfIcon } from "./icons/rotate-pdf-icon";
-import { CompressPdfIcon } from "./icons/compress-pdf-icon";
 import { PageNumbersIcon } from "./icons/page-numbers-icon";
 import { SignPdfIcon } from "./icons/sign-pdf-icon";
 import { TOOLS_CONVERT } from "./tool-list-convert";
+import { TOOLS_OPTIMIZE } from "./tool-list-optimize";
 
 export const TOOLS = [
   {
@@ -56,13 +56,6 @@ export const TOOLS = [
     category: "Clean & Polish",
     live: true,
   },
-  {
-    href: "/compress-pdf",
-    icon: CompressPdfIcon,
-    title: "Compress PDF",
-    description: "Shrink a scanned or image-heavy PDF by re-encoding its pages.",
-    category: "Optimize & Secure",
-    live: true,
-  },
+  ...TOOLS_OPTIMIZE,
   ...TOOLS_CONVERT,
 ];

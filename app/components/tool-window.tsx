@@ -9,7 +9,16 @@ import type { ReactNode } from "react";
  * `#demo-stage` mockup on the landing page, so a tool page doesn't read like
  * a plain form after the premium hero.
  */
-export function ToolWindow({ path, children }: { path: string; children: ReactNode }) {
+export function ToolWindow({
+  path,
+  children,
+  badge = "No network",
+}: {
+  path: string;
+  children: ReactNode;
+  /** Override for tools that are an honest exception — e.g. OCR fetches a recognition model on first use. */
+  badge?: string;
+}) {
   return (
     <div className="overflow-hidden rounded-[22px] border border-[var(--border)] bg-[var(--bg-raised)]/92 shadow-[0_30px_80px_-24px_rgba(0,0,0,0.22),0_16px_38px_-12px_var(--glow),inset_0_1.5px_1px_var(--glass-hi)] backdrop-blur-[36px]">
       <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3 sm:px-5">
@@ -23,9 +32,15 @@ export function ToolWindow({ path, children }: { path: string; children: ReactNo
             <span className="sm:hidden">{path}</span>
           </div>
         </div>
-        <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-emerald-400">
-          <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" />
-          No network
+        <span
+          className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold ${
+            badge === "No network"
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : "border-amber-500/30 bg-amber-500/10 text-amber-500"
+          }`}
+        >
+          <span className={`size-1.5 animate-pulse rounded-full ${badge === "No network" ? "bg-emerald-400" : "bg-amber-500"}`} />
+          {badge}
         </span>
       </div>
       <div className="p-5 sm:p-7">{children}</div>

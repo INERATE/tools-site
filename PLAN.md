@@ -50,18 +50,26 @@ the more honest trade for this format. Excel to PDF: first sheet only,
 drawn as a plain grid via a new `xlsx` (SheetJS) dependency; other sheets,
 merges, colors and formulas are not reproduced.
 
-**Phase 4 — 🟡 PowerPoint to PDF · OCR PDF · Repair PDF**
-PowerPoint to PDF rounds out the office trio. OCR via tesseract.js (flag as
-slower on-device); Repair re-serializes through pdf-lib.
+**Phase 4 — 🟡 OCR PDF · Repair PDF · Crop PDF** *(revised — see note)*
+Originally planned to include PowerPoint to PDF. Checked before building:
+pptxgenjs (added in Phase 3) is **write-only** — it can build a .pptx but
+cannot read/parse one. Reading a real .pptx means unzipping its slide XML
+and rendering arbitrary shapes/text/images ourselves; there is no
+lightweight, battle-tested client-side library for that the way mammoth
+covers .docx and SheetJS covers .xlsx. That is a slide-renderer-sized
+project, not a phase slot — moved to §6 pending a real build-vs-buy call,
+same as Unlock/Protect PDF. Crop PDF pulled forward from Phase 5 to fill
+the slot: reuses the page-board's rotate/duplicate pattern for a new "crop
+box" op. OCR via tesseract.js (flag as slower on-device); Repair
+re-serializes through pdf-lib.
 
-**Phase 5 — 🟡 Crop PDF · Compare PDF · Redact PDF**
-Crop reuses the page-board rotate/duplicate pattern for a new "crop box" op.
+**Phase 5 — 🟡 Compare PDF · Redact PDF · PDF Forms**
 Compare: text-extract both docs, diff, side-by-side highlight. Redact: real
 redaction — strip the underlying text run, not just paint a box over it.
+Forms: fill + flatten AcroForm fields pdf-lib already parses.
 
-**Phase 6 — 🟢 PDF Forms · PDF to Markdown · Markdown to PDF**
-Forms: fill + flatten AcroForm fields pdf-lib already parses. Markdown
-round-trip rounds out conversions and is a nice organic-search/OSS magnet.
+**Phase 6 — 🟢 PDF to Markdown · Markdown to PDF · PDF to PDF/A**
+Rounds out conversions; PDF→Markdown is a nice organic-search/OSS magnet.
 
 **Phase 7 — 🟢 Compress Image · Resize Image · Convert Image**
 New `image-board` sibling to `page-board`. Canvas-based, no new heavy deps.
@@ -108,11 +116,21 @@ show, without new logic. Templating task, scheduled after Phase 8.
   + Enter to jump straight to a tool, `Esc` to close. Same visual language
   as the macOS `ToolWindow` chrome already in place.
 
-## 6. Deferred, not dropped: Unlock PDF · Protect PDF
-Needs a decision, not just a build slot: either (a) implement the PDF
-standard security handler (RC4-40/128, AES-128/256, per ISO 32000-1 §7.6)
-by hand on top of pdf-lib's low-level object access, which is real
-cryptography code that has to be right, or (b) pull in a library that
-already does it (evaluate size/maintenance before adding). Scheduled once
-Phase 1-6 build a large-enough base that the harder security work is worth
-prioritizing over another easy conversion tool.
+## 6. Deferred, not dropped
+
+**Unlock PDF · Protect PDF** — needs a decision, not just a build slot:
+either (a) implement the PDF standard security handler (RC4-40/128,
+AES-128/256, per ISO 32000-1 §7.6) by hand on top of pdf-lib's low-level
+object access, which is real cryptography code that has to be right, or
+(b) pull in a library that already does it (evaluate size/maintenance
+before adding).
+
+**PowerPoint to PDF** — needs a real .pptx reader/renderer, not just a
+build slot: pptxgenjs (Phase 3) only writes .pptx files, and there's no
+equivalent of mammoth/SheetJS for reading one back — a slide has arbitrary
+positioned shapes, text boxes and images in its own XML dialect, closer to
+a small layout engine than a text extractor. Evaluate existing parser
+libraries for size/completeness before committing to build one by hand.
+
+Both scheduled once Phase 1-6 build a large-enough base that this harder,
+riskier work is worth prioritizing over another easy conversion tool.

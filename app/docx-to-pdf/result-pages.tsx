@@ -10,12 +10,15 @@ const SPRING = { type: "spring", bounce: 0, duration: 0.35 } as const;
 export function ResultPages({
   blocks,
   unit = "block of text",
+  unitPlural = unit === "block of text" ? "blocks of text" : `${unit}s`,
   pages,
   note = "This is a text conversion: images, tables, columns and the source's own fonts are not reproduced, so page breaks will not match the original exactly.",
 }: {
   blocks: number;
   /** Singular noun for what `blocks` counts — "row", "block of text", etc. */
   unit?: string;
+  /** Irregular plural, if `unit + "s"` isn't right — regular nouns default to that. */
+  unitPlural?: string;
   pages: Rendered[];
   note?: string;
 }) {
@@ -25,8 +28,7 @@ export function ResultPages({
         <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" />
         <span>
           <strong className="font-semibold text-[var(--text)]">
-            {blocks} {unit}
-            {blocks === 1 ? "" : "s"} laid out over {pages.length} page
+            {blocks} {blocks === 1 ? unit : unitPlural} laid out over {pages.length} page
             {pages.length === 1 ? "" : "s"}.
           </strong>{" "}
           {note}

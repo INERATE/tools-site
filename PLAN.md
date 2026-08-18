@@ -63,13 +63,30 @@ the slot: reuses the page-board's rotate/duplicate pattern for a new "crop
 box" op. OCR via tesseract.js (flag as slower on-device); Repair
 re-serializes through pdf-lib.
 
-**Phase 5 — 🟡 Compare PDF · Redact PDF · PDF Forms**
-Compare: text-extract both docs, diff, side-by-side highlight. Redact: real
-redaction — strip the underlying text run, not just paint a box over it.
-Forms: fill + flatten AcroForm fields pdf-lib already parses.
+**Phase 5 — 🟡 Compare PDF · Redact PDF · PDF Forms** *(shipped)*
+Compare: hand-written LCS line-diff (no new dependency) between two PDFs'
+extracted text, downloadable as a report. Redact: pages with a box are
+rasterized with the box burned into the pixels before encoding — no
+underlying text object survives, verified by round-tripping the output
+through PDF to Word. Forms: real AcroForm fields (text/checkbox/radio/
+dropdown) via pdf-lib, fill + flatten by default.
 
-**Phase 6 — 🟢 PDF to Markdown · Markdown to PDF · PDF to PDF/A**
-Rounds out conversions; PDF→Markdown is a nice organic-search/OSS magnet.
+**Phase 6 — 🟢 PDF to Markdown · Markdown to PDF · Extract Images from PDF**
+*(revised — see note)* Originally planned to include PDF to PDF/A. Checked
+before building: real PDF/A compliance needs an embedded ICC profile, an
+OutputIntent dictionary, full PDF/A-flavored XMP metadata, and a guarantee
+every font is embedded — pdf-lib has none of that built in, and faking a
+"PDF/A" label without real compliance is worse than not shipping it (a
+validator like veraPDF would reject it, and a user relying on the label
+for archival/legal purposes would be misled). Moved to §6. Extract Images
+pulled forward instead: walks each page's XObject resources for embedded
+JPEG (DCTDecode) streams and bundles them as a .zip via a ~40-line
+store-only ZIP writer — no new dependency for that either. PDF to
+Markdown guesses headings from font-size ratios (pdf.js exposes per-glyph
+height); Markdown to PDF reuses the block-layout pipeline HTML/DOCX to
+PDF already share, via a small hand-rolled markdown reader (headings,
+lists, paragraphs only — the same block kinds the renderer supports, so a
+full markdown-parser dependency would parse things it could never draw).
 
 **Phase 7 — 🟢 Compress Image · Resize Image · Convert Image**
 New `image-board` sibling to `page-board`. Canvas-based, no new heavy deps.
@@ -132,5 +149,12 @@ positioned shapes, text boxes and images in its own XML dialect, closer to
 a small layout engine than a text extractor. Evaluate existing parser
 libraries for size/completeness before committing to build one by hand.
 
-Both scheduled once Phase 1-6 build a large-enough base that this harder,
-riskier work is worth prioritizing over another easy conversion tool.
+**PDF to PDF/A** — needs real archival-format compliance, not a label
+change: an embedded ICC color profile, an OutputIntent dictionary,
+PDF/A-flavored XMP metadata, and a guarantee every font in the document is
+embedded. pdf-lib has none of this built in. A "PDF/A" that isn't actually
+compliant is worse than no tool at all for the people who'd use it.
+
+All three scheduled once Phase 1-6 build a large-enough base that this
+harder, riskier work is worth prioritizing over another easy conversion
+tool.

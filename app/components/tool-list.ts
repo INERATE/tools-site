@@ -6,6 +6,7 @@ import { PageNumbersIcon } from "./icons/page-numbers-icon";
 import { SignPdfIcon } from "./icons/sign-pdf-icon";
 import { TOOLS_CONVERT } from "./tool-list-convert";
 import { TOOLS_OPTIMIZE } from "./tool-list-optimize";
+import { TOOLS_MORE } from "./tool-list-more";
 
 export const TOOLS = [
   {
@@ -58,4 +59,5 @@ export const TOOLS = [
   },
   ...TOOLS_OPTIMIZE,
   ...TOOLS_CONVERT,
+  ...TOOLS_MORE,
 ];

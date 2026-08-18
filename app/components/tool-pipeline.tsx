@@ -24,7 +24,7 @@ export function ToolPipeline({ active, steps }: { active: number; steps: Pipelin
     <div className="flex flex-col gap-5">
       <div className="glass rounded-2xl p-4">
         <p className="mb-3 text-[11px] font-semibold tracking-[0.12em] text-[var(--text-dim)] uppercase">How it works</p>
-        <PipelineReel from={steps[0].icon} to={steps[steps.length - 1].icon} />
+        <PipelineReel steps={steps} />
         <ol className="flex flex-col gap-3">
           {steps.map((s, i) => {
             const done = i < active;

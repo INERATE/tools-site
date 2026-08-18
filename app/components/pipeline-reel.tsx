@@ -1,52 +1,50 @@
 "use client";
 
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import type { ComponentType } from "react";
+import { useCycle } from "../lib/use-cycle";
+
+type Step = { icon: ComponentType<{ className?: string }>; label: string };
 
 /**
- * The looped "how it works" strip every tool's pipeline card leads with —
- * an input icon and an output icon joined by a flowing dashed line, with a
- * glowing pulse riding the line on an infinite loop. Pure SVG + Framer
- * Motion, no video file: nothing here is ever a downloadable asset, it is
- * shapes animating through keyframes, forever, like Apple's own looping
- * product diagrams.
+ * A looping "how it works" storyboard, unique per tool: cycles through that
+ * tool's own steps — its own icons, its own labels — one frame at a time,
+ * forever, like a silent looping product demo. Pure SVG + Framer Motion, so
+ * there is no video file anywhere: nothing here can be "downloaded" as a
+ * clip, only shapes and text crossfading through keyframes.
  */
-export function PipelineReel({
-  from: From,
-  to: To,
-}: {
-  from: ComponentType<{ className?: string }>;
-  to: ComponentType<{ className?: string }>;
-}) {
+export function PipelineReel({ steps }: { steps: Step[] }) {
+  const frame = useCycle(steps.length, 1500);
+  const current = steps[frame];
+
   return (
-    <div className="glass mb-3 flex h-16 items-center justify-between overflow-hidden rounded-xl px-4">
-      <motion.div
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-        className="grid size-8 shrink-0 place-items-center rounded-full border border-[var(--border)] bg-[var(--accent)]/10 text-[var(--accent)]"
-      >
-        <From className="size-4" />
-      </motion.div>
+    <div className="glass mb-3 flex flex-col items-center gap-2.5 overflow-hidden rounded-xl px-4 py-4">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={frame}
+          initial={{ opacity: 0, y: 6, scale: 0.94 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -6, scale: 0.94 }}
+          transition={{ type: "spring", bounce: 0, duration: 0.35 }}
+          className="flex flex-col items-center gap-2"
+        >
+          <span className="grid size-10 place-items-center rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/12 text-[var(--accent)]">
+            <current.icon className="size-5" />
+          </span>
+          <span className="text-[11.5px] font-semibold text-[var(--text)]">{current.label}</span>
+        </motion.div>
+      </AnimatePresence>
 
-      <svg viewBox="0 0 100 12" className="mx-2 h-3 w-full" preserveAspectRatio="none">
-        <line x1="2" y1="6" x2="98" y2="6" stroke="var(--border)" strokeWidth="1.5" strokeDasharray="3 3" />
-        <motion.circle
-          r="2.2"
-          cy="6"
-          fill="var(--accent)"
-          initial={{ cx: 2, opacity: 0 }}
-          animate={{ cx: [2, 98], opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "linear", times: [0, 0.15, 0.85, 1] }}
-        />
-      </svg>
-
-      <motion.div
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
-        className="grid size-8 shrink-0 place-items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-      >
-        <To className="size-4" />
-      </motion.div>
+      <div className="flex items-center gap-1.5">
+        {steps.map((s, i) => (
+          <motion.span
+            key={s.label}
+            animate={{ scale: i === frame ? 1.3 : 1, opacity: i === frame ? 1 : 0.35 }}
+            transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+            className="size-1.5 rounded-full bg-[var(--accent)]"
+          />
+        ))}
+      </div>
     </div>
   );
 }

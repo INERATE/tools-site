@@ -4,6 +4,7 @@ import { WatermarkIcon } from "./icons/watermark-icon";
 import { ToImageIcon } from "./icons/to-image-icon";
 import { DocxIcon } from "./icons/docx-icon";
 import { ResumeIcon } from "./icons/resume-icon";
+import { JpgToPdfIcon } from "./icons/jpg-to-pdf-icon";
 
 export const TOOLS = [
   {
@@ -43,6 +44,14 @@ export const TOOLS = [
     icon: DocxIcon,
     title: "DOCX to PDF",
     description: "Convert a Word document to a clean A4 PDF, with a preview before you download.",
+    category: "Convert & Export",
+    live: true,
+  },
+  {
+    href: "/jpg-to-pdf",
+    icon: JpgToPdfIcon,
+    title: "JPG to PDF",
+    description: "Turn photos into one PDF — one page per image, in the order you set.",
     category: "Convert & Export",
     live: true,
   },

@@ -6,7 +6,9 @@ import { Tile } from "./tile";
 import { useSortable } from "./use-sortable";
 import { thumbKey, type Slot, type Thumb } from "./types";
 
-const GRID = "grid gap-3.5 [grid-template-columns:repeat(auto-fill,minmax(116px,1fr))] sm:gap-4 sm:[grid-template-columns:repeat(auto-fill,minmax(146px,1fr))]";
+/** Shared with other boards (e.g. jpg-to-pdf's image grid) so tile sizing stays consistent across tools. */
+export const GRID =
+  "grid gap-3.5 [grid-template-columns:repeat(auto-fill,minmax(116px,1fr))] sm:gap-4 sm:[grid-template-columns:repeat(auto-fill,minmax(146px,1fr))]";
 
 export function PageBoard({
   files,

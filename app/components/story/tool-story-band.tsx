@@ -6,6 +6,8 @@ import { motion } from "motion/react";
 import type { ComponentType } from "react";
 import type { IconProps } from "../icons/icon-shell";
 import { useAutoPulse } from "../../lib/use-auto-pulse";
+import { FrameLoop } from "./frame-loop";
+import { STORY_CLIPS } from "./story-clips";
 
 type Tool = { href: string; icon: ComponentType<IconProps>; title: string; description: string; category: string };
 
@@ -14,6 +16,7 @@ export function ToolStoryBand({ tool, index }: { tool: Tool; index: number }) {
   const Icon = tool.icon;
   const fromLeft = index % 2 === 0;
   const pulse = useAutoPulse(1600, 2200, index * 350);
+  const clip = STORY_CLIPS[tool.href];
 
   return (
     <motion.div
@@ -25,9 +28,13 @@ export function ToolStoryBand({ tool, index }: { tool: Tool; index: number }) {
         fromLeft ? "md:flex-row" : "md:flex-row-reverse"
       }`}
     >
-      <span className="clay-icon grid size-28 shrink-0 place-items-center text-[var(--accent)] md:size-36">
-        <Icon active={pulse} size={64} />
-      </span>
+      {clip ? (
+        <FrameLoop {...clip} className="w-full max-w-[22rem] shrink-0 md:max-w-[26rem]" />
+      ) : (
+        <span className="clay-icon grid size-28 shrink-0 place-items-center text-[var(--accent)] md:size-36">
+          <Icon active={pulse} size={64} />
+        </span>
+      )}
       <div className={`flex flex-col items-center gap-3 text-center ${fromLeft ? "md:items-start md:text-left" : "md:items-end md:text-right"}`}>
         <span className="text-[11px] font-bold tracking-[0.14em] text-[var(--text-dim)] uppercase">
           {String(index + 1).padStart(2, "0")} · {tool.category}

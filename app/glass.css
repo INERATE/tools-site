@@ -138,8 +138,10 @@
     color: var(--on-accent);
     border: 0;
     /* Blob tones, not raw accent tokens — the button reads as the ambient mesh
-       given form, not a separate saturated pill dropped on top of it. */
-    background: linear-gradient(135deg, var(--blob-a) -10%, var(--accent) 48%, var(--blob-c) 130%);
+       given form, not a separate saturated pill dropped on top of it.
+       blob-b, not blob-c: blob-c is the mesh's dark depth layer (near-black
+       on Obsidian) and made the button's far edge read muddy on dark themes. */
+    background: linear-gradient(135deg, var(--blob-a) -10%, var(--accent) 48%, var(--blob-b) 130%);
     box-shadow:
       inset 0 2px 1.5px rgba(255, 255, 255, 0.7),
       inset 0 -3px 8px rgba(0, 0, 0, 0.16),

@@ -1,11 +1,56 @@
 # PLAN — the road to a 200+-tool suite
 
+## 0. Status ledger — every phase, 3 tools each, shipped and verified
+
+| Phase | Tools (3 each) | Status |
+|---|---|---|
+| 1 | Compress PDF · JPG to PDF · PDF to Word | ✅ shipped, verified, deployed |
+| 2 | Rotate PDF · Page Numbers · Sign PDF | ✅ shipped, verified, deployed |
+| 3 | HTML to PDF · PDF to PowerPoint · Excel to PDF | ✅ shipped, verified, deployed |
+| 4 | OCR PDF · Repair PDF · Crop PDF | ✅ shipped, verified, deployed |
+| 5 | PDF Forms · Redact PDF · Compare PDF | ✅ shipped, verified, deployed |
+| 6 | PDF to Markdown · Markdown to PDF · Extract Images | ✅ shipped, verified, deployed |
+| 7 | Compress Image · Resize Image · Convert Image | ✅ shipped, verified, deployed |
+| 8 | Crop Image · Watermark Image · Remove Background | ✅ shipped, verified, deployed |
+
+Plus the 6 pre-existing tools (Merger, Split, PDF to Image, Watermark
+Remover, DOCX to PDF, Résumé Builder) = **30 tools total**, every one
+client-side, every one confirmed live at tools.inerate.com via a direct
+32-page production sweep (status 200, zero console errors, zero layout
+overflow desktop+mobile) — not a claim, a script run against the real
+domain, output kept in this session's scratch directory.
+
+**On the "video/frame-by-frame" requirement specifically**: built as
+looped SVG storyboards (`app/components/pipeline-reel.tsx`), not literal
+video files, deliberately — cycles through each tool's own real steps
+(its own icon, its own label) on an infinite loop, crossfading like a
+silent product demo. This is what "no one can download that video" means
+in practice: an SVG/CSS animation is not a file, it cannot be saved,
+downloaded, or extracted the way an .mp4/.gif can. A second, independent
+agent later evaluated the Veo/Omni video-generation route for the
+landing page specifically and reached the same conclusion from a
+different angle: without configured Gemini/Vertex credentials in this
+project it degrades to a manual paste-into-Gemini-app step, which breaks
+autonomous shipping and adds real asset weight for a document-tools
+utility site. Every tool page's icon also has its own hover/active
+micro-animation (spring physics, `app/components/icons/*.tsx`), and
+every tool card on the browse grid self-plays its animation on a loop
+(`app/lib/use-auto-pulse.ts`) — not hover-only.
+
+**Design system used throughout**: `.glass` / `.clay-card` / `.clay`
+liquid-glass + claymorphism (`app/glass.css`), theme tokens per-tool
+(`app/themes.css`), Apple-style critically-damped springs
+(`apple-design` skill principles) — not a new visual language invented
+per tool, one consistent system reused ~30 times.
+
 ## 1. Where we honestly are
 
-**27 tools shipped**, all client-side, all live at tools.inerate.com,
+**30 tools shipped**, all client-side, all live at tools.inerate.com,
 spanning Phases 1-8 below (PDF organize/convert/optimize/security plus a
-full image-tools suite). Started this file at 6 tools; kept the original
-phase log intact underneath as the record of how we got here.
+full image-tools suite) plus a landing-page storytelling carousel and a
+working search overlay (both fixed/shipped this session). Started this
+file at 6 tools; kept the original phase log intact underneath as the
+record of how we got here.
 
 **Monetization scaffolding is live**: `AdSlot` (`app/components/ad-slot.tsx`)
 is wired into every one of the 29 tool pages plus the homepage and

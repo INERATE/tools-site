@@ -7,8 +7,14 @@ import { useRef, type ComponentType } from "react";
 import type { IconProps } from "../icons/icon-shell";
 import { useAutoPulse } from "../../lib/use-auto-pulse";
 import { useTilt } from "../../lib/use-tilt";
-import { FrameLoop } from "./frame-loop";
-import { STORY_CLIPS } from "./story-clips";
+import {
+  MergerShowcase,
+  SplitterShowcase,
+  CompressShowcase,
+  PdfToWordShowcase,
+  JpgToPdfShowcase,
+  SignPdfShowcase,
+} from "./tool-showcases";
 
 type Tool = { href: string; icon: ComponentType<IconProps>; title: string; description: string; category: string };
 
@@ -21,15 +27,37 @@ const TOOL_HIGHLIGHTS: Record<string, string[]> = {
   "/sign-pdf": ["Vector Signature", "Drag & Position", "Client-Side Stamp"],
 };
 
+function renderShowcase(href: string, Icon: ComponentType<IconProps>, pulse: boolean) {
+  switch (href) {
+    case "/pdf-merger":
+      return <MergerShowcase />;
+    case "/pdf-split":
+      return <SplitterShowcase />;
+    case "/compress-pdf":
+      return <CompressShowcase />;
+    case "/pdf-to-word":
+      return <PdfToWordShowcase />;
+    case "/jpg-to-pdf":
+      return <JpgToPdfShowcase />;
+    case "/sign-pdf":
+      return <SignPdfShowcase />;
+    default:
+      return (
+        <span className="clay-icon grid size-28 shrink-0 place-items-center text-[var(--accent)] md:size-36">
+          <Icon active={pulse} size={64} />
+        </span>
+      );
+  }
+}
+
 /**
  * Full-width story band per recommended tool with scroll-linked parallax,
- * interactive 3D pointer-tilt, dynamic specular glare, and luminous glass framing.
+ * interactive 3D pointer-tilt, dynamic specular glare, and theme-native interactive showcases.
  */
 export function ToolStoryBand({ tool, index }: { tool: Tool; index: number }) {
   const Icon = tool.icon;
   const fromLeft = index % 2 === 0;
   const pulse = useAutoPulse(1600, 2200, index * 350);
-  const clip = STORY_CLIPS[tool.href];
   const tags = TOOL_HIGHLIGHTS[tool.href] || ["100% Private", "Zero Latency", "Instant"];
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -78,37 +106,18 @@ export function ToolStoryBand({ tool, index }: { tool: Tool; index: number }) {
         style={{ y: frameY, rotateZ: frameRotate }}
         className="relative flex w-full max-w-[22rem] shrink-0 items-center justify-center sm:max-w-[24rem] md:max-w-[27rem]"
       >
-        {/* Glass stage pedestal */}
-        <div className="glass relative flex w-full flex-col items-center justify-center overflow-hidden rounded-3xl border border-[var(--border)] p-5 sm:p-7 shadow-2xl backdrop-blur-2xl">
-          {/* Subtle ambient light aura inside stage */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -inset-10 z-0 opacity-40 blur-3xl transition-opacity duration-500 group-hover:opacity-75"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, var(--glow) 0%, rgba(217,70,239,0.15) 45%, transparent 70%)",
-            }}
-          />
+        {renderShowcase(tool.href, Icon, pulse)}
 
-          {clip ? (
-            <FrameLoop {...clip} className="w-full" />
-          ) : (
-            <span className="clay-icon grid size-28 shrink-0 place-items-center text-[var(--accent)] md:size-36">
-              <Icon active={pulse} size={64} />
-            </span>
-          )}
-
-          {/* Floating glass feature chip overlay */}
-          <motion.div
-            style={{ y: badgeY1 }}
-            className={`glass pointer-events-none absolute top-3 flex items-center gap-1.5 rounded-full px-3 py-1 text-[10.5px] font-semibold text-[var(--text-dim)] shadow-lg backdrop-blur-xl ${
-              fromLeft ? "right-3" : "left-3"
-            }`}
-          >
-            <Sparkles className="size-3 text-[var(--accent)]" />
-            <span>{tags[0]}</span>
-          </motion.div>
-        </div>
+        {/* Floating glass feature chip overlay */}
+        <motion.div
+          style={{ y: badgeY1 }}
+          className={`glass pointer-events-none absolute -top-3 z-30 hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1 text-[10.5px] font-semibold text-[var(--text-dim)] shadow-xl backdrop-blur-xl ${
+            fromLeft ? "right-2" : "left-2"
+          }`}
+        >
+          <Sparkles className="size-3 text-[var(--accent)]" />
+          <span>{tags[0]}</span>
+        </motion.div>
       </motion.div>
 
       {/* Text & action column with subtle counter-parallax */}

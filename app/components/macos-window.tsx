@@ -29,7 +29,7 @@ export function MacOSWindow() {
   };
 
   return (
-    <div id="demo-stage" className="mx-auto mt-12 w-full max-w-5xl">
+    <div id="demo-stage" className="mx-auto mt-12 w-full max-w-5xl scroll-mt-28">
       <motion.div
         onPointerMove={tilt.move}
         onPointerEnter={tilt.enter}

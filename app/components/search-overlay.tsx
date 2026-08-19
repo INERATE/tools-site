@@ -43,7 +43,7 @@ export function SearchOverlay() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-start justify-center bg-black/40 px-4 pt-[10vh] backdrop-blur-md"
+          className="fixed inset-0 z-[100] flex items-start justify-center bg-black/50 px-3 pt-6 sm:px-4 sm:pt-[10vh] backdrop-blur-md"
           onClick={close}
         >
           <motion.div
@@ -52,12 +52,16 @@ export function SearchOverlay() {
             exit={{ opacity: 0, y: -12, scale: 0.98 }}
             transition={{ type: "spring", bounce: 0, duration: 0.32 }}
             onClick={(e) => e.stopPropagation()}
-            className="glass flex max-h-[78vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl"
+            className="glass flex max-h-[85vh] sm:max-h-[78vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl shadow-2xl"
           >
-            <div className="flex shrink-0 items-center gap-2.5 border-b border-[var(--border)] px-4 py-3">
+            <div className="flex shrink-0 items-center gap-2.5 border-b border-[var(--border)] px-4 py-3 sm:py-3.5">
               <Search className="size-4 shrink-0 text-[var(--text-dim)]" />
               <input
                 ref={inputRef}
+                type="search"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck="false"
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
@@ -68,10 +72,15 @@ export function SearchOverlay() {
                   if (e.key === "ArrowUp") setActive((i) => Math.max(i - 1, 0));
                 }}
                 placeholder="Search every tool…"
-                className="w-full bg-transparent text-[14.5px] text-[var(--text)] outline-none placeholder:text-[var(--text-dim)]"
+                className="w-full bg-transparent text-[15px] sm:text-[14.5px] text-[var(--text)] outline-none placeholder:text-[var(--text-dim)]"
               />
-              <button type="button" onClick={close} aria-label="Close">
-                <X className="size-4 text-[var(--text-dim)]" />
+              <button
+                type="button"
+                onClick={close}
+                aria-label="Close"
+                className="grid size-8 place-items-center rounded-full text-[var(--text-dim)] transition-colors hover:bg-[var(--glass-hi)] hover:text-[var(--text)]"
+              >
+                <X className="size-4" />
               </button>
             </div>
 

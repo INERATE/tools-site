@@ -14,8 +14,8 @@ export function Dock() {
   const [searchHot, setSearchHot] = useState(false);
 
   return (
-    <div className="fixed inset-x-0 bottom-5 z-40 flex justify-center px-4">
-      <div className="nav-glass flex items-center gap-1.5 p-1.5 sm:gap-2 sm:px-2 sm:py-1.5">
+    <div className="fixed inset-x-0 bottom-4 z-40 flex justify-center px-3 sm:bottom-5 sm:px-4 pb-[env(safe-area-inset-bottom,0px)]">
+      <div className="nav-glass flex items-center gap-1.5 p-1.5 sm:gap-2 sm:px-2.5 sm:py-1.5">
         <motion.button
           type="button"
           onClick={openSearch}
@@ -26,7 +26,7 @@ export function Dock() {
           transition={LIFT}
           aria-label="Search tools (⌘K)"
           title="Search tools (⌘K)"
-          className="group flex h-10 w-44 sm:w-64 md:w-80 items-center gap-2.5 rounded-full px-3 text-left transition-all hover:bg-[var(--glass-hi)]/40"
+          className="group flex h-10 w-52 sm:w-64 md:w-80 items-center gap-2.5 rounded-full px-3.5 text-left transition-all hover:bg-[var(--glass-hi)]/40"
         >
           <DockSearchIcon
             active={searchHot}

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { SmoothScroll } from "./components/smooth-scroll";
 import { SearchProvider } from "./components/search-context";
@@ -12,10 +12,26 @@ const SITE_TITLE = "Inerate Tools — Free PDF, Image & Document Utilities";
 const SITE_DESCRIPTION =
   "Merge, split, compress and convert PDFs, edit images, build resumes and more — 40+ free browser-based tools. Nothing is ever uploaded; every file stays on your device.";
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafaf8" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0a14" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: SITE_TITLE, template: "%s | Inerate Tools" },
   description: SITE_DESCRIPTION,
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Inerate Tools",
+  },
   keywords: [
     "free pdf tools",
     "merge pdf online",

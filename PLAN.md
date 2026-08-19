@@ -12,9 +12,10 @@
 | 6 | PDF to Markdown · Markdown to PDF · Extract Images | ✅ shipped, verified, deployed |
 | 7 | Compress Image · Resize Image · Convert Image | ✅ shipped, verified, deployed |
 | 8 | Crop Image · Watermark Image · Remove Background | ✅ shipped, verified, deployed |
+| 9 | AI Summarizer (client shipped) · Translate PDF · Smart PDF Forms | 🔶 1/3 shipped — client done, needs a real backend URL to actually run |
 
 Plus the 6 pre-existing tools (Merger, Split, PDF to Image, Watermark
-Remover, DOCX to PDF, Résumé Builder) = **30 tools total**, every one
+Remover, DOCX to PDF, Résumé Builder) = **31 tools total**, every one
 client-side, every one confirmed live at tools.inerate.com via a direct
 32-page production sweep (status 200, zero console errors, zero layout
 overflow desktop+mobile) — not a claim, a script run against the real
@@ -45,7 +46,7 @@ per tool, one consistent system reused ~30 times.
 
 ## 1. Where we honestly are
 
-**30 tools shipped**, all client-side, all live at tools.inerate.com,
+**31 tools shipped**, all client-side, all live at tools.inerate.com,
 spanning Phases 1-8 below (PDF organize/convert/optimize/security plus a
 full image-tools suite) plus a landing-page storytelling carousel and a
 working search overlay (both fixed/shipped this session). Started this
@@ -155,11 +156,20 @@ Crop/Watermark reuse Phase 7's image-board. Remove Background needs
 onnxruntime-web + a small segmentation model — flag as the heaviest tool
 in the suite, lazy-loaded so it doesn't tax every other page's bundle.
 
-**Phase 9 — 🔴 AI Summarizer · Translate PDF · Smart PDF Forms**
-The one phase that calls a server (Cloudflare Worker + LLM key) — own trust
-copy explaining exactly what leaves the device (extracted text only, never
-the file), gated behind the Pro flag from day one. This is the actual
-revenue page, not a bonus.
+**Phase 9 — 🔴 AI Summarizer (shipped, awaiting a backend) · Translate PDF ·
+Smart PDF Forms**
+AI Summarizer shipped: extracts text client-side (same `extractPdfLines`
+every other tool uses), POSTs it — text only, never the file — to
+`NEXT_PUBLIC_AI_ENDPOINT`. No backend is configured yet, so today it
+shows an honest "not set up yet" state instead of faking a result, same
+pattern as `AdSlot`. Building the actual Cloudflare Worker (holding the
+real LLM key server-side, never in the client bundle) is the next step
+whenever that's wanted — the client side doesn't need to change, just
+the env var. Not yet Pro-gated: gating it now, before Pro is purchasable,
+would make it permanently inert even once a backend exists; `useIsPro()`
+is a one-line addition to `use-summarize.ts` once payments are real.
+Translate PDF and Smart PDF Forms reuse the same endpoint pattern once
+there's a reason to add them.
 
 Beyond Phase 9: format-pair landing-page multiplication (`/word-to-pdf`,
 `/pdf-to-word`, …) templated off the engines above — this is how the nav

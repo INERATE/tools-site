@@ -5,6 +5,7 @@ import { CropPdfIcon } from "./icons/crop-pdf-icon";
 import { RedactPdfIcon } from "./icons/redact-pdf-icon";
 import { PdfFormsIcon } from "./icons/pdf-forms-icon";
 import { ComparePdfIcon } from "./icons/compare-pdf-icon";
+import { AiSummarizerIcon } from "./icons/ai-summarizer-icon";
 
 /** Optimize & Secure category tools — split out of tool-list.ts to stay under the file-size cap. */
 export const TOOLS_OPTIMIZE = [
@@ -62,6 +63,14 @@ export const TOOLS_OPTIMIZE = [
     title: "Compare PDF",
     description: "Extracts text from two PDFs and shows exactly what changed.",
     category: "Optimize & Secure",
+    live: true,
+  },
+  {
+    href: "/ai-summarizer",
+    icon: AiSummarizerIcon,
+    title: "AI Summarizer",
+    description: "Sends a PDF's extracted text to a summarization backend.",
+    category: "PDF Intelligence",
     live: true,
   },
 ];

@@ -53,7 +53,9 @@ export function RunAction({
             onClick={onRun}
             disabled={busy || disabled}
             initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+            // Framer's own inline opacity style otherwise beats the disabled:opacity-60
+            // Tailwind class on specificity, so the disabled dimming never actually showed.
+            animate={{ opacity: disabled && !busy ? 0.6 : 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={SPRING}
             className={`${ACTION} shimmer`}

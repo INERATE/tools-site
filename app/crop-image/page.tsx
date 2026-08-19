@@ -12,8 +12,10 @@ import { AdSlot } from "../components/ad-slot";
 import { ToolWindow } from "../components/tool-window";
 import { CropImageIcon } from "../components/icons/crop-image-icon";
 import { ImageGrid } from "../components/image-board/image-grid";
-import { CropOverlay } from "../crop-pdf/crop-overlay";
 import { MarginSliders } from "../crop-pdf/margin-sliders";
+import { shapeNeedsAlpha } from "../lib/crop-shape";
+import { CropPreview } from "./crop-preview";
+import { ShapePicker } from "./shape-picker";
 import { useCropImage } from "./use-crop-image";
 import { STEPS } from "./pipeline-steps";
 
@@ -33,7 +35,7 @@ export default function CropImagePage() {
           title="Crop Image"
           busy={c.busy}
           icon={(active) => <CropImageIcon active={active} size={24} />}
-          blurb="Trim the same margin off every photo — set it live on a preview of the first one. Nothing is uploaded."
+          blurb="Trim the same margin off every photo, then cut it to a shape — circle, rounded corners, or any custom outline you paste in. Non-rectangle shapes export as transparent PNG. Nothing is uploaded."
         />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
@@ -53,11 +55,14 @@ export default function CropImagePage() {
             )}
 
             {count > 0 && <MarginSliders insets={c.insets} onChange={c.setInsets} />}
+            {count > 0 && <ShapePicker shape={c.shape} onShape={c.setShape} />}
 
-            {first && (
-              <div className="mb-4">
-                <CropOverlay pageUrl={first.url} pageRatio={first.w / first.h} insets={c.insets} />
-              </div>
+            {first && <CropPreview imageUrl={first.url} ratio={first.w / first.h} insets={c.insets} shape={c.shape} />}
+
+            {shapeNeedsAlpha(c.shape) && (
+              <p className="mb-4 text-[12.5px] text-[var(--text-dim)]">
+                Exports as PNG so the area outside the shape stays transparent.
+              </p>
             )}
 
             <ImageGrid images={c.images} move={c.move} remove={c.remove} />

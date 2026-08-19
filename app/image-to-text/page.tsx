@@ -71,9 +71,10 @@ export default function ImageToTextPage() {
                 </div>
                 <textarea
                   readOnly
+                  data-lenis-prevent
                   value={s.text}
                   rows={10}
-                  className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 text-[13.5px] leading-[1.6] text-[var(--text)]"
+                  className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 text-[13.5px] leading-[1.6] text-[var(--text)] overscroll-contain"
                 />
               </div>
             )}

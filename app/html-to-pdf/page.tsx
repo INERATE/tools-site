@@ -34,11 +34,12 @@ export default function HtmlToPdfPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
           <ToolWindow path="html-to-pdf">
             <textarea
+              data-lenis-prevent
               value={h.html}
               onChange={(e) => h.setHtml(e.target.value)}
               spellCheck={false}
               rows={10}
-              className="glass mb-4 w-full resize-y rounded-2xl p-4 font-mono text-[12.5px] leading-[1.6] text-[var(--text)] outline-none focus:border-[var(--accent)]"
+              className="glass mb-4 w-full resize-y rounded-2xl p-4 font-mono text-[12.5px] leading-[1.6] text-[var(--text)] outline-none focus:border-[var(--accent)] overscroll-contain"
             />
 
             {h.error && (

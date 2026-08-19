@@ -32,11 +32,12 @@ export default function WordCounterPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
           <ToolWindow path="word-counter">
             <textarea
+              data-lenis-prevent
               value={s.text}
               onChange={(e) => s.setText(e.target.value)}
               rows={14}
               placeholder="Start typing, or paste your text here…"
-              className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-[14.5px] leading-[1.65] text-[var(--text)] outline-none focus:border-[var(--accent)]"
+              className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-[14.5px] leading-[1.65] text-[var(--text)] outline-none focus:border-[var(--accent)] overscroll-contain"
             />
           </ToolWindow>
 

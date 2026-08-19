@@ -58,9 +58,10 @@ export default function ImageToBase64Page() {
                 </div>
                 <textarea
                   readOnly
+                  data-lenis-prevent
                   value={s.dataUrl}
                   rows={10}
-                  className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 font-mono text-[12px] leading-[1.6] break-all text-[var(--text)]"
+                  className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 font-mono text-[12px] leading-[1.6] break-all text-[var(--text)] overscroll-contain"
                 />
               </div>
             )}

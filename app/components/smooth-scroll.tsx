@@ -23,6 +23,17 @@ export function SmoothScroll() {
           touchMultiplier: 1.5,
           smoothWheel: true,
           autoRaf: false,
+          prevent: (node) => {
+            return (
+              node.tagName === "TEXTAREA" ||
+              node.tagName === "PRE" ||
+              node.tagName === "CODE" ||
+              node.tagName === "INPUT" ||
+              node.hasAttribute("data-lenis-prevent") ||
+              node.classList?.contains("lenis-prevent") ||
+              Boolean(node.closest?.("[data-lenis-prevent]"))
+            );
+          },
         });
 
         gsap.registerPlugin(ScrollTrigger);

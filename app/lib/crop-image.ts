@@ -1,8 +1,9 @@
 import type { ImageItem } from "./image-item";
 import type { Insets } from "./crop-pdf";
+import { applyShapeClip, shapeNeedsAlpha, type CropShape } from "./crop-shape";
 
-/** Crops a fraction-based margin off every side and re-encodes at the image's own format. */
-export async function cropImage(image: ImageItem, insets: Insets): Promise<Blob> {
+/** Crops a fraction-based margin off every side, optionally masked to a shape, and re-encodes. */
+export async function cropImage(image: ImageItem, insets: Insets, shape: CropShape = { kind: "rect" }): Promise<Blob> {
   const el = new Image();
   el.src = image.url;
   await new Promise((res, rej) => {
@@ -19,12 +20,16 @@ export async function cropImage(image: ImageItem, insets: Insets): Promise<Blob>
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext("2d")!;
-  const format = image.file.type || "image/png";
+  const needsAlpha = shapeNeedsAlpha(shape);
+  const format = needsAlpha ? "image/png" : image.file.type || "image/png";
   if (format === "image/jpeg") {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, w, h);
   }
+  ctx.save();
+  applyShapeClip(ctx, w, h, shape);
   ctx.drawImage(el, x, y, w, h, 0, 0, w, h);
+  ctx.restore();
 
   const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, format, 0.9));
   if (!blob) throw new Error("Could not encode the cropped image.");

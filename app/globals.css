@@ -18,6 +18,30 @@ html {
   touch-action: manipulation;
 }
 
+html.lenis,
+html.lenis-smooth {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent],
+.lenis.lenis-smooth textarea,
+.lenis.lenis-smooth pre,
+.lenis.lenis-smooth code {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
 body {
   background: transparent;
   color: var(--text);

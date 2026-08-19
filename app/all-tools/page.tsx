@@ -11,7 +11,7 @@ export default function AllToolsPage() {
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
-      <main className="mx-auto max-w-5xl px-6 py-16">
+      <main className="mx-auto max-w-5xl px-6 pt-28 pb-16">
         <h1 className="text-[32px] font-extrabold tracking-tight text-[var(--text)] sm:text-[40px]">
           Every tool, one place
         </h1>

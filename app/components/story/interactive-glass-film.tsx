@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { GlassDocStack } from "./glass-doc-stack";
+import { TrustStats } from "./trust-stats";
 
 /**
  * World-Class Apple-Caliber 3D Glass Document Showcase at the bottom of the page.
@@ -64,6 +65,8 @@ export function InteractiveGlassFilm() {
           sealOpacity={sealOpacity}
           sealScale={sealScale}
         />
+
+        <TrustStats />
 
         <div className="mt-12 flex items-center justify-center">
           <Link

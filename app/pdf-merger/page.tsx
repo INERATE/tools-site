@@ -33,7 +33,7 @@ export default function PdfMergerPage() {
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
-      <main className="mx-auto max-w-6xl px-6 py-16">
+      <main className="mx-auto max-w-6xl px-6 pt-28 pb-16">
         <ToolHead
           title="PDF Merger"
           busy={busy || board.pending > 0}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useThemeHueRotate } from "./use-theme-hue-rotate";
 
 /**
  * Scroll-scrubbed webp frame sequence — the Veo/Omni-generated,
@@ -22,6 +23,7 @@ export function FrameLoop({
   className?: string;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const hueRotate = useThemeHueRotate();
 
   useEffect(() => {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -57,5 +59,5 @@ export function FrameLoop({
     return () => removeEventListener("scroll", onScroll);
   }, [dir, count, pad]);
 
-  return <canvas ref={canvas} className={className} aria-hidden="true" />;
+  return <canvas ref={canvas} className={className} style={{ filter: hueRotate }} aria-hidden="true" />;
 }

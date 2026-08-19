@@ -353,3 +353,34 @@ everything else one click away at `/all-tools`:
 Everything past these six is real, useful, and fully built — just not
 first-click material. Re-rank this list, not the tool set, if traffic
 data later shows a different top 6.
+
+## 8. Planned, not started: per-tool feedback widget
+
+**"Was this helpful?" thumbs up/down on every tool page, after a run
+completes.** Design, not yet built — noted here so it isn't lost, per
+user request 2026-08-19.
+
+- Thumb up/down shown once a tool finishes a run (same moment the
+  download link appears).
+- Clicking either thumb opens a small overlay, not a full page: a
+  short "tell us more" textarea (optional — user can Skip), and
+  possibly a star/quality rating for the tool. Down-vote and up-vote
+  both get the same overlay, not just down-vote — positive feedback
+  text is useful too (what worked, what to keep).
+- Also surface a lightweight prompt to rate/review *other* tools in
+  the suite from the same overlay (cross-sell feedback collection, not
+  just the one tool just used).
+- Mentioned as a possible engagement hook: extra "credit" for a user
+  who leaves feedback (exact mechanic — Pro trial time, badge, nothing
+  concrete yet — undecided, needs `useIsPro()`/entitlement system to
+  exist first, see §1).
+
+**Storage destination is not decided yet — user will specify.** Same
+shape as the AI Summarizer/Translate PDF pattern (§3 Phase 9): the
+client can collect the vote + text entirely without a backend, but
+*persisting* it anywhere durable needs a real endpoint
+(`NEXT_PUBLIC_...` env var pointing at a Worker, or similar) — don't
+build against a guessed schema. Until that's specified, this stays
+design-only; do not wire up a fake/local-only version that looks live
+but silently drops feedback, same discipline as every other
+not-yet-configured integration in this codebase.

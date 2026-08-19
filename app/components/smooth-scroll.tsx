@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { setLenisInstance } from "../lib/lenis-instance";
 
 /**
  * High-Performance Smooth Scroll with Lenis.
@@ -26,6 +27,7 @@ export function SmoothScroll() {
 
         gsap.registerPlugin(ScrollTrigger);
         lenis.on("scroll", ScrollTrigger.update);
+        setLenisInstance(lenis);
 
         const raf = (time: number) => {
           lenis.raf(time * 1000);
@@ -38,6 +40,7 @@ export function SmoothScroll() {
           lenis.off("scroll", ScrollTrigger.update);
           gsap.ticker.remove(raf);
           lenis.destroy();
+          setLenisInstance(null);
         };
       },
     );

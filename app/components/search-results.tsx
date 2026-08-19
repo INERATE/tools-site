@@ -16,7 +16,7 @@ export function SearchResults({
   onPick: () => void;
 }) {
   return (
-    <ul className="max-h-[50vh] overflow-y-auto p-2">
+    <ul data-lenis-prevent className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
       {matches.length === 0 && (
         <li className="px-3 py-6 text-center text-[13px] text-[var(--text-dim)]">No tools match “{query}”.</li>
       )}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-import { SearchLauncher } from "./search-overlay";
+import { SearchLauncher } from "./search-launcher";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Nav() {

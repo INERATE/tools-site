@@ -4,6 +4,7 @@ import { Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { useSearchContext } from "./search-context";
+import { useLockBodyScroll } from "../lib/use-lock-body-scroll";
 import { SearchResults } from "./search-results";
 import { TOOLS } from "./tool-list";
 
@@ -33,6 +34,8 @@ export function SearchOverlay() {
     if (open) requestAnimationFrame(() => inputRef.current?.focus());
   }, [open]);
 
+  useLockBodyScroll(open);
+
   return (
     <AnimatePresence>
       {open && (
@@ -40,7 +43,7 @@ export function SearchOverlay() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-start justify-center bg-black/40 pt-[14vh] backdrop-blur-md"
+          className="fixed inset-0 z-[100] flex items-start justify-center bg-black/40 px-4 pt-[10vh] backdrop-blur-md"
           onClick={close}
         >
           <motion.div
@@ -49,9 +52,9 @@ export function SearchOverlay() {
             exit={{ opacity: 0, y: -12, scale: 0.98 }}
             transition={{ type: "spring", bounce: 0, duration: 0.32 }}
             onClick={(e) => e.stopPropagation()}
-            className="glass w-full max-w-lg overflow-hidden rounded-2xl"
+            className="glass flex max-h-[78vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl"
           >
-            <div className="flex items-center gap-2.5 border-b border-[var(--border)] px-4 py-3">
+            <div className="flex shrink-0 items-center gap-2.5 border-b border-[var(--border)] px-4 py-3">
               <Search className="size-4 shrink-0 text-[var(--text-dim)]" />
               <input
                 ref={inputRef}
@@ -77,21 +80,5 @@ export function SearchOverlay() {
         </motion.div>
       )}
     </AnimatePresence>
-  );
-}
-
-/** The nav's compact search trigger. */
-export function SearchLauncher() {
-  const { openSearch } = useSearchContext();
-  return (
-    <button
-      type="button"
-      onClick={openSearch}
-      className="glass-btn flex h-8.5 items-center gap-2 px-3 text-[12px] font-medium text-[var(--text-dim)] transition-all hover:text-[var(--text)]"
-    >
-      <Search className="size-3.5" />
-      <span className="hidden sm:inline">Search tools</span>
-      <kbd className="hidden rounded border border-[var(--border)] px-1.5 py-0.5 text-[10px] sm:inline">⌘K</kbd>
-    </button>
   );
 }

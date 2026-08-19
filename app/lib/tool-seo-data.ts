@@ -1197,5 +1197,89 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
         "a": "No, it's free with no signup or account required."
       }
     ]
+  },
+  "word-to-pdf": {
+    "metaTitle": "Word to PDF Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert a Word document (.docx) to a clean A4 PDF right in your browser, with a live preview before download. No upload, no signup — 100% private and free.",
+    "keywords": [
+      "word to pdf",
+      "convert word to pdf online free",
+      "word document to pdf converter",
+      "word to pdf no upload",
+      "doc to pdf converter free",
+      "word to pdf converter online",
+      "word to pdf preview before download"
+    ],
+    "h1": "Word to PDF, Instantly",
+    "faq": [
+      {
+        "q": "Will my document be uploaded to a server?",
+        "a": "No, the conversion happens entirely in your browser — your Word file is never uploaded anywhere."
+      },
+      {
+        "q": "Can I preview the PDF before downloading?",
+        "a": "Yes, you see a full preview of the formatted A4 PDF before you save it."
+      },
+      {
+        "q": "Is this Word to PDF converter really free?",
+        "a": "Yes, it's 100% free with no signup or account required."
+      }
+    ]
+  },
+  "pdf-to-jpg": {
+    "metaTitle": "PDF to JPG Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert PDF pages to JPG images at any quality, right in your browser. No upload, no signup — pick your pages and export instantly, 100% private and free.",
+    "keywords": [
+      "pdf to jpg",
+      "pdf to jpg converter online free",
+      "convert pdf to jpg",
+      "pdf pages to jpg images",
+      "export pdf as jpg free",
+      "pdf to jpg no upload",
+      "pdf to jpeg converter online"
+    ],
+    "h1": "Turn PDF Pages Into JPGs",
+    "faq": [
+      {
+        "q": "Is it safe to upload my PDF here?",
+        "a": "Nothing is uploaded — the PDF to JPG tool runs entirely in your browser, so your file never touches a server."
+      },
+      {
+        "q": "Can I choose which pages to convert?",
+        "a": "Yes, you select exactly which pages you want before exporting them as JPG."
+      },
+      {
+        "q": "Does it cost anything or require an account?",
+        "a": "No, it's completely free with no signup, and you can export at any quality you choose."
+      }
+    ]
+  },
+  "png-to-pdf": {
+    "metaTitle": "PNG to PDF Converter Online Free | Inerate Tools",
+    "metaDescription": "Turn PNG images into one PDF file online, free. Arrange the page order yourself — everything processes in your browser, no upload, no signup needed.",
+    "keywords": [
+      "png to pdf",
+      "convert png to pdf",
+      "png to pdf converter free online",
+      "combine png images into one pdf",
+      "png to pdf no upload",
+      "multiple png to one pdf free",
+      "image to pdf converter online"
+    ],
+    "h1": "PNGs to One PDF",
+    "faq": [
+      {
+        "q": "Can I combine multiple PNG images into a single PDF?",
+        "a": "Yes, each image becomes one page in the order you set, all merged into a single PDF."
+      },
+      {
+        "q": "Are my images uploaded to a server?",
+        "a": "No, conversion happens entirely in your browser, so your images never leave your device."
+      },
+      {
+        "q": "Is there a limit or cost to use this?",
+        "a": "No, it's completely free with no signup required."
+      }
+    ]
   }
 };

@@ -11,6 +11,7 @@ import { TOOLS_INTELLIGENCE } from "./tool-list-intelligence";
 import { TOOLS_SECURITY } from "./tool-list-security";
 import { TOOLS_UTILITY } from "./tool-list-utility";
 import { TOOLS_TEXT } from "./tool-list-text";
+import { TOOLS_FORMAT_PAIRS } from "./tool-list-format-pairs";
 
 export const TOOLS = [
   {
@@ -68,6 +69,7 @@ export const TOOLS = [
   ...TOOLS_SECURITY,
   ...TOOLS_UTILITY,
   ...TOOLS_TEXT,
+  ...TOOLS_FORMAT_PAIRS,
 ];
 
 /** The homepage's curated 6, ordered by real-world search volume — see PLAN.md §7. Everything else lives at /all-tools. */

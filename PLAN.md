@@ -16,6 +16,7 @@
 | 10 | Protect PDF · Unlock PDF · Flatten PDF Forms | ✅ shipped, verified, deployed — real AES-256 (pdf-lib-encrypt), pure client-side |
 | 11 | CSV to PDF · Remove Blank Pages · Edit PDF Metadata | ✅ shipped, verified, deployed — no new dependencies, reused pdf-lib/pdfjs already in the bundle |
 | 12 | Image to Text · QR Code Generator · Word Counter | ✅ shipped — high-search-volume standalone utilities; Image to Text reuses tesseract.js already in the bundle, QR Code Generator adds `qrcode` (Reed-Solomon encoding is genuinely non-trivial to hand-roll), Word Counter is pure client logic, no dependency |
+| 13 | Word to PDF · PDF to JPG · PNG to PDF | ✅ shipped — the format-pair templating task from §3 "Beyond Phase 9": zero new logic, each page reuses an existing engine verbatim (`/word-to-pdf` → `docx-to-pdf`'s `useDocx`, `/pdf-to-jpg` → `pdf-to-image`'s `useRender` defaulted to JPEG, `/png-to-pdf` → `jpg-to-pdf`'s `useImageToPdf`) under its own SEO copy/metadata targeting the higher-volume query the original tool's name doesn't rank for |
 
 Plus the 6 pre-existing tools (Merger, Split, PDF to Image, Watermark
 Remover, DOCX to PDF, Résumé Builder) = **39 tools total**, every one

@@ -29,7 +29,15 @@ export function ToolStoryBand({ tool, index }: { tool: Tool; index: number }) {
       }`}
     >
       {clip ? (
-        <FrameLoop {...clip} className="w-full max-w-[22rem] shrink-0 md:max-w-[26rem]" />
+        <div className="relative w-full max-w-[22rem] shrink-0 md:max-w-[26rem]">
+          {/* Stage: the clip's glass material was lit for a dark backdrop —
+              without this it reads as flat black slabs on light themes. */}
+          <div
+            aria-hidden
+            className="absolute inset-[6%] rounded-[2rem] bg-[radial-gradient(ellipse_at_center,rgba(8,8,10,0.6),rgba(8,8,10,0.15)_60%,transparent_75%)] blur-2xl"
+          />
+          <FrameLoop {...clip} className="relative w-full" />
+        </div>
       ) : (
         <span className="clay-icon grid size-28 shrink-0 place-items-center text-[var(--accent)] md:size-36">
           <Icon active={pulse} size={64} />

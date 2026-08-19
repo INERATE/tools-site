@@ -3,22 +3,22 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Auto-looping webp frame sequence — the Veo/Omni-generated, background-matted
- * clips for the storytelling section. Plays only while in view (IntersectionObserver),
- * pins to frame 1 under prefers-reduced-motion. Not a video file: no element to
- * download, save-as, or extract — same "cannot be downloaded" property as SVG.
+ * Scroll-scrubbed webp frame sequence — the Veo/Omni-generated,
+ * background-matted clips for the storytelling section. Frame index tracks
+ * how far this element has scrolled through the viewport, not a timer: it
+ * plays forward as you scroll down into it, reverses if you scroll back up.
+ * Pins to frame 1 under prefers-reduced-motion. Not a video file: no element
+ * to download, save-as, or extract — same "cannot be downloaded" property as SVG.
  */
 export function FrameLoop({
   dir,
   count,
   pad = 4,
-  fps = 15,
   className = "",
 }: {
   dir: string;
   count: number;
   pad?: number;
-  fps?: number;
   className?: string;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -31,9 +31,11 @@ export function FrameLoop({
       return img;
     });
     const ctx = canvas.current!.getContext("2d")!;
+    let current = -1;
     const draw = (i: number) => {
       const img = imgs[i];
-      if (!img.complete) return;
+      if (!img?.complete || i === current) return;
+      current = i;
       canvas.current!.width = img.naturalWidth;
       canvas.current!.height = img.naturalHeight;
       ctx.drawImage(img, 0, 0);
@@ -41,28 +43,19 @@ export function FrameLoop({
     imgs[0].onload = () => draw(0);
     if (reduced) return;
 
-    let visible = false;
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.2 });
-    io.observe(canvas.current!);
-
-    let frame = 0;
-    let last = 0;
-    let raf = 0;
-    const interval = 1000 / fps;
-    const loop = (t: number) => {
-      raf = requestAnimationFrame(loop);
-      if (!visible || t - last < interval) return;
-      last = t;
-      frame = (frame + 1) % count;
-      draw(frame);
+    // Progress 0 as the canvas enters from the bottom of the viewport, 1 once
+    // its center has scrolled to roughly a third down from the top.
+    const onScroll = () => {
+      const rect = canvas.current!.getBoundingClientRect();
+      const start = innerHeight * 0.92;
+      const end = innerHeight * 0.3;
+      const p = (start - rect.top) / (start - end);
+      draw(Math.min(count - 1, Math.max(0, Math.round(p * (count - 1)))));
     };
-    raf = requestAnimationFrame(loop);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      io.disconnect();
-    };
-  }, [dir, count, pad, fps]);
+    addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => removeEventListener("scroll", onScroll);
+  }, [dir, count, pad]);
 
   return <canvas ref={canvas} className={className} aria-hidden="true" />;
 }

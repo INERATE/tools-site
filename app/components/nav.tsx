@@ -33,6 +33,7 @@ export function Nav() {
         }}
         transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
         style={{ willChange: "max-width, border-radius, margin-top" }}
+        data-condensed={condensed}
         className="nav-glass flex w-full items-center justify-between px-4 py-2.5 sm:px-5"
       >
         <Link href="/" className="group flex shrink-0 items-center gap-2.5">

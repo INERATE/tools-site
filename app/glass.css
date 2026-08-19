@@ -25,6 +25,17 @@
       0 4px 12px -2px rgba(0, 0, 0, 0.03);
   }
 
+  /* Condensed pill: a more solid, opaque fill reads as "arrived" on scroll —
+     the translucent bar state is the right look for floating over the hero,
+     but the same translucency once condensed made the pill feel unfinished. */
+  .nav-glass[data-condensed="true"] {
+    background: color-mix(in srgb, var(--bg-raised) 96%, transparent);
+  }
+
+  [data-theme="daylight"] .nav-glass[data-condensed="true"] {
+    background: #ffffffed;
+  }
+
   /* Ultra-Refined Glass Material */
   .glass {
     position: relative;

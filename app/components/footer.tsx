@@ -8,12 +8,16 @@ const COMPANY = [
   { label: "Forge (open source)", href: "https://forge.inerate.com", external: true },
   { label: "GitHub", href: "https://github.com/inerate", external: true },
 ];
+const LEGAL = [
+  { label: "Privacy policy", href: "/privacy" },
+  { label: "Terms of service", href: "/terms" },
+];
 
 /** Site-wide footer — the page had nothing after the storytelling section, reading as unfinished. */
 export function Footer() {
   return (
     <footer className="glass mt-24 rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-      <div className="grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="grid gap-10 sm:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div>
           <span className="text-[15px] font-bold tracking-[0.1em] text-[var(--text)] uppercase">
             Inerate <span className="text-[var(--accent)]">Tools</span>
@@ -50,6 +54,19 @@ export function Footer() {
                 >
                   {c.label}
                   {c.external && <ArrowUpRight className="size-3 opacity-60" />}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p className="mb-3 text-[11px] font-bold tracking-[0.14em] text-[var(--text-dim)] uppercase">Legal</p>
+          <ul className="flex flex-col gap-2">
+            {LEGAL.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="text-[13.5px] text-[var(--text-dim)] transition-colors hover:text-[var(--text)]">
+                  {l.label}
                 </Link>
               </li>
             ))}

@@ -7,6 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE_URL, changeFrequency: "weekly", priority: 1 },
     { url: `${BASE_URL}/all-tools`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const toolPages: MetadataRoute.Sitemap = TOOLS.filter((t) => t.live).map((t) => ({

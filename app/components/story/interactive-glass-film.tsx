@@ -1,38 +1,15 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion } from "motion/react";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { GlassDocStack } from "./glass-doc-stack";
+import { FrameLoop } from "./frame-loop";
 import { TrustStats } from "./trust-stats";
 
-/**
- * World-Class Apple-Caliber 3D Glass Document Showcase at the bottom of the page.
- * 100% theme-native with zero box boundaries or color mismatches.
- */
+/** Closing statement — reprises the merger clip as the page's final beat, not a static mockup. */
 export function InteractiveGlassFilm() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end end"],
-  });
-
-  const zOffset1 = useTransform(scrollYProgress, [0.1, 0.75], [90, 0]);
-  const yOffset1 = useTransform(scrollYProgress, [0.1, 0.75], [-120, 0]);
-  const rotZ1 = useTransform(scrollYProgress, [0.1, 0.75], [-18, 0]);
-
-  const zOffset2 = useTransform(scrollYProgress, [0.1, 0.75], [45, 0]);
-  const yOffset2 = useTransform(scrollYProgress, [0.1, 0.75], [-60, 0]);
-  const rotZ2 = useTransform(scrollYProgress, [0.1, 0.75], [12, 0]);
-
-  const zOffset3 = useTransform(scrollYProgress, [0.1, 0.75], [0, 0]);
-
-  const sealOpacity = useTransform(scrollYProgress, [0.65, 0.9], [0, 1]);
-  const sealScale = useTransform(scrollYProgress, [0.65, 0.9], [0.6, 1]);
-
   return (
-    <div ref={containerRef} className="relative w-full py-8 sm:py-16">
+    <div className="relative w-full py-8 sm:py-16">
       <div className="flex flex-col items-center justify-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -54,17 +31,15 @@ export function InteractiveGlassFilm() {
           Processed entirely on your device, right inside this browser tab. Nothing is ever uploaded.
         </p>
 
-        <GlassDocStack
-          zOffset1={zOffset1}
-          yOffset1={yOffset1}
-          rotZ1={rotZ1}
-          zOffset2={zOffset2}
-          yOffset2={yOffset2}
-          rotZ2={rotZ2}
-          zOffset3={zOffset3}
-          sealOpacity={sealOpacity}
-          sealScale={sealScale}
-        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ type: "spring", bounce: 0, duration: 0.8 }}
+          className="mt-12 w-full max-w-lg sm:max-w-xl"
+        >
+          <FrameLoop dir="/frames/merger" count={120} className="w-full" />
+        </motion.div>
 
         <TrustStats />
 

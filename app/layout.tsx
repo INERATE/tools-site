@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Inter } from "next/font/google";
 import { SmoothScroll } from "./components/smooth-scroll";
 import { SearchProvider } from "./components/search-context";
@@ -32,13 +31,20 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: THEME_BOOT }}
         />
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-L1D7GPN13Y" strategy="afterInteractive" />
-        <Script id="ga-init" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
+        {/* eslint-disable-next-line @next/next/next-script-for-ga */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-L1D7SPN13Y"
+        />
+        <script
+          id="ga-init"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-L1D7GPN13Y');`}
-        </Script>
+gtag('config', 'G-L1D7SPN13Y');`,
+          }}
+        />
       </head>
       <body>
         <SmoothScroll />

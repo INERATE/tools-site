@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AmbientBlob } from "../components/ambient-blob";
 import { Nav } from "../components/nav";
+import { Dock } from "../components/dock";
 import { ToolCard } from "../components/tool-card";
 import { AdSlot } from "../components/ad-slot";
 import { TOOLS } from "../components/tool-list";
@@ -24,6 +25,7 @@ export default function AllToolsPage() {
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
+      <Dock />
       <main className="mx-auto max-w-5xl px-6 pt-28 pb-16">
         <h1 className="text-[32px] font-extrabold tracking-tight text-[var(--text)] sm:text-[40px]">
           Every tool, one place

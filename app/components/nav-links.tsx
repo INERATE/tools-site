@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-import { SearchLauncher } from "./search-launcher";
-import { ThemeToggle } from "./theme-toggle";
 
 const LINK = "rounded-full px-3.5 py-1.5 text-[13px] font-medium text-[var(--text-dim)] transition-all hover:bg-[var(--glass-bg)] hover:text-[var(--text)]";
 
+/** Search and appearance moved to the bottom Dock — this keeps brand wayfinding + links only. */
 export function NavLinks() {
   return (
     <>
@@ -27,16 +26,10 @@ export function NavLinks() {
         </a>
       </nav>
 
-      <div className="flex items-center gap-2.5">
-        <div className="hidden sm:block">
-          <SearchLauncher />
-        </div>
-        <ThemeToggle />
-        <Link href="/pdf-merger" className="clay flex h-8.5 items-center gap-1 px-3.5 text-[12px] font-semibold tracking-wide transition-all cursor-pointer">
-          <span className="whitespace-nowrap">Launch PDF</span>
-          <ArrowUpRight className="size-3.5 stroke-[2.5]" />
-        </Link>
-      </div>
+      <Link href="/pdf-merger" className="clay flex h-8.5 items-center gap-1 px-3.5 text-[12px] font-semibold tracking-wide transition-all cursor-pointer">
+        <span className="whitespace-nowrap">Launch PDF</span>
+        <ArrowUpRight className="size-3.5 stroke-[2.5]" />
+      </Link>
     </>
   );
 }

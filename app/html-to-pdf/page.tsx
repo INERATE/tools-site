@@ -2,6 +2,7 @@
 
 import { AmbientBlob } from "../components/ambient-blob";
 import { Nav } from "../components/nav";
+import { Dock } from "../components/dock";
 import { RunAction } from "../components/run-action";
 import { ToolActionRail } from "../components/tool-action-rail";
 import { ToolHead } from "../components/tool-head";
@@ -21,6 +22,7 @@ export default function HtmlToPdfPage() {
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
+      <Dock />
       <main className="mx-auto max-w-6xl px-6 pt-28 pb-16">
         <ToolHead
           title="HTML to PDF"

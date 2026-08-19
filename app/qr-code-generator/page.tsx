@@ -2,6 +2,7 @@
 
 import { AmbientBlob } from "../components/ambient-blob";
 import { Nav } from "../components/nav";
+import { Dock } from "../components/dock";
 import { ToolHead } from "../components/tool-head";
 import { ToolPipeline } from "../components/tool-pipeline";
 import { ToolWindow } from "../components/tool-window";
@@ -20,6 +21,7 @@ export default function QrCodeGeneratorPage() {
     <div className="min-h-screen">
       <AmbientBlob />
       <Nav />
+      <Dock />
       <main className="mx-auto max-w-6xl px-6 pt-28 pb-16">
         <ToolHead
           title="QR Code Generator"

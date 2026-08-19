@@ -13,9 +13,11 @@
 | 7 | Compress Image · Resize Image · Convert Image | ✅ shipped, verified, deployed |
 | 8 | Crop Image · Watermark Image · Remove Background | ✅ shipped, verified, deployed |
 | 9 | AI Summarizer · Smart PDF Forms · Translate PDF | 🟡 3/3 shipped — Smart PDF Forms fully on-device; AI Summarizer/Translate PDF ship client-side, await a real backend URL to actually run |
+| 10 | Protect PDF · Unlock PDF · Flatten PDF Forms | ✅ shipped, verified, deployed — real AES-256 (pdf-lib-encrypt), pure client-side |
+| 11 | CSV to PDF · Remove Blank Pages · Edit PDF Metadata | ✅ shipped, verified, deployed — no new dependencies, reused pdf-lib/pdfjs already in the bundle |
 
 Plus the 6 pre-existing tools (Merger, Split, PDF to Image, Watermark
-Remover, DOCX to PDF, Résumé Builder) = **33 tools total**, every one
+Remover, DOCX to PDF, Résumé Builder) = **39 tools total**, every one
 client-side, every one confirmed live at tools.inerate.com via a direct
 35-page production sweep (status 200, zero console errors, zero layout
 overflow desktop+mobile) — not a claim, a script run against the real

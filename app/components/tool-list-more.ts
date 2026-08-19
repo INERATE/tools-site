@@ -19,6 +19,14 @@ export const TOOLS_MORE = [
     live: true,
   },
   {
+    href: "/pdf-to-text",
+    icon: PdfToMarkdownIcon,
+    title: "PDF to Text",
+    description: "Extracts every line of selectable text and saves it as a plain .txt file.",
+    category: "Convert & Export",
+    live: true,
+  },
+  {
     href: "/markdown-to-pdf",
     icon: MarkdownToPdfIcon,
     title: "Markdown to PDF",

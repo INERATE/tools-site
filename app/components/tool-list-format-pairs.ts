@@ -1,6 +1,7 @@
 import { DocxIcon } from "./icons/docx-icon";
 import { ToImageIcon } from "./icons/to-image-icon";
 import { JpgToPdfIcon } from "./icons/jpg-to-pdf-icon";
+import { ConvertImageIcon } from "./icons/convert-image-icon";
 
 /**
  * SEO-templated landing pages that reuse an existing engine under a
@@ -31,6 +32,22 @@ export const TOOLS_FORMAT_PAIRS = [
     title: "PNG to PDF",
     description: "Turn PNG images into one PDF — one page per image, in the order you set.",
     category: "Convert & Export",
+    live: true,
+  },
+  {
+    href: "/png-to-jpg",
+    icon: ConvertImageIcon,
+    title: "PNG to JPG",
+    description: "Batch convert PNG images to JPG, right in your browser.",
+    category: "Image Tools",
+    live: true,
+  },
+  {
+    href: "/jpg-to-png",
+    icon: ConvertImageIcon,
+    title: "JPG to PNG",
+    description: "Batch convert JPG images to PNG, right in your browser.",
+    category: "Image Tools",
     live: true,
   },
 ];

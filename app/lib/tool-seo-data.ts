@@ -1281,5 +1281,87 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
         "a": "No, it's completely free with no signup required."
       }
     ]
+  },
+  "pdf-to-text": {
+    "metaTitle": "PDF to Text Converter Online Free | Inerate Tools",
+    "metaDescription": "Extract all the text from a PDF and save it as a plain .txt file, free online. No upload, no signup — runs entirely in your browser, private and instant.",
+    "keywords": [
+      "pdf to text",
+      "pdf to txt converter",
+      "extract text from pdf online free",
+      "convert pdf to text",
+      "pdf to text no upload",
+      "pdf text extractor free",
+      "pdf to plain text online"
+    ],
+    "h1": "Extract Text From a PDF",
+    "faq": [
+      {
+        "q": "Does this work on scanned PDFs?",
+        "a": "It reads real, selectable text — for a scanned image PDF, use OCR PDF first to make the text selectable."
+      },
+      {
+        "q": "Is my PDF uploaded anywhere?",
+        "a": "No, extraction happens entirely in your browser, so your file never leaves your device."
+      },
+      {
+        "q": "Do I need to sign up to use it?",
+        "a": "No, it's completely free with no signup required."
+      }
+    ]
+  },
+  "png-to-jpg": {
+    "metaTitle": "PNG to JPG Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert PNG images to JPG free online, in your browser. No upload, no signup — batch convert multiple images at once, 100% private.",
+    "keywords": [
+      "png to jpg",
+      "png to jpg converter online free",
+      "convert png to jpeg",
+      "png to jpg no upload",
+      "batch png to jpg converter",
+      "png to jpg online free"
+    ],
+    "h1": "PNG to JPG, Instantly",
+    "faq": [
+      {
+        "q": "Will converting to JPG lose transparency?",
+        "a": "Yes — JPEG has no alpha channel, so any transparent areas in your PNG become solid."
+      },
+      {
+        "q": "Are my images uploaded to a server?",
+        "a": "No, conversion happens entirely in your browser, so your images never leave your device."
+      },
+      {
+        "q": "Can I convert multiple PNGs at once?",
+        "a": "Yes, drop as many as you like — you get a .zip back for a batch."
+      }
+    ]
+  },
+  "jpg-to-png": {
+    "metaTitle": "JPG to PNG Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert JPG images to PNG free online, in your browser. No upload, no signup — batch convert multiple images at once, 100% private.",
+    "keywords": [
+      "jpg to png",
+      "jpg to png converter online free",
+      "convert jpeg to png",
+      "jpg to png no upload",
+      "batch jpg to png converter",
+      "jpg to png online free"
+    ],
+    "h1": "JPG to PNG, Instantly",
+    "faq": [
+      {
+        "q": "Is PNG output lossless?",
+        "a": "Yes, PNG is a lossless format, so the pixel data is preserved exactly."
+      },
+      {
+        "q": "Are my images uploaded to a server?",
+        "a": "No, conversion happens entirely in your browser, so your images never leave your device."
+      },
+      {
+        "q": "Can I convert multiple JPGs at once?",
+        "a": "Yes, drop as many as you like — you get a .zip back for a batch."
+      }
+    ]
   }
 };

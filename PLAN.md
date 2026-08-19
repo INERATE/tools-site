@@ -17,6 +17,7 @@
 | 11 | CSV to PDF · Remove Blank Pages · Edit PDF Metadata | ✅ shipped, verified, deployed — no new dependencies, reused pdf-lib/pdfjs already in the bundle |
 | 12 | Image to Text · QR Code Generator · Word Counter | ✅ shipped — high-search-volume standalone utilities; Image to Text reuses tesseract.js already in the bundle, QR Code Generator adds `qrcode` (Reed-Solomon encoding is genuinely non-trivial to hand-roll), Word Counter is pure client logic, no dependency |
 | 13 | Word to PDF · PDF to JPG · PNG to PDF | ✅ shipped — the format-pair templating task from §3 "Beyond Phase 9": zero new logic, each page reuses an existing engine verbatim (`/word-to-pdf` → `docx-to-pdf`'s `useDocx`, `/pdf-to-jpg` → `pdf-to-image`'s `useRender` defaulted to JPEG, `/png-to-pdf` → `jpg-to-pdf`'s `useImageToPdf`) under its own SEO copy/metadata targeting the higher-volume query the original tool's name doesn't rank for |
+| 14 | PDF to Text · PNG to JPG · JPG to PNG | ✅ shipped, verified live in a real browser (Playwright, sample PDF + image round-tripped correctly) — PDF to Text is a genuine small new tool (`extractPdfLines` → `.txt` blob, no new dependency); PNG to JPG / JPG to PNG reuse `/convert-image`'s `useConvertImage` locked to one output format via the new shared `useLockedImageFormat` hook |
 
 Plus the 6 pre-existing tools (Merger, Split, PDF to Image, Watermark
 Remover, DOCX to PDF, Résumé Builder) = **39 tools total**, every one

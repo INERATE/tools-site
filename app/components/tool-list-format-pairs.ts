@@ -2,6 +2,7 @@ import { DocxIcon } from "./icons/docx-icon";
 import { ToImageIcon } from "./icons/to-image-icon";
 import { JpgToPdfIcon } from "./icons/jpg-to-pdf-icon";
 import { ConvertImageIcon } from "./icons/convert-image-icon";
+import { UnlockPdfIcon } from "./icons/unlock-pdf-icon";
 
 /**
  * SEO-templated landing pages that reuse an existing engine under a
@@ -48,6 +49,30 @@ export const TOOLS_FORMAT_PAIRS = [
     title: "JPG to PNG",
     description: "Batch convert JPG images to PNG, right in your browser.",
     category: "Image Tools",
+    live: true,
+  },
+  {
+    href: "/webp-to-png",
+    icon: ConvertImageIcon,
+    title: "WEBP to PNG",
+    description: "Batch convert WEBP images to PNG, right in your browser.",
+    category: "Image Tools",
+    live: true,
+  },
+  {
+    href: "/png-to-webp",
+    icon: ConvertImageIcon,
+    title: "PNG to WEBP",
+    description: "Batch convert PNG images to WEBP, right in your browser.",
+    category: "Image Tools",
+    live: true,
+  },
+  {
+    href: "/remove-password-from-pdf",
+    icon: UnlockPdfIcon,
+    title: "Remove Password from PDF",
+    description: "Removes password protection from a PDF you already have the password for.",
+    category: "Security & Forms",
     live: true,
   },
 ];

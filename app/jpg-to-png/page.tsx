@@ -43,6 +43,7 @@ export default function JpgToPngPage() {
               accept="image/jpeg"
               onFiles={c.addFiles}
               label={count ? "Add more images" : "Drop JPG images here, or click to choose"}
+              hint="Images only — they never leave this tab"
             />
 
             {c.error && (

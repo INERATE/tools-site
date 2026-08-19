@@ -1363,5 +1363,86 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
         "a": "Yes, drop as many as you like — you get a .zip back for a batch."
       }
     ]
+  },
+  "remove-password-from-pdf": {
+    "metaTitle": "Remove Password From PDF Online Free | Inerate Tools",
+    "metaDescription": "Remove password protection from a PDF you already know the password for, free online. AES-256 and RC4 both supported — runs entirely in your browser, nothing uploaded.",
+    "keywords": [
+      "remove password from pdf",
+      "pdf password remover online free",
+      "delete pdf password",
+      "unlock pdf password online",
+      "remove pdf password no upload",
+      "pdf password remover no signup"
+    ],
+    "h1": "Remove a PDF's Password",
+    "faq": [
+      {
+        "q": "Do I need to know the current password?",
+        "a": "Yes, you need the existing password to remove it — this tool decrypts a PDF you can already open, it doesn't crack unknown passwords."
+      },
+      {
+        "q": "Is my PDF or password uploaded anywhere?",
+        "a": "No, everything happens on-device in your browser, so your file and password never leave your device."
+      },
+      {
+        "q": "What encryption does it support?",
+        "a": "Both AES-256 and RC4, covering the PDF standard security handler used by virtually every password-protected PDF."
+      }
+    ]
+  },
+  "webp-to-png": {
+    "metaTitle": "WEBP to PNG Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert WEBP images to PNG free online, in your browser. No upload, no signup — batch convert multiple images at once, 100% private.",
+    "keywords": [
+      "webp to png",
+      "webp to png converter online free",
+      "convert webp to png",
+      "webp to png no upload",
+      "batch webp to png converter",
+      "webp to png online free"
+    ],
+    "h1": "WEBP to PNG, Instantly",
+    "faq": [
+      {
+        "q": "Is PNG output lossless?",
+        "a": "Yes, PNG is a lossless format, so the pixel data is preserved exactly."
+      },
+      {
+        "q": "Are my images uploaded to a server?",
+        "a": "No, conversion happens entirely in your browser, so your images never leave your device."
+      },
+      {
+        "q": "Can I convert multiple WEBPs at once?",
+        "a": "Yes, drop as many as you like — you get a .zip back for a batch."
+      }
+    ]
+  },
+  "png-to-webp": {
+    "metaTitle": "PNG to WEBP Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert PNG images to WEBP free online, in your browser. Smaller files, same quality — no upload, no signup, batch convert at once.",
+    "keywords": [
+      "png to webp",
+      "png to webp converter online free",
+      "convert png to webp",
+      "png to webp no upload",
+      "batch png to webp converter",
+      "png to webp online free"
+    ],
+    "h1": "PNG to WEBP, Instantly",
+    "faq": [
+      {
+        "q": "Why convert to WEBP?",
+        "a": "WEBP typically produces smaller files than PNG at similar quality, which helps page load speed."
+      },
+      {
+        "q": "Are my images uploaded to a server?",
+        "a": "No, conversion happens entirely in your browser, so your images never leave your device."
+      },
+      {
+        "q": "Can I convert multiple PNGs at once?",
+        "a": "Yes, drop as many as you like — you get a .zip back for a batch."
+      }
+    ]
   }
 };

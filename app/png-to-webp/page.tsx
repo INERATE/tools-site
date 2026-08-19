@@ -15,9 +15,9 @@ import { ImageGrid } from "../components/image-board/image-grid";
 import { useLockedImageFormat } from "../lib/use-locked-image-format";
 import { STEPS } from "./pipeline-steps";
 
-/** Same engine as /convert-image, locked to JPG output — SEO-templated landing page for the "png to jpg" query. */
-export default function PngToJpgPage() {
-  const c = useLockedImageFormat("image/jpeg");
+/** Same engine as /convert-image, locked to WEBP output — SEO-templated landing page for the "png to webp" query. */
+export default function PngToWebpPage() {
+  const c = useLockedImageFormat("image/webp");
   const step = c.url ? 2 : c.images.length > 0 ? 1 : 0;
   const count = c.images.length;
   const first = c.images[0];
@@ -29,16 +29,16 @@ export default function PngToJpgPage() {
       <Dock />
       <main className="mx-auto max-w-6xl px-6 pt-28 pb-16">
         <ToolHead
-          title="PNG to JPG"
+          title="PNG to WEBP"
           busy={c.busy}
           icon={(active) => <ConvertImageIcon active={active} size={24} />}
-          blurb="Turn PNG images into JPG. Transparency is dropped, since JPEG has none. Nothing is uploaded."
+          blurb="Turn PNG images into the smaller WEBP format. Nothing is uploaded — conversion happens entirely in your browser."
         />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
-          <ToolWindow path="png-to-jpg">
+          <ToolWindow path="png-to-webp">
             <Dropzone
-              id="png-to-jpg-input"
+              id="png-to-webp-input"
               multiple
               accept="image/png"
               onFiles={c.addFiles}
@@ -61,10 +61,10 @@ export default function PngToJpgPage() {
               ratio={first ? first.w / first.h : undefined}
               count={count}
               itemLabel={`image${count === 1 ? "" : "s"}`}
-              addInputId="png-to-jpg-input"
+              addInputId="png-to-webp-input"
               action={
                 <RunAction
-                  label={count ? `Convert ${count} to JPG` : "Convert to JPG"}
+                  label={count ? `Convert ${count} to WEBP` : "Convert to WEBP"}
                   busyLabel="Converting…"
                   busy={c.busy}
                   disabled={count === 0}

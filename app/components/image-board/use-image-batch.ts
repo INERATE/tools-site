@@ -10,8 +10,8 @@ export function useImageBatch() {
   const [error, setError] = useState<string | null>(null);
 
   async function addFiles(picked: File[]) {
-    const valid = picked.filter((f) => f.type === "image/jpeg" || f.type === "image/png");
-    if (valid.length === 0) return setError(picked.length ? "Those files were not JPG or PNG images." : null);
+    const valid = picked.filter((f) => f.type === "image/jpeg" || f.type === "image/png" || f.type === "image/webp");
+    if (valid.length === 0) return setError(picked.length ? "Those files were not JPG, PNG or WEBP images." : null);
     setError(null);
     const fresh = await Promise.all(valid.map(readImage));
     setImages((prev) => [...prev, ...fresh]);

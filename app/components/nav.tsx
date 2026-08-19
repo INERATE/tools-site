@@ -29,7 +29,7 @@ export function Nav() {
         animate={condensed ? "pill" : "bar"}
         variants={{
           bar: { marginTop: 12, maxWidth: 880, borderRadius: 999 },
-          pill: { marginTop: 12, maxWidth: 780, borderRadius: 999 },
+          pill: { marginTop: 12, maxWidth: 210, borderRadius: 999 },
         }}
         transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
         style={{ willChange: "max-width, border-radius, margin-top" }}
@@ -54,7 +54,7 @@ export function Nav() {
           </motion.div>
         </Link>
 
-        <NavLinks />
+        <NavLinks condensed={condensed} />
       </motion.div>
     </header>
   );

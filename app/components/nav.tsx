@@ -1,34 +1,49 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion } from "motion/react";
 import { NavLinks } from "./nav-links";
+
+const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
 
 export function Nav() {
   // position:fixed, not sticky — guaranteed pinned to the viewport regardless
-  // of any scroll/overflow context a given page wraps it in. Compacts and
-  // gains a stronger shadow as the page scrolls, so it reads as "in control"
-  // rather than a static bar that just happens to stay put.
-  const { scrollY } = useScroll();
-  const pad = useTransform(scrollY, [0, 120], [10, 6]);
-  const shadow = useTransform(
-    scrollY,
-    [0, 120],
-    ["0 20px 50px -15px rgba(0,0,0,0.25), 0 6px 18px -4px rgba(0,0,0,0.12)", "0 24px 60px -12px rgba(0,0,0,0.35), 0 8px 22px -4px rgba(0,0,0,0.2)"],
-  );
+  // of any scroll/overflow context a given page wraps it in. Wide rounded
+  // bar at the top of the page, morphs into a narrower pill once scrolled —
+  // same two-state pattern as the GrowthCharters marketing nav.
+  const [condensed, setCondensed] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setCondensed(scrollY > 80);
+    onScroll();
+    addEventListener("scroll", onScroll, { passive: true });
+    return () => removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="fixed inset-x-0 top-4 z-40 mx-auto w-full max-w-5xl px-4 sm:px-6">
+    <header className="fixed inset-x-0 top-0 z-40 flex justify-center px-4">
       <motion.div
-        style={{ paddingTop: pad, paddingBottom: pad, boxShadow: shadow }}
-        className="nav-glass flex items-center justify-between px-4 sm:px-5"
+        initial={false}
+        animate={condensed ? "pill" : "bar"}
+        variants={{
+          bar: { marginTop: 20, maxWidth: 1024, borderRadius: 24 },
+          pill: { marginTop: 14, maxWidth: 680, borderRadius: 999 },
+        }}
+        transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
+        style={{ willChange: "max-width, border-radius, margin-top" }}
+        className="nav-glass flex w-full items-center justify-between px-4 py-3.5 sm:px-5"
       >
-        <Link href="/" className="group flex items-center gap-2.5">
-          <div className="relative size-8.5 shrink-0 overflow-hidden rounded-xl border border-[var(--border)] shadow-[0_2px_10px_rgba(0,0,0,0.18),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-transform duration-300 group-hover:scale-105">
-            <Image src="/icon.png" alt="Inerate Tools Logo" width={34} height={34} className="h-full w-full object-cover" priority />
+        <Link href="/" className="group flex shrink-0 items-center gap-2.5">
+          <div className="relative size-9 shrink-0 overflow-hidden rounded-xl border border-[var(--border)] shadow-[0_2px_10px_rgba(0,0,0,0.18),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-transform duration-300 group-hover:scale-105">
+            <Image src="/icon.png" alt="Inerate Tools Logo" width={36} height={36} className="h-full w-full object-cover" priority />
           </div>
-          <div className="flex flex-col">
+          <motion.div
+            animate={{ opacity: condensed ? 0 : 1, width: condensed ? 0 : "auto" }}
+            transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
+            className="flex flex-col overflow-hidden whitespace-nowrap"
+          >
             <span className="flex items-center gap-1 text-[13px] font-bold tracking-[0.14em] text-[var(--text)] uppercase">
               Inerate
               <span className="bg-[linear-gradient(100deg,var(--accent),var(--accent-2)_50%,var(--accent-3))] bg-clip-text text-transparent">
@@ -36,7 +51,7 @@ export function Nav() {
               </span>
             </span>
             <span className="text-[9px] font-medium tracking-[0.08em] text-[var(--text-dim)] uppercase">100% Client-Side</span>
-          </div>
+          </motion.div>
         </Link>
 
         <NavLinks />

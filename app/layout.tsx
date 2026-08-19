@@ -7,15 +7,39 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
+const SITE_URL = "https://tools.inerate.com";
+const SITE_TITLE = "Inerate Tools — Free PDF, Image & Document Utilities";
+const SITE_DESCRIPTION =
+  "Merge, split, compress and convert PDFs, edit images, build resumes and more — 40+ free browser-based tools. Nothing is ever uploaded; every file stays on your device.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tools.inerate.com"),
-  title: "Inerate Tools — Free PDF, Image & Document Utilities",
-  description:
-    "Merge PDFs, convert images, build resumes, and more — fast, private, browser-based tools. No upload, no wait.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_TITLE, template: "%s | Inerate Tools" },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "free pdf tools",
+    "merge pdf online",
+    "compress pdf free",
+    "pdf to word converter",
+    "online image editor",
+    "no upload pdf tools",
+    "private pdf editor",
+  ],
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   openGraph: {
-    title: "Inerate Tools — Free PDF, Image & Document Utilities",
-    description: "Fast, private, browser-based tools. No upload, no wait.",
-    url: "https://tools.inerate.com",
+    type: "website",
+    siteName: "Inerate Tools",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    images: [{ url: "/icon.png", width: 512, height: 512, alt: "Inerate Tools" }],
+  },
+  twitter: {
+    card: "summary",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ["/icon.png"],
   },
 };
 

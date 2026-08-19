@@ -1,8 +1,21 @@
+import type { Metadata } from "next";
 import { AmbientBlob } from "../components/ambient-blob";
 import { Nav } from "../components/nav";
 import { ToolCard } from "../components/tool-card";
 import { AdSlot } from "../components/ad-slot";
 import { TOOLS } from "../components/tool-list";
+
+export const metadata: Metadata = {
+  title: "All Tools — 40+ Free PDF, Image & Document Tools",
+  description:
+    "Browse every free Inerate tool: merge, split, compress, convert and sign PDFs, edit images, and more. All processing happens in your browser — nothing is uploaded.",
+  alternates: { canonical: "/all-tools" },
+  openGraph: {
+    title: "All Tools — 40+ Free PDF, Image & Document Tools",
+    description: "Browse every free Inerate tool. Nothing is uploaded — everything runs in your browser.",
+    url: "https://tools.inerate.com/all-tools",
+  },
+};
 
 const CATEGORIES = [...new Set(TOOLS.map((t) => t.category))];
 

@@ -35,7 +35,7 @@ export default function CropImagePage() {
           title="Crop Image"
           busy={c.busy}
           icon={(active) => <CropImageIcon active={active} size={24} />}
-          blurb="Trim the same margin off every photo, then cut it to a shape — circle, rounded corners, or any custom outline you paste in. Non-rectangle shapes export as transparent PNG. Nothing is uploaded."
+          blurb="Trim the margin off every photo, then cut it to a shape — circle, rounded corners, or a custom outline. Non-rectangle shapes export as transparent PNG. Nothing is uploaded."
         />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-8">
@@ -46,6 +46,7 @@ export default function CropImagePage() {
               accept="image/jpeg,image/png"
               onFiles={c.addFiles}
               label={count ? "Add more photos" : "Drop JPG or PNG photos here, or click to choose"}
+              hint="Images only — they never leave this tab"
             />
 
             {c.error && (

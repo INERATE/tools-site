@@ -40,7 +40,7 @@ export function SmoothScroll() {
         // scroll through Lenis, not the browser's native anchor jump — the
         // two fight over scroll position, which is what made those links
         // land somewhere in the middle of the page instead of on target.
-        const headerOffset = () => -(document.querySelector("header")?.getBoundingClientRect().height ?? 90) - 16;
+        const headerOffset = () => -(document.querySelector("header")?.getBoundingClientRect().height ?? 90) + 20;
         const scrollToHash = (hash: string) => {
           const el = hash.length > 1 && document.querySelector(hash);
           if (el) lenis.scrollTo(el as HTMLElement, { offset: headerOffset() });

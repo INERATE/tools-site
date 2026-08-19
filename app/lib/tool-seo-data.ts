@@ -1525,5 +1525,86 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
         "a": "No, it's completely free with no signup, and you can export at any quality you choose."
       }
     ]
+  },
+  "csv-to-excel": {
+    "metaTitle": "CSV to Excel Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert a CSV file into a real .xlsx Excel workbook, free online. No upload, no signup — runs entirely in your browser, private and instant.",
+    "keywords": [
+      "csv to excel",
+      "csv to xlsx converter",
+      "convert csv to excel online free",
+      "csv to excel no upload",
+      "csv to spreadsheet converter",
+      "free csv to xlsx converter"
+    ],
+    "h1": "CSV to a Real Excel File",
+    "faq": [
+      {
+        "q": "Does the output open in Excel?",
+        "a": "Yes, it's a real .xlsx workbook that opens in Excel, Google Sheets, or any spreadsheet app."
+      },
+      {
+        "q": "Is my CSV uploaded anywhere?",
+        "a": "No, the conversion happens entirely in your browser — your file never leaves your device."
+      },
+      {
+        "q": "Do I need to sign up to use this?",
+        "a": "No, it's free with no signup or account required."
+      }
+    ]
+  },
+  "excel-to-csv": {
+    "metaTitle": "Excel to CSV Converter Online Free | Inerate Tools",
+    "metaDescription": "Convert an Excel (.xlsx) sheet to plain .csv, free online. Runs entirely in your browser — no upload, no signup, your spreadsheet stays private.",
+    "keywords": [
+      "excel to csv",
+      "xlsx to csv converter",
+      "convert excel to csv online free",
+      "excel to csv no upload",
+      "spreadsheet to csv converter",
+      "free xlsx to csv converter"
+    ],
+    "h1": "Excel to Plain CSV",
+    "faq": [
+      {
+        "q": "Which sheet gets converted?",
+        "a": "The first sheet in the workbook — other sheets are not included in the CSV."
+      },
+      {
+        "q": "Is my workbook uploaded anywhere?",
+        "a": "No, the conversion happens entirely in your browser — your file never leaves your device."
+      },
+      {
+        "q": "Do I need to sign up to use this?",
+        "a": "No, it's free with no signup or account required."
+      }
+    ]
+  },
+  "image-to-base64": {
+    "metaTitle": "Image to Base64 Converter Online Free | Inerate Tools",
+    "metaDescription": "Encode an image as a base64 data URI free online, ready to paste into CSS, HTML or JSON. No upload, no signup — runs entirely in your browser.",
+    "keywords": [
+      "image to base64",
+      "image to base64 converter online free",
+      "base64 encode image",
+      "convert image to data uri",
+      "image to base64 no upload",
+      "png to base64 online"
+    ],
+    "h1": "Image to Base64",
+    "faq": [
+      {
+        "q": "What can I do with the output?",
+        "a": "Paste the data: URI straight into a CSS background-image, an HTML img src, or a JSON field — no separate image file needed."
+      },
+      {
+        "q": "Is my image uploaded anywhere?",
+        "a": "No, encoding happens entirely in your browser using the File API — your image never leaves your device."
+      },
+      {
+        "q": "Is there a file size limit?",
+        "a": "No hard limit, but base64 adds about 33% overhead, so very large images make for a very large string."
+      }
+    ]
   }
 };

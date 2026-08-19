@@ -28,12 +28,12 @@ export function Nav() {
         initial={false}
         animate={condensed ? "pill" : "bar"}
         variants={{
-          bar: { marginTop: 20, maxWidth: 1024, borderRadius: 24 },
-          pill: { marginTop: 14, maxWidth: 680, borderRadius: 999 },
+          bar: { marginTop: 12, maxWidth: 880, borderRadius: 999 },
+          pill: { marginTop: 12, maxWidth: 780, borderRadius: 999 },
         }}
         transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
         style={{ willChange: "max-width, border-radius, margin-top" }}
-        className="nav-glass flex w-full items-center justify-between px-4 py-3.5 sm:px-5"
+        className="nav-glass flex w-full items-center justify-between px-4 py-2.5 sm:px-5"
       >
         <Link href="/" className="group flex shrink-0 items-center gap-2.5">
           <div className="relative size-9 shrink-0 overflow-hidden rounded-xl border border-[var(--border)] shadow-[0_2px_10px_rgba(0,0,0,0.18),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-transform duration-300 group-hover:scale-105">

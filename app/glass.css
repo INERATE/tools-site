@@ -1,38 +1,28 @@
 /* Liquid-glass, Claymorphic and macOS Materials */
 
 @layer components {
-  /* Apple Liquid Glass Navbar Capsule */
+  /* Apple Liquid Glass / GrowthCharters Frosted Glass Navbar & Dock Capsule */
   .nav-glass {
     position: relative;
-    overflow: hidden;
-    /* Flat tint + blur only, no layered highlight gradient — matches the
-       reference (GrowthCharters marketing nav) reading as clean frosted
-       glass instead of glossy plastic. */
-    background: color-mix(in srgb, var(--bg-raised) 62%, transparent);
-    backdrop-filter: blur(36px) saturate(200%);
-    -webkit-backdrop-filter: blur(36px) saturate(200%);
+    background: color-mix(in srgb, var(--bg-raised) 76%, transparent);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid var(--border);
     border-radius: 9999px;
     box-shadow:
-      0 20px 50px -15px rgba(0, 0, 0, 0.25),
-      0 6px 18px -4px rgba(0, 0, 0, 0.12),
-      inset 0 1.5px 2px var(--glass-hi),
-      inset 0 -1px 1px rgba(0, 0, 0, 0.15);
+      0 12px 32px -8px rgba(0, 0, 0, 0.12),
+      0 4px 12px -2px rgba(0, 0, 0, 0.06);
     transform: translateZ(0);
-    will-change: transform;
+    will-change: transform, max-width, border-radius;
+    transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .nav-glass::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: var(--glass-border);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+  [data-theme="daylight"] .nav-glass {
+    background: #ffffffb8;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 12px 32px -8px rgba(0, 0, 0, 0.06),
+      0 4px 12px -2px rgba(0, 0, 0, 0.03);
   }
 
   /* Ultra-Refined Glass Material */

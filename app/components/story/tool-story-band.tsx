@@ -31,10 +31,15 @@ export function ToolStoryBand({ tool, index }: { tool: Tool; index: number }) {
       {clip ? (
         <div className="relative w-full max-w-[22rem] shrink-0 md:max-w-[26rem]">
           {/* Stage: the clip's glass material was lit for a dark backdrop —
-              without this it reads as flat black slabs on light themes. */}
+              without this it reads as flat black slabs on light themes.
+              mix-blend-mode:multiply instead of a fixed opacity: it darkens
+              proportionally to whatever's underneath, so it's strong on
+              Daylight's white card and nearly invisible on the other 4
+              themes' already-dark cards — no per-theme tuning needed. */}
           <div
             aria-hidden
-            className="absolute inset-[6%] rounded-[2rem] bg-[radial-gradient(ellipse_at_center,rgba(8,8,10,0.6),rgba(8,8,10,0.15)_60%,transparent_75%)] blur-2xl"
+            style={{ mixBlendMode: "multiply" }}
+            className="absolute inset-[6%] rounded-[2rem] bg-[radial-gradient(ellipse_at_center,rgba(8,8,10,0.9),rgba(8,8,10,0.35)_60%,transparent_75%)] blur-2xl"
           />
           <FrameLoop {...clip} className="relative w-full" />
         </div>

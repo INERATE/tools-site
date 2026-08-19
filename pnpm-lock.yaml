@@ -38,6 +38,9 @@ importers:
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
+      pdf-lib-encrypt:
+        specifier: ^1.0.3
+        version: 1.0.3(pdf-lib@1.17.1)
       pdfjs-dist:
         specifier: ^6.2.108
         version: 6.2.108
@@ -3451,6 +3454,12 @@ packages:
 
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
+
+  pdf-lib-encrypt@1.0.3:
+    resolution: {integrity: sha512-UjkFZ1Jpb8ALz+JG9JJPnidgmw1lCThtjariVBVAKBIYcG0vVuEZYLR7fGDaYdIBgKjm0lBOQA/p7KGCOhmlUA==}
+    engines: {node: '>=19'}
+    peerDependencies:
+      pdf-lib: '>=1.17.0'
 
   pdf-lib@1.17.1:
     resolution: {integrity: sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw==}
@@ -7655,6 +7664,10 @@ snapshots:
   path-to-regexp@8.4.2: {}
 
   pathe@2.0.3: {}
+
+  pdf-lib-encrypt@1.0.3(pdf-lib@1.17.1):
+    dependencies:
+      pdf-lib: 1.17.1
 
   pdf-lib@1.17.1:
     dependencies:

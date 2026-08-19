@@ -8,6 +8,7 @@ import { TOOLS_CONVERT } from "./tool-list-convert";
 import { TOOLS_OPTIMIZE } from "./tool-list-optimize";
 import { TOOLS_MORE } from "./tool-list-more";
 import { TOOLS_INTELLIGENCE } from "./tool-list-intelligence";
+import { TOOLS_SECURITY } from "./tool-list-security";
 
 export const TOOLS = [
   {
@@ -62,6 +63,7 @@ export const TOOLS = [
   ...TOOLS_CONVERT,
   ...TOOLS_MORE,
   ...TOOLS_INTELLIGENCE,
+  ...TOOLS_SECURITY,
 ];
 
 /** The homepage's curated 6, ordered by real-world search volume — see PLAN.md §7. Everything else lives at /all-tools. */

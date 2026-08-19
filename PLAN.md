@@ -12,12 +12,12 @@
 | 6 | PDF to Markdown · Markdown to PDF · Extract Images | ✅ shipped, verified, deployed |
 | 7 | Compress Image · Resize Image · Convert Image | ✅ shipped, verified, deployed |
 | 8 | Crop Image · Watermark Image · Remove Background | ✅ shipped, verified, deployed |
-| 9 | AI Summarizer (client shipped) · Translate PDF · Smart PDF Forms | 🔶 1/3 shipped — client done, needs a real backend URL to actually run |
+| 9 | AI Summarizer · Smart PDF Forms · Translate PDF | 🟡 3/3 shipped — Smart PDF Forms fully on-device; AI Summarizer/Translate PDF ship client-side, await a real backend URL to actually run |
 
 Plus the 6 pre-existing tools (Merger, Split, PDF to Image, Watermark
-Remover, DOCX to PDF, Résumé Builder) = **31 tools total**, every one
+Remover, DOCX to PDF, Résumé Builder) = **33 tools total**, every one
 client-side, every one confirmed live at tools.inerate.com via a direct
-32-page production sweep (status 200, zero console errors, zero layout
+35-page production sweep (status 200, zero console errors, zero layout
 overflow desktop+mobile) — not a claim, a script run against the real
 domain, output kept in this session's scratch directory.
 
@@ -46,12 +46,12 @@ per tool, one consistent system reused ~30 times.
 
 ## 1. Where we honestly are
 
-**31 tools shipped**, all client-side, all live at tools.inerate.com,
-spanning Phases 1-8 below (PDF organize/convert/optimize/security plus a
-full image-tools suite) plus a landing-page storytelling carousel and a
-working search overlay (both fixed/shipped this session). Started this
-file at 6 tools; kept the original phase log intact underneath as the
-record of how we got here.
+**33 tools shipped**, all client-side, all live at tools.inerate.com,
+spanning Phases 1-9 below (PDF organize/convert/optimize/security, a
+full image-tools suite, and a PDF Intelligence trio) plus a landing-page
+storytelling carousel and a working search overlay (both fixed/shipped
+this session). Started this file at 6 tools; kept the original phase log
+intact underneath as the record of how we got here.
 
 **Monetization scaffolding is live**: `AdSlot` (`app/components/ad-slot.tsx`)
 is wired into every one of the 29 tool pages plus the homepage and
@@ -156,20 +156,32 @@ Crop/Watermark reuse Phase 7's image-board. Remove Background needs
 onnxruntime-web + a small segmentation model — flag as the heaviest tool
 in the suite, lazy-loaded so it doesn't tax every other page's bundle.
 
-**Phase 9 — 🔴 AI Summarizer (shipped, awaiting a backend) · Translate PDF ·
-Smart PDF Forms**
-AI Summarizer shipped: extracts text client-side (same `extractPdfLines`
-every other tool uses), POSTs it — text only, never the file — to
-`NEXT_PUBLIC_AI_ENDPOINT`. No backend is configured yet, so today it
-shows an honest "not set up yet" state instead of faking a result, same
-pattern as `AdSlot`. Building the actual Cloudflare Worker (holding the
-real LLM key server-side, never in the client bundle) is the next step
-whenever that's wanted — the client side doesn't need to change, just
-the env var. Not yet Pro-gated: gating it now, before Pro is purchasable,
-would make it permanently inert even once a backend exists; `useIsPro()`
-is a one-line addition to `use-summarize.ts` once payments are real.
-Translate PDF and Smart PDF Forms reuse the same endpoint pattern once
-there's a reason to add them.
+**Phase 9 — 🟡/🔴 AI Summarizer · Smart PDF Forms · Translate PDF**
+*(all 3 shipped)*
+
+AI Summarizer and Translate PDF: extract text client-side (same
+`extractPdfLines` every other tool uses), POST it — text only, never
+the file — to `NEXT_PUBLIC_AI_ENDPOINT`. No backend is configured yet,
+so today both honestly show "not set up yet" instead of faking a
+result, same pattern as `AdSlot`. Building the actual Cloudflare Worker
+(holding the real LLM key server-side, never in the client bundle) is
+the next step whenever that's wanted — the client side doesn't need to
+change, just the env var. Not yet Pro-gated: gating either one now,
+before Pro is purchasable, would make it permanently inert even once a
+backend exists; `useIsPro()` is a one-line addition once payments are
+real.
+
+Smart PDF Forms turned out **not to need a server at all** — reclassified
+🟡, not 🔴. It heuristically finds blank-line (`___`) and checkbox
+(`[ ]`) patterns in a PDF's text (proportional character-offset →
+x-position within a pdf.js text run, not per-glyph precision — disclosed
+in the tool's own copy) and creates real AcroForm fields at those
+positions via pdf-lib, entirely on-device. Verified end-to-end, not just
+visually: fed the output back into this suite's own PDF Forms tool,
+confirmed all 4 fields on a test document were genuinely readable and
+fillable, filled and flattened them, then rendered the result and
+visually confirmed both text fields and the checked/unchecked checkbox
+states landed exactly where the original blanks were.
 
 Beyond Phase 9: format-pair landing-page multiplication (`/word-to-pdf`,
 `/pdf-to-word`, …) templated off the engines above — this is how the nav

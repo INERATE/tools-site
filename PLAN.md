@@ -374,6 +374,12 @@ user request 2026-08-19.
   who leaves feedback (exact mechanic — Pro trial time, badge, nothing
   concrete yet — undecided, needs `useIsPro()`/entitlement system to
   exist first, see §1).
+- The overlay also takes a free-text "what tool are you missing?"
+  field, separate from the this-tool rating — a direct pipeline from
+  real users to the roadmap in §3/§6, instead of guessing priority
+  from search-volume alone. Collected as its own data point (tool
+  page it was submitted from + the free text), not folded into the
+  thumbs-up/down comment.
 
 **Storage destination is not decided yet — user will specify.** Same
 shape as the AI Summarizer/Translate PDF pattern (§3 Phase 9): the

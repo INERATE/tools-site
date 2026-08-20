@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = "force-static";
+export const revalidate = 86400;
+
 const CATEGORIES = [...new Set(TOOLS.map((t) => t.category))];
 
 export default function AllToolsPage() {

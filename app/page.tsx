@@ -9,6 +9,9 @@ import { AdSlot } from "./components/ad-slot";
 import { HomeSearchBar } from "./components/home-search-bar";
 import { Footer } from "./components/footer";
 
+export const dynamic = "force-static";
+export const revalidate = 86400;
+
 export default function Home() {
   return (
     <div className="min-h-screen relative overflow-x-hidden">

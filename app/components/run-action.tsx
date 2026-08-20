@@ -2,6 +2,7 @@
 
 import { Check, Download, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { NextSteps } from "./next-steps";
 
 const ACTION =
   "clay flex h-12 w-full cursor-pointer items-center justify-center gap-2 text-[15px] font-semibold " +
@@ -69,6 +70,13 @@ export function RunAction({
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* Every tool ends here, so cross-tool discovery lives here too — one
+          place instead of sixty, and it can only ever appear once the user is
+          actually finished. */}
+      <div className="mt-5">
+        <NextSteps show={!!url} />
+      </div>
     </div>
   );
 }

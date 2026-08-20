@@ -5,7 +5,16 @@ import { ChevronDown, Download, Redo2, Share2, Undo2 } from "lucide-react";
 const ICON_BTN =
   "grid size-8 place-items-center rounded-lg text-[var(--text-dim)] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--text)]";
 
-export function EditorTopbar({ fileName }: { fileName: string }) {
+export function EditorTopbar({
+  fileName, edited = 0, busy = false, outUrl = null, onExport, canExport = false,
+}: {
+  fileName: string;
+  edited?: number;
+  busy?: boolean;
+  outUrl?: string | null;
+  onExport?: () => void;
+  canExport?: boolean;
+}) {
   return (
     <header className="nav-glass relative z-30 flex h-14 shrink-0 items-center justify-between gap-4 px-4">
       <div className="flex min-w-0 items-center gap-3">
@@ -22,7 +31,7 @@ export function EditorTopbar({ fileName }: { fileName: string }) {
         </button>
         <span className="hidden items-center gap-1.5 text-[11.5px] text-[var(--text-dim)] sm:flex">
           <span className="size-1.5 rounded-full bg-emerald-400" />
-          Saved locally
+          {edited > 0 ? `${edited} edit${edited === 1 ? "" : "s"} pending` : "Nothing uploaded"}
         </span>
       </div>
 
@@ -38,13 +47,27 @@ export function EditorTopbar({ fileName }: { fileName: string }) {
           <Share2 aria-hidden className="size-3.5" />
           Share
         </button>
-        <button
-          className="shimmer flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold text-[var(--on-accent)]"
-          style={{ background: "linear-gradient(135deg,var(--accent),var(--accent-2))" }}
-        >
-          <Download aria-hidden className="size-3.5" />
-          Export
-        </button>
+        {outUrl ? (
+          <a
+            href={outUrl}
+            download={fileName.replace(/\.pdf$/i, "") + "-edited.pdf"}
+            className="shimmer flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold text-[var(--on-accent)]"
+            style={{ background: "linear-gradient(135deg,var(--accent-3),var(--accent))" }}
+          >
+            <Download aria-hidden className="size-3.5" />
+            Download
+          </a>
+        ) : (
+          <button
+            onClick={onExport}
+            disabled={!canExport || busy}
+            className="shimmer flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold text-[var(--on-accent)] disabled:cursor-not-allowed disabled:opacity-45"
+            style={{ background: "linear-gradient(135deg,var(--accent),var(--accent-2))" }}
+          >
+            <Download aria-hidden className="size-3.5" />
+            {busy ? "Working…" : "Export"}
+          </button>
+        )}
       </div>
     </header>
   );

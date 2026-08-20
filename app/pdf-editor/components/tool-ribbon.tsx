@@ -17,7 +17,7 @@ export const TOOLS: { id: EditorMode; icon: typeof Type; label: string }[] = [
   { id: "watermark", icon: Droplets, label: "Watermark" },
   { id: "esign", icon: PenTool, label: "eSign" },
   { id: "redact", icon: ShieldAlert, label: "Redact" },
-  { id: "console", icon: Link2, label: "Link" },
+  { id: "link", icon: Link2, label: "Link" },
 ];
 
 export function ToolRibbon({

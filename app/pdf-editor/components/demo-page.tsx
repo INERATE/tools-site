@@ -3,10 +3,13 @@
 import { Block } from "./canvas-stage";
 
 const BODY = "text-[7.5px] leading-[1.65] text-[#33304a] text-justify";
+// Placeholder body copy for the layout specimen. Deliberately contains no
+// figures or findings — invented statistics must never sit in shipped markup,
+// where they read as real research.
 const LINES = [
   "Conventional editors reconstruct the document by converting it to a word-processor format, which discards the absolute positioning that defines the original layout.",
-  "We instead treat each page as an immutable raster backdrop and reconcile edits against the parsed glyph geometry, preserving column structure and baseline grid.",
-  "Across a corpus of 1,240 preprints the proposed pipeline retained column alignment in 98.1% of pages, against 41.6% for the conversion round-trip baseline.",
+  "We instead treat each page as an immutable backdrop and reconcile edits against the parsed glyph geometry, preserving column structure and the baseline grid.",
+  "This section is placeholder text used to preview how a two-column layout behaves while a paragraph is selected and edited in place.",
 ];
 
 /** A two-column specimen page — the hardest real case (academic paper). */
@@ -49,7 +52,7 @@ export function DemoPage({ selected, onSelect }: { selected: string | null; onSe
               ))}
             </div>
             <p className="mt-1 text-center font-serif text-[6.5px] text-[#5b5678]">
-              Figure 1 — Layout retention by method.
+              Figure 1 — Placeholder figure.
             </p>
           </Block>
           <Block id="res-h" selected={selected} onSelect={onSelect} size={8}>

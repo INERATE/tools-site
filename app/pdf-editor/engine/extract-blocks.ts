@@ -22,6 +22,20 @@ export interface Line {
 
 const BASELINE_TOL = 2.2; // pt — spans within this share a baseline
 
+/**
+ * pdf.js reports an internal font id, but the underlying PostScript name is
+ * usually carried in it (e.g. "g_d0_f1" is opaque, but many files yield
+ * "Times-Bold" / "ABCDEF+Helvetica-BoldOblique"). Read what we can; Phase 2
+ * replaces this with real FontDescriptor-flag matching.
+ */
+export function styleOf(fontName: string) {
+  const n = fontName.toLowerCase();
+  return {
+    bold: /bold|black|heavy|semibold|[-,]bd\b/.test(n),
+    italic: /italic|oblique|[-,]it\b/.test(n),
+  };
+}
+
 export async function pageSpans(page: PDFPageProxy): Promise<Span[]> {
   const content = await page.getTextContent();
   const out: Span[] = [];

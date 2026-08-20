@@ -11,9 +11,12 @@ const RAIL = [
 ];
 
 export function PageRail({
-  pages, active, onPick,
+  pages, active, onPick, thumbs = [],
 }: {
-  pages: number; active: number; onPick: (i: number) => void;
+  pages: number;
+  active: number;
+  onPick: (i: number) => void;
+  thumbs?: { index: number; url: string }[];
 }) {
   return (
     <aside className="flex shrink-0 border-r border-[var(--border)]">
@@ -51,15 +54,18 @@ export function PageRail({
               }`}
               style={{ background: "linear-gradient(160deg,#fff,#eceaf5)" }}
             >
-              <div className="flex h-full flex-col gap-[3px] p-2">
-                <div className="h-1.5 w-3/4 rounded-full bg-[#3b3654]/70" />
-                <div className="h-[3px] w-full rounded-full bg-[#3b3654]/20" />
-                <div className="h-[3px] w-full rounded-full bg-[#3b3654]/20" />
-                <div className="h-[3px] w-2/3 rounded-full bg-[#3b3654]/20" />
-                <div className="mt-1 h-6 w-full rounded bg-[#3b3654]/12" />
-                <div className="h-[3px] w-full rounded-full bg-[#3b3654]/20" />
-                <div className="h-[3px] w-4/5 rounded-full bg-[#3b3654]/20" />
-              </div>
+              {thumbs[i] ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={thumbs[i].url} alt={`Page ${i + 1}`} className="size-full object-cover object-top" />
+              ) : (
+                <div className="flex h-full flex-col gap-[3px] p-2">
+                  <div className="h-1.5 w-3/4 rounded-full bg-[#3b3654]/70" />
+                  <div className="h-[3px] w-full rounded-full bg-[#3b3654]/20" />
+                  <div className="h-[3px] w-2/3 rounded-full bg-[#3b3654]/20" />
+                  <div className="mt-1 h-6 w-full rounded bg-[#3b3654]/12" />
+                  <div className="h-[3px] w-4/5 rounded-full bg-[#3b3654]/20" />
+                </div>
+              )}
             </div>
             <div className={`mt-1 text-center text-[10.5px] ${i === active ? "font-semibold text-[var(--accent)]" : "text-[var(--text-dim)]"}`}>
               {i + 1}

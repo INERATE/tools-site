@@ -1,15 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: [
-    "pdf-lib",
-    "pdfjs-dist",
-    "tesseract.js",
-    "xlsx",
-    "docx",
-    "pptxgenjs",
-    "@imgly/background-removal",
-  ],
   async headers() {
     return [
       {
@@ -35,3 +26,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+

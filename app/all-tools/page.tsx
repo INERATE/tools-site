@@ -40,7 +40,7 @@ export default function AllToolsPage() {
 
         <div className="mt-12 flex flex-col gap-14">
           {CATEGORIES.map((category) => (
-            <section key={category}>
+            <section key={category} style={{ contentVisibility: "auto", containIntrinsicSize: "0 320px" }}>
               <h2 className="mb-5 text-[13px] font-bold tracking-[0.1em] text-[var(--text-dim)] uppercase">{category}</h2>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {TOOLS.filter((t) => t.category === category).map((tool, i) => (

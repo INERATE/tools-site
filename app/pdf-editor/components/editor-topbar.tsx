@@ -1,12 +1,16 @@
 "use client";
 
-import { ChevronDown, Download, Redo2, Share2, Undo2 } from "lucide-react";
+import { ChevronDown, Redo2, Share2, Undo2 } from "lucide-react";
+import type { ExportRisk } from "../engine/risk";
+import { ExportButton } from "./export-button";
 
 const ICON_BTN =
   "grid size-8 place-items-center rounded-lg text-[var(--text-dim)] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--text)]";
 
+const ZERO_RISK: ExportRisk = { overflow: 0, seam: 0, math: 0, total: 0 };
+
 export function EditorTopbar({
-  fileName, edited = 0, busy = false, outUrl = null, onExport, canExport = false,
+  fileName, edited = 0, busy = false, outUrl = null, onExport, canExport = false, risk = ZERO_RISK,
 }: {
   fileName: string;
   edited?: number;
@@ -14,6 +18,7 @@ export function EditorTopbar({
   outUrl?: string | null;
   onExport?: () => void;
   canExport?: boolean;
+  risk?: ExportRisk;
 }) {
   return (
     <header className="nav-glass relative z-30 flex h-14 shrink-0 items-center justify-between gap-4 px-4">
@@ -47,27 +52,7 @@ export function EditorTopbar({
           <Share2 aria-hidden className="size-3.5" />
           Share
         </button>
-        {outUrl ? (
-          <a
-            href={outUrl}
-            download={fileName.replace(/\.pdf$/i, "") + "-edited.pdf"}
-            className="shimmer flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold text-[var(--on-accent)]"
-            style={{ background: "linear-gradient(135deg,var(--accent-3),var(--accent))" }}
-          >
-            <Download aria-hidden className="size-3.5" />
-            Download
-          </a>
-        ) : (
-          <button
-            onClick={onExport}
-            disabled={!canExport || busy}
-            className="shimmer flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold text-[var(--on-accent)] disabled:cursor-not-allowed disabled:opacity-45"
-            style={{ background: "linear-gradient(135deg,var(--accent),var(--accent-2))" }}
-          >
-            <Download aria-hidden className="size-3.5" />
-            {busy ? "Working…" : "Export"}
-          </button>
-        )}
+        <ExportButton fileName={fileName} busy={busy} outUrl={outUrl} onExport={onExport} canExport={canExport} risk={risk} />
       </div>
     </header>
   );

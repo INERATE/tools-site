@@ -33,6 +33,7 @@ export default function PdfEditorPage() {
         outUrl={e.outUrl}
         onExport={e.exportPdf}
         canExport={live}
+        risk={e.risk}
       />
       <ToolRibbon tab={tab} onTab={setTab} tool={tool} onTool={setTool} zoom={zoom} onZoom={setZoom} />
 
@@ -45,6 +46,12 @@ export default function PdfEditorPage() {
               className="flex-1 overflow-auto p-6"
               style={{ background: "color-mix(in srgb, var(--bg) 92%, black)" }}
             >
+              {current.scanned && (
+                <div className="mx-auto mb-4 w-fit max-w-full rounded-xl border border-amber-500/30 bg-amber-500/8 px-4 py-2.5 text-[12.5px] text-amber-400">
+                  This page is a scan — an image with no text layer. Nothing on it can be edited as text.
+                  Run it through <a href="/ocr-pdf" className="underline">OCR PDF</a> first to make the text real.
+                </div>
+              )}
               <div className="mx-auto w-fit">
                 <LiveCanvas
                   page={current}

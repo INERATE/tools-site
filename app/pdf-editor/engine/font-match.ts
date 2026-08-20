@@ -16,7 +16,11 @@ export interface FontMatch {
   family: FontFamily;
   label: string;
   confidence: number; // 0-100, shown to the user — never invented, always derived
+  /** cmmi/cmsy/cmex/msam/msbm and friends — math symbol faces, not body text. */
+  isMath: boolean;
 }
+
+const MATH = /^cm(mi|sy|ex)|^ms[ab]m|^msym|mathematica|^lm(mi|sy|ex)/i;
 
 // cmtt is Computer Modern TYPEWRITER — checked in MONO, before the rest of
 // the cm* family (cmr/cmbx/cmti/cmmi/cmsy/cmex — roman, bold, italic, and the
@@ -28,18 +32,19 @@ const SUBSET_TAG = /^[A-Z]{6}\+/;
 export function matchFont(rawName: string): FontMatch {
   const name = rawName.replace(SUBSET_TAG, "");
   const hadTag = SUBSET_TAG.test(rawName);
+  const isMath = MATH.test(name);
 
   if (MONO.test(name)) {
-    return { family: "mono", label: name || "Monospace (matched)", confidence: hadTag ? 92 : 78 };
+    return { family: "mono", label: name || "Monospace (matched)", confidence: hadTag ? 92 : 78, isMath };
   }
   if (SERIF.test(name)) {
-    return { family: "serif", label: name || "Serif (matched)", confidence: hadTag ? 92 : 78 };
+    return { family: "serif", label: name || "Serif (matched)", confidence: hadTag ? 92 : 78, isMath };
   }
   if (/helvetica|arial|sans/i.test(name)) {
-    return { family: "sans", label: name || "Sans (matched)", confidence: hadTag ? 92 : 78 };
+    return { family: "sans", label: name || "Sans (matched)", confidence: hadTag ? 92 : 78, isMath };
   }
 
   // pdf.js gave us an opaque internal id (e.g. "g_d0_f2") with no readable
   // name — nothing to match against, so say so plainly instead of guessing.
-  return { family: "sans", label: "Helvetica (no name reported)", confidence: 35 };
+  return { family: "sans", label: "Helvetica (no name reported)", confidence: 35, isMath: false };
 }

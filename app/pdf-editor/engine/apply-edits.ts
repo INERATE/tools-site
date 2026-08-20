@@ -11,23 +11,16 @@ import { embedFontSet, hexToRgb, pickFont } from "./font-pick";
  * kept page 1's original 93-byte stream intact as its own array entry. So we
  * never parse or rewrite existing content.
  *
- * The tradeoff: replacement text is drawn over a rectangle filled with the
- * sampled page background, so a flat background is invisible while a photo or
- * gradient shows a seam. Callers warn before exporting a non-flat edit.
+ * The replacement text is drawn over a rectangle filled with the colour
+ * sampled from the rendered page at load time (block.bgColor). When
+ * block.bgFlat is false the sample sits on a photo/gradient, so the mask will
+ * show a faint seam — callers gate export on that via risk.ts rather than
+ * pretend every edit is clean.
  */
-
-export interface ExportOptions {
-  /** Background colour behind a block, sampled from the rendered page. */
-  background?: (block: TextBlock) => { r: number; g: number; b: number };
-}
 
 const WHITE = { r: 1, g: 1, b: 1 };
 
-export async function applyEdits(
-  file: File | Blob,
-  blocks: TextBlock[],
-  opts: ExportOptions = {},
-): Promise<Blob> {
+export async function applyEdits(file: File | Blob, blocks: TextBlock[]): Promise<Blob> {
   const doc = await PDFDocument.load(await file.arrayBuffer());
   const fonts = await embedFontSet(doc);
   const pages = doc.getPages();
@@ -37,7 +30,7 @@ export async function applyEdits(
     const page = pages[b.pageIndex];
     if (!page) continue;
 
-    const bg = opts.background?.(b) ?? WHITE;
+    const bg = b.bgColor ?? WHITE;
     // pdfY is the BASELINE. Glyphs run from ~0.25em below it (descenders on
     // g/p/y) to ~1.0em above (ascenders/caps), so a rect anchored at the
     // baseline leaves descender stubs showing — caught on a real export.

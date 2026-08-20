@@ -48,6 +48,14 @@ export interface TextBlock {
   matchedFontName?: string;
   matchedFamily?: FontFamily;
   fontMatchConfidence?: number;
+  /** Symbol/math face detected (cmmi/cmsy/cmex etc) — edits may not render as a valid equation. */
+  isMath?: boolean;
+  /** Background sampled from the rendered page, 0-1 per channel. */
+  bgColor?: { r: number; g: number; b: number };
+  /** False when the sampled background isn't a single solid colour — the cover rect will show a seam. */
+  bgFlat?: boolean;
+  /** The current text measures wider than the space it has to fit. */
+  isOverflowing?: boolean;
 }
 
 export interface PageInfo {

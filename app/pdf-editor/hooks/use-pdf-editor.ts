@@ -3,6 +3,8 @@
 import { useCallback, useRef, useState } from "react";
 import { applyEdits } from "../engine/apply-edits";
 import { loadDocument, type LoadedPage } from "../engine/load-document";
+import { measureWidth } from "../engine/measure-text";
+import { exportRisk } from "../engine/risk";
 import type { TextBlock } from "../types";
 
 export function usePdfEditor() {
@@ -39,7 +41,12 @@ export function usePdfEditor() {
   const editBlock = useCallback((id: string, text: string) => {
     setOutUrl(null);
     setBlocks((v) =>
-      v.map((b) => (b.id === id ? { ...b, text, isEdited: text !== b.originalText } : b)),
+      v.map((b) => {
+        if (b.id !== id) return b;
+        const bold = b.fontWeight === "bold" || b.fontWeight === "700";
+        const isOverflowing = measureWidth(text, b.fontSize, b.matchedFamily ?? "sans", bold) > b.pdfWidth * 1.02;
+        return { ...b, text, isEdited: text !== b.originalText, isOverflowing };
+      }),
     );
   }, []);
 
@@ -65,9 +72,12 @@ export function usePdfEditor() {
   }, [file, blocks]);
 
   const edited = blocks.filter((b) => b.isEdited).length;
+  const risk = exportRisk(blocks);
+  const scannedPages = pages.filter((p) => p.scanned).length;
 
   return {
     file, pages, blocks, page, setPage, selected, setSelected,
-    busy, error, outUrl, edited, open, editBlock, setFamily, exportPdf,
+    busy, error, outUrl, edited, risk, scannedPages,
+    open, editBlock, setFamily, exportPdf,
   };
 }

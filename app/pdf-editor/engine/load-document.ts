@@ -1,12 +1,14 @@
 import type { TextBlock } from "../types";
-import { pageSpans, styleOf, toLines } from "./extract-blocks";
-import { matchFont } from "./font-match";
+import { buildBlock } from "./build-block";
+import { pageSpans, toLines } from "./extract-blocks";
 
 export interface LoadedPage {
   index: number;
   width: number;
   height: number;
   url: string;
+  /** True when pdf.js found no text at all on this page — a scanned/image-only page. */
+  scanned: boolean;
 }
 
 export interface Loaded {
@@ -44,42 +46,12 @@ export async function loadDocument(file: File): Promise<Loaded> {
 
       const pw = view.width / SCALE;
       const ph = view.height / SCALE;
-      pages.push({ index: n - 1, width: pw, height: ph, url: canvas.toDataURL("image/png") });
+      const lines = toLines(await pageSpans(p));
+      pages.push({ index: n - 1, width: pw, height: ph, url: canvas.toDataURL("image/png"), scanned: lines.length === 0 });
 
-      for (const [i, line] of toLines(await pageSpans(p)).entries()) {
-        const rawFont = line.spans[0]?.fontName ?? "";
-        const style = styleOf(rawFont);
-        const match = matchFont(rawFont);
-        blocks.push({
-          id: `p${n - 1}-l${i}`,
-          pageIndex: n - 1,
-          pdfX: line.x,
-          pdfY: line.y,
-          pdfWidth: line.width,
-          pdfHeight: line.height,
-          relX: line.x / pw,
-          // rel* is top-left origin for the DOM overlay; PDF y is bottom-left.
-          relY: (ph - line.y - line.height) / ph,
-          relWidth: line.width / pw,
-          relHeight: line.height / ph,
-          text: line.text,
-          originalText: line.text,
-          fontSize: line.height,
-          fontFamily: match.label,
-          fontWeight: style.bold ? "bold" : "normal",
-          fontStyle: style.italic ? "italic" : "normal",
-          color: "#000000",
-          align: "left",
-          lineHeight: 1.2,
-          letterSpacing: 0,
-          isEdited: false,
-          isNew: false,
-          isDeleted: false,
-          matchedFontName: match.label,
-          matchedFamily: match.family,
-          fontMatchConfidence: match.confidence,
-        });
-      }
+      lines.forEach((line, i) => {
+        blocks.push(buildBlock(`p${n - 1}-l${i}`, n - 1, line, ctx, canvas, pw, ph));
+      });
       p.cleanup();
     }
   } finally {

@@ -124,7 +124,7 @@ export interface ConsoleLogEntry {
   timestamp: string;
   type: "info" | "warn" | "error" | "success" | "ast";
   message: string;
-  data?: any;
+  data?: unknown;
 }
 
 export interface PDFDocumentMetadata {

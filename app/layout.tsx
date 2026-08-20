@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const SITE_URL = "https://tools.inerate.com";
 const SITE_TITLE = "Inerate Tools — Free PDF, Image & Document Utilities";
 const SITE_DESCRIPTION =
-  "Merge, split, compress and convert PDFs, edit images, build resumes and more — 40+ free browser-based tools. Nothing is ever uploaded; every file stays on your device.";
+  "Merge, split, compress, edit, and convert PDFs, manipulate images, build resumes, and more — private, 100% browser-based document utilities with zero uploads.";
 
 export const viewport: Viewport = {
   themeColor: [

@@ -7,13 +7,13 @@ import { AdSlot } from "../components/ad-slot";
 import { TOOLS } from "../components/tool-list";
 
 export const metadata: Metadata = {
-  title: "All Tools — 40+ Free PDF, Image & Document Tools",
+  title: "All Tools — Free PDF, Image & Document Utilities",
   description:
-    "Browse every free Inerate tool: merge, split, compress, convert and sign PDFs, edit images, and more. All processing happens in your browser — nothing is uploaded.",
+    "Browse the full suite of free Inerate tools: merge, split, edit, compress, convert and sign PDFs, edit images, and more. All processing happens 100% in your browser.",
   alternates: { canonical: "/all-tools" },
   openGraph: {
-    title: "All Tools — 40+ Free PDF, Image & Document Tools",
-    description: "Browse every free Inerate tool. Nothing is uploaded — everything runs in your browser.",
+    title: "All Tools — Free PDF, Image & Document Utilities",
+    description: "Browse the full suite of free Inerate tools. 100% client-side privacy — everything runs in your browser.",
     url: "https://tools.inerate.com/all-tools",
   },
 };

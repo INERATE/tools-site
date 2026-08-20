@@ -13,6 +13,7 @@ import { TOOLS_UTILITY } from "./tool-list-utility";
 import { TOOLS_TEXT } from "./tool-list-text";
 import { TOOLS_FORMAT_PAIRS } from "./tool-list-format-pairs";
 import { TOOLS_FORMAT_PAIRS_2 } from "./tool-list-format-pairs-2";
+import { TOOLS_ORGANIZE } from "./tool-list-organize";
 
 export const TOOLS = [
   {
@@ -72,6 +73,7 @@ export const TOOLS = [
   ...TOOLS_TEXT,
   ...TOOLS_FORMAT_PAIRS,
   ...TOOLS_FORMAT_PAIRS_2,
+  ...TOOLS_ORGANIZE,
 ];
 
 /** The homepage's curated 6, ordered by real-world search volume — see PLAN.md §7. Everything else lives at /all-tools. */

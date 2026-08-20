@@ -1606,5 +1606,83 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
         "a": "No hard limit, but base64 adds about 33% overhead, so very large images make for a very large string."
       }
     ]
+  },
+  "watermark-pdf": {
+    "metaTitle": "Watermark PDF Online Free | Inerate Tools",
+    "metaDescription": "Add a text watermark to a PDF online free, tiled diagonally or placed once. Runs 100% in your browser - no upload, no signup, your document stays private.",
+    "keywords": [
+      "watermark pdf online free",
+      "add watermark to pdf",
+      "stamp text on pdf",
+      "confidential watermark pdf",
+      "tiled watermark pdf online",
+      "watermark pdf no upload"
+    ],
+    "h1": "Watermark Your PDF, Free",
+    "faq": [
+      {
+        "q": "Can I control how the watermark looks?",
+        "a": "Yes - choose the text, tile it diagonally across every page or place it once, and adjust its opacity."
+      },
+      {
+        "q": "Is my PDF uploaded to a server?",
+        "a": "No, the watermark is stamped entirely inside your browser using pdf-lib - your document never leaves your device."
+      },
+      {
+        "q": "Does this work on password-protected PDFs?",
+        "a": "No, remove the password first, then watermark it."
+      }
+    ]
+  },
+  "extract-pdf-pages": {
+    "metaTitle": "Extract Pages from PDF Online Free | Inerate Tools",
+    "metaDescription": "Extract specific pages from a PDF online free - type a range or pick pages visually, reorder what's left, then save. Runs entirely in your browser, no upload.",
+    "keywords": [
+      "extract pages from pdf",
+      "extract pdf pages online free",
+      "pull pages out of pdf",
+      "save specific pdf pages",
+      "pdf page extractor no upload"
+    ],
+    "h1": "Extract Pages from a PDF",
+    "faq": [
+      {
+        "q": "How do I choose which pages to extract?",
+        "a": "Type a page range like \"1-3, 5\", or click thumbnails on the board to keep just those pages."
+      },
+      {
+        "q": "Can I reorder the extracted pages?",
+        "a": "Yes, drag pages into any order on the board before saving."
+      },
+      {
+        "q": "Is my PDF uploaded to a server?",
+        "a": "No, pages are extracted entirely inside your browser - the file never leaves your device."
+      }
+    ]
+  },
+  "delete-pdf-pages": {
+    "metaTitle": "Delete Pages from PDF Online Free | Inerate Tools",
+    "metaDescription": "Delete pages from a PDF online free - type which pages to remove or click them off the board, then save. Runs entirely in your browser, nothing is uploaded.",
+    "keywords": [
+      "delete pages from pdf",
+      "remove pages from pdf online free",
+      "delete pdf page online",
+      "remove pdf page no upload"
+    ],
+    "h1": "Delete Pages from a PDF",
+    "faq": [
+      {
+        "q": "How do I choose which pages to delete?",
+        "a": "Type the pages to remove like \"2, 4-5\", or click a page thumbnail on the board to drop it."
+      },
+      {
+        "q": "Can I undo removing a page?",
+        "a": "Yes, re-add the same PDF or adjust the range - nothing is saved until you click download."
+      },
+      {
+        "q": "Is my PDF uploaded to a server?",
+        "a": "No, pages are removed entirely inside your browser - the file never leaves your device."
+      }
+    ]
   }
 };

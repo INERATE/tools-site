@@ -68,7 +68,7 @@ export function ToolCard({ href, icon: Icon, title, description, live, category,
 
   if (!live) return card;
   return (
-    <Link href={href} onFocus={tilt.enter} onBlur={tilt.leave} className="block h-full cursor-pointer rounded-[26px]">
+    <Link href={href} prefetch={false} onFocus={tilt.enter} onBlur={tilt.leave} className="block h-full cursor-pointer rounded-[26px]">
       {card}
     </Link>
   );

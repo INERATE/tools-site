@@ -33,7 +33,7 @@ export function Footer() {
           <ul className="flex flex-col gap-2">
             {PRODUCT.map((t) => (
               <li key={t.href}>
-                <Link href={t.href} className="text-[13.5px] text-[var(--text-dim)] transition-colors hover:text-[var(--text)]">
+                <Link href={t.href} prefetch={false} className="text-[13.5px] text-[var(--text-dim)] transition-colors hover:text-[var(--text)]">
                   {t.title}
                 </Link>
               </li>

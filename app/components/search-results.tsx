@@ -24,6 +24,7 @@ export function SearchResults({
         <li key={t.href}>
           <Link
             href={t.href}
+            prefetch={false}
             onClick={onPick}
             onMouseEnter={() => setActive(i)}
             className={`flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors ${

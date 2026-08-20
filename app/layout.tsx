@@ -23,6 +23,9 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+export const dynamic = "force-static";
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: SITE_TITLE, template: "%s | Inerate Tools" },

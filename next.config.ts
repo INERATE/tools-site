@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/all-tools",
+        source: "/:path*",
         headers: [
           {
             key: "Cache-Control",

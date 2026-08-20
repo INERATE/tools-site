@@ -1,35 +1,47 @@
 import { PDFDocument, StandardFonts, type PDFFont } from "pdf-lib";
+import type { FontFamily } from "./font-match";
 import type { TextBlock } from "../types";
 
-export interface FontSet {
+interface Faces {
   regular: PDFFont;
   bold: PDFFont;
   italic: PDFFont;
   boldItalic: PDFFont;
 }
 
+export type FontSet = Record<FontFamily, Faces>;
+
 /**
- * Phase 1 uses the four standard Helvetica faces only. Real family matching
- * (bundled Latin Modern / Nimbus / STIX, subset-tag stripping, a confidence
- * score) is Phase 2 — it changes which font is embedded, not how the page is
- * written, so it slots in here without touching the append-only exporter.
+ * All three standard PDF families (Helvetica/Times/Courier) — each built
+ * into every PDF reader already, so embedding all of them costs nothing.
+ * Real embedded-font-program matching (fontkit + bundled Latin Modern/Nimbus)
+ * is a further step past this; this covers the sans/serif/mono distinction
+ * that accounts for most of what makes edited text look out of place.
  */
 export async function embedFontSet(doc: PDFDocument): Promise<FontSet> {
-  return {
-    regular: await doc.embedFont(StandardFonts.Helvetica),
-    bold: await doc.embedFont(StandardFonts.HelveticaBold),
-    italic: await doc.embedFont(StandardFonts.HelveticaOblique),
-    boldItalic: await doc.embedFont(StandardFonts.HelveticaBoldOblique),
-  };
+  const [sans, serif, mono] = await Promise.all([
+    embedFour(doc, StandardFonts.Helvetica, StandardFonts.HelveticaBold, StandardFonts.HelveticaOblique, StandardFonts.HelveticaBoldOblique),
+    embedFour(doc, StandardFonts.TimesRoman, StandardFonts.TimesRomanBold, StandardFonts.TimesRomanItalic, StandardFonts.TimesRomanBoldItalic),
+    embedFour(doc, StandardFonts.Courier, StandardFonts.CourierBold, StandardFonts.CourierOblique, StandardFonts.CourierBoldOblique),
+  ]);
+  return { sans, serif, mono };
+}
+
+async function embedFour(doc: PDFDocument, r: StandardFonts, b: StandardFonts, i: StandardFonts, bi: StandardFonts): Promise<Faces> {
+  const [regular, bold, italic, boldItalic] = await Promise.all(
+    [r, b, i, bi].map((f) => doc.embedFont(f)),
+  );
+  return { regular, bold, italic, boldItalic };
 }
 
 export function pickFont(block: TextBlock, fonts: FontSet): PDFFont {
+  const faces = fonts[block.matchedFamily ?? "sans"];
   const bold = block.fontWeight === "bold" || block.fontWeight === "700";
   const italic = block.fontStyle === "italic";
-  if (bold && italic) return fonts.boldItalic;
-  if (bold) return fonts.bold;
-  if (italic) return fonts.italic;
-  return fonts.regular;
+  if (bold && italic) return faces.boldItalic;
+  if (bold) return faces.bold;
+  if (italic) return faces.italic;
+  return faces.regular;
 }
 
 export function hexToRgb(hex: string) {

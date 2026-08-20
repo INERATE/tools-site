@@ -43,6 +43,12 @@ export function usePdfEditor() {
     );
   }, []);
 
+  // A manual override always counts as certain — 100, not the auto-detected score.
+  const setFamily = useCallback((id: string, matchedFamily: TextBlock["matchedFamily"]) => {
+    setOutUrl(null);
+    setBlocks((v) => v.map((b) => (b.id === id ? { ...b, matchedFamily, fontMatchConfidence: 100 } : b)));
+  }, []);
+
   const exportPdf = useCallback(async () => {
     if (!file) return;
     setBusy(true);
@@ -62,6 +68,6 @@ export function usePdfEditor() {
 
   return {
     file, pages, blocks, page, setPage, selected, setSelected,
-    busy, error, outUrl, edited, open, editBlock, exportPdf,
+    busy, error, outUrl, edited, open, editBlock, setFamily, exportPdf,
   };
 }

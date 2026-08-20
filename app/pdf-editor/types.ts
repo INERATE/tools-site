@@ -1,4 +1,7 @@
+import type { FontFamily } from "./engine/font-match";
+
 export type { ShapeType } from "./element-types";
+export type { FontFamily };
 
 export type EditorMode =
   | "select"
@@ -43,6 +46,7 @@ export interface TextBlock {
   isNew: boolean;
   isDeleted: boolean;
   matchedFontName?: string;
+  matchedFamily?: FontFamily;
   fontMatchConfidence?: number;
 }
 

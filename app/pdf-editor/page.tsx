@@ -81,7 +81,11 @@ export default function PdfEditorPage() {
           <FloatingDock page={e.page} pages={live ? e.pages.length : 24} onPage={e.setPage} />
         </div>
 
-        <Inspector match={live ? "Helvetica · standard fallback" : "Open a PDF to begin"} />
+        <Inspector
+          block={e.blocks.find((b) => b.id === e.selected)}
+          onFamily={e.setFamily}
+          match={live ? "Click a block to see its matched font" : "Open a PDF to begin"}
+        />
       </div>
     </div>
   );

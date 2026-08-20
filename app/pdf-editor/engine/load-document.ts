@@ -1,5 +1,6 @@
 import type { TextBlock } from "../types";
 import { pageSpans, styleOf, toLines } from "./extract-blocks";
+import { matchFont } from "./font-match";
 
 export interface LoadedPage {
   index: number;
@@ -46,7 +47,9 @@ export async function loadDocument(file: File): Promise<Loaded> {
       pages.push({ index: n - 1, width: pw, height: ph, url: canvas.toDataURL("image/png") });
 
       for (const [i, line] of toLines(await pageSpans(p)).entries()) {
-        const style = styleOf(line.spans[0]?.fontName ?? "");
+        const rawFont = line.spans[0]?.fontName ?? "";
+        const style = styleOf(rawFont);
+        const match = matchFont(rawFont);
         blocks.push({
           id: `p${n - 1}-l${i}`,
           pageIndex: n - 1,
@@ -62,7 +65,7 @@ export async function loadDocument(file: File): Promise<Loaded> {
           text: line.text,
           originalText: line.text,
           fontSize: line.height,
-          fontFamily: "Helvetica",
+          fontFamily: match.label,
           fontWeight: style.bold ? "bold" : "normal",
           fontStyle: style.italic ? "italic" : "normal",
           color: "#000000",
@@ -72,6 +75,9 @@ export async function loadDocument(file: File): Promise<Loaded> {
           isEdited: false,
           isNew: false,
           isDeleted: false,
+          matchedFontName: match.label,
+          matchedFamily: match.family,
+          fontMatchConfidence: match.confidence,
         });
       }
       p.cleanup();

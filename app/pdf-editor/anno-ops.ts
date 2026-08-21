@@ -9,6 +9,7 @@ export interface BoxPatch {
   relHeight?: number;
   color?: string;
   redactStyle?: "blackout" | "blur" | "whiteout";
+  dataUrl?: string;
 }
 
 /** Moves, resizes, or updates styling of a placed box/annotation. */
@@ -28,6 +29,7 @@ export function patchBox(items: Annotation[], id: string, patch: BoxPatch): Anno
       relY: patch.relY !== undefined ? clamp(patch.relY, 0, 1 - relHeight) : a.relY,
       ...(patch.color !== undefined ? { color: patch.color } : {}),
       ...(patch.redactStyle !== undefined ? { redactStyle: patch.redactStyle } : {}),
+      ...(patch.dataUrl !== undefined ? { dataUrl: patch.dataUrl } : {}),
     };
   });
 }

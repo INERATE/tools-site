@@ -204,15 +204,17 @@ export function InspectorEdit({
           </p>
         </div>
 
-        {annotation.kind === "image" && (
+        {(annotation.kind === "image" || annotation.kind === "signature") && (
           <div>
-            <label className="mb-2 block text-[11px] font-semibold text-slate-700">Image Options</label>
+            <label className="mb-2 block text-[11px] font-semibold text-slate-700">
+              {annotation.kind === "signature" ? "Signature Options" : "Image Options"}
+            </label>
             <button
               onClick={() => replaceImageRef.current?.click()}
               className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
             >
               <ImageIcon className="size-3.5 text-indigo-600" />
-              Replace Image
+              Replace {annotation.kind === "signature" ? "Signature" : "Image"}
             </button>
             <input
               ref={replaceImageRef}
@@ -229,6 +231,7 @@ export function InspectorEdit({
                     }
                   };
                   reader.readAsDataURL(f);
+                  e.target.value = "";
                 }
               }}
             />

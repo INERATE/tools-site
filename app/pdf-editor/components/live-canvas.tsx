@@ -14,7 +14,7 @@ const DRAG_TOOL: Partial<Record<EditorMode, AnnotationKind>> = {
 };
 
 export function LiveCanvas({
-  page, blocks, zoom, selected, onSelect, onEdit, tool, anno, color,
+  page, blocks, zoom, selected, onSelect, onEdit, onResizeBlock, tool, anno, color,
 }: {
   page: LoadedPage;
   blocks: TextBlock[];
@@ -22,6 +22,7 @@ export function LiveCanvas({
   selected: string | null;
   onSelect: (id: string | null) => void;
   onEdit: (id: string, text: string) => void;
+  onResizeBlock?: (id: string, patch: { relX?: number; relY?: number; relWidth?: number; relHeight?: number }) => void;
   tool: EditorMode;
   color: string;
   anno: {
@@ -72,7 +73,15 @@ export function LiveCanvas({
 
       {!placing &&
         blocks.map((b) => (
-          <EditableBlock key={b.id} block={b} active={selected === b.id} zoom={zoom} onSelect={onSelect} onEdit={onEdit} />
+          <EditableBlock
+            key={b.id}
+            block={b}
+            active={selected === b.id}
+            zoom={zoom}
+            onSelect={onSelect}
+            onEdit={onEdit}
+            onResize={onResizeBlock}
+          />
         ))}
 
       <AnnotationLayer

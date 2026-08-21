@@ -5,7 +5,7 @@ import { applyEdits } from "../engine/apply-edits";
 import { loadDocument, type Bookmark, type LoadedPage } from "../engine/load-document";
 import { exportRisk } from "../engine/risk";
 import type { TextBlock } from "../types";
-import { withFamily, withText } from "./edit-ops";
+import { withFamily, withFormat, withGeometry, withText } from "./edit-ops";
 import { useAnnotations } from "./use-annotations";
 import { useHistory } from "./use-history";
 import { useOverlays } from "./use-overlays";
@@ -71,6 +71,22 @@ export function usePdfEditor() {
     history.commit((v) => withFamily(v, id, f));
   }, [history, stale]);
 
+  const updateGeometry = useCallback(
+    (id: string, patch: Partial<Pick<TextBlock, "relX" | "relY" | "relWidth" | "relHeight" | "pdfWidth" | "pdfHeight">>) => {
+      stale();
+      history.commit((v) => withGeometry(v, id, patch));
+    },
+    [history, stale]
+  );
+
+  const updateFormat = useCallback(
+    (id: string, patch: Partial<Pick<TextBlock, "fontWeight" | "fontSize" | "color" | "align" | "matchedFamily">>) => {
+      stale();
+      history.commit((v) => withFormat(v, id, patch));
+    },
+    [history, stale]
+  );
+
   const exportPdf = useCallback(async () => {
     if (!file) return;
     setBusy(true);
@@ -110,6 +126,6 @@ export function usePdfEditor() {
     ...overlays,
     anno, pageOps,
     undo: history.undo, redo: history.redo, canUndo: history.canUndo, canRedo: history.canRedo,
-    open, editBlock, setFamily, exportPdf,
+    open, editBlock, setFamily, updateGeometry, updateFormat, exportPdf,
   };
 }

@@ -128,6 +128,7 @@ export function EditorStage({
               selected={e.selected}
               onSelect={e.setSelected}
               onEdit={e.editBlock}
+              onResizeBlock={e.updateGeometry}
               tool={tool}
               color={color}
               anno={e.anno}

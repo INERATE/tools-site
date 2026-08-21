@@ -1,24 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AiDrawer } from "./components/ai-drawer";
 import { CanvasStage } from "./components/canvas-stage";
 import { DocumentSearchBar } from "./components/document-search-bar";
 import { EditorChrome } from "./components/editor-chrome";
 import { EditorStage } from "./components/editor-stage";
-import { ESignModal } from "./components/esign-modal";
 import { FloatingDock } from "./components/floating-dock";
 import { ImagePicker } from "./components/image-picker";
 import { Inspector } from "./components/inspector";
-import { OpenPanel } from "./components/open-panel";
-import { LoadingSkeleton } from "./components/loading-skeleton";
 import { PageGridModal } from "./components/page-grid-modal";
-import { RestoreBanner } from "./components/restore-banner";
-import { ToolHint } from "./components/tool-hint";
 import { PageRail } from "./components/page-rail";
+import { StageOverlays } from "./components/stage-overlays";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
+import { ACCENT, EDITOR_THEME } from "./editor-theme";
 import type { EditorMode } from "./types";
 
-const ACCENT = "#4f46e5";
 
 export default function PdfEditorPage() {
   const [tab, setTab] = useState("Edit");
@@ -27,6 +24,7 @@ export default function PdfEditorPage() {
   const [demoPick, setDemoPick] = useState<string | null>("abs");
   const [signing, setSigning] = useState(false);
   const [gridOpen, setGridOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
   const e = usePdfEditor();
@@ -63,16 +61,7 @@ export default function PdfEditorPage() {
     <div
       data-lenis-prevent
       className="flex h-screen flex-col overflow-hidden bg-[#f3f4f8] text-[#1e293b]"
-      style={{
-        ["--bg" as string]: "#f3f4f8",
-        ["--bg-raised" as string]: "#ffffff",
-        ["--border" as string]: "#e2e8f0",
-        ["--text" as string]: "#0f172a",
-        ["--text-dim" as string]: "#64748b",
-        ["--accent" as string]: "#4f46e5",
-        ["--accent-2" as string]: "#6366f1",
-        ["--on-accent" as string]: "#ffffff",
-      }}
+      style={EDITOR_THEME}
     >
       <EditorChrome
         e={e}
@@ -123,18 +112,14 @@ export default function PdfEditorPage() {
             <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} onPageInView={e.setPage} tool={tool} />
           )}
 
-          {!live && !e.busy && <OpenPanel onFiles={e.open} error={e.error} />}
-          {e.busy && <LoadingSkeleton done={e.progress.done} total={e.progress.total} />}
-          {live && !e.busy && <ToolHint tool={tool} onDone={() => setTool("select")} />}
-          {!live && !e.busy && e.restorable && (
-            <RestoreBanner savedAt={e.restorable.savedAt} onRestore={e.restore} onDiscard={e.discardSaved} />
-          )}
-          {signing && page && (
-            <ESignModal
-              onClose={() => setSigning(false)}
-              onPlace={(dataUrl, ratio) => e.anno.placeSignature(e.page, dataUrl, ratio, page.width / page.height)}
-            />
-          )}
+          <StageOverlays
+            e={e}
+            live={live}
+            tool={tool}
+            onTool={setTool}
+            signing={signing}
+            onCloseSign={() => setSigning(false)}
+          />
 
           <FloatingDock
             page={e.page}
@@ -146,6 +131,13 @@ export default function PdfEditorPage() {
             onFit={() => setZoom(100)}
           />
         </div>
+
+        {aiOpen && (
+          <AiDrawer
+            text={e.blocks.map((b) => b.text).join("\n")}
+            onClose={() => setAiOpen(false)}
+          />
+        )}
 
         <Inspector
           block={e.blocks.find((b) => b.id === e.selected)}

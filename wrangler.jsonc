@@ -11,6 +11,12 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  // Workers AI. A binding, not an API token — the credential never exists in
+  // the browser, so the free daily allowance cannot be drained by anyone who
+  // opens devtools. Nothing to configure in the dashboard.
+  "ai": {
+    "binding": "AI"
+  },
   "routes": [
     {
       "pattern": "tools.inerate.com",

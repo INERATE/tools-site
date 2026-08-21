@@ -57,7 +57,35 @@ export default function AiObjectEraserPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = async (file: File) => {
+    if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+      try {
+        setIsProcessing(true);
+        const pdfjs = await import("pdfjs-dist");
+        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        const doc = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
+        const page = await doc.getPage(1);
+        const viewport = page.getViewport({ scale: 2 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (page.render as any)({ canvasContext: ctx, viewport }).promise;
+          setImageSrc(canvas.toDataURL("image/png"));
+          setResultSrc(null);
+          setShowCompare(false);
+          setHasMask(false);
+        }
+      } catch (e) {
+        console.error("PDF render failed:", e);
+      } finally {
+        setIsProcessing(false);
+      }
+      return;
+    }
+
     if (!file.type.startsWith("image/")) return;
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -189,7 +217,7 @@ export default function AiObjectEraserPage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/*,application/pdf"
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];

@@ -59,9 +59,9 @@ export const TOOLS = [
   {
     href: "/watermark-remover",
     icon: WatermarkIcon,
-    title: "Watermark Remover",
-    description: "Delete watermark and stamp annotations, and cover marks printed into the page.",
-    category: "Clean & Polish",
+    title: "AI Watermark & Object Eraser",
+    description: "Erase watermarks, logos, stamps, and photobombers with AI Generative Fill.",
+    category: "AI & Image Tools",
     live: true,
   },
   ...TOOLS_OPTIMIZE,

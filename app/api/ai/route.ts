@@ -46,12 +46,19 @@ export async function POST(req: Request) {
     });
 
     return Response.json({ result: out.response ?? "", truncated, model: MODEL });
-  } catch {
-    // Most often the daily free allowance is spent. Say so plainly — the UI
-    // then points at bring-your-own-key rather than looking broken.
+  } catch (err) {
+    // Running out of the daily allowance and the model genuinely failing look
+    // nothing alike to an operator, so do not collapse them into one message.
+    const detail = err instanceof Error ? err.message : String(err);
+    const quota = /quota|limit|exceed|neuron|capacity|429/i.test(detail);
     return Response.json(
-      { error: "The free AI allowance is unavailable right now. Add your own API key to keep going." },
-      { status: 429 },
+      {
+        error: quota
+          ? "The free AI allowance is used up for today. Add your own API key to keep going."
+          : "The AI request failed. Add your own API key to keep going.",
+        detail,
+      },
+      { status: quota ? 429 : 502 },
     );
   }
 }

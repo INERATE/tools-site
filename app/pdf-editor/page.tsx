@@ -29,7 +29,6 @@ export default function PdfEditorPage() {
   const imageInput = useRef<HTMLInputElement>(null);
   const e = usePdfEditor();
   const live = e.pages.length > 0;
-  const page = e.pages[e.page];
 
   // eSign and Image are one-shot actions, not drag modes — open the flow and
   // drop back to Select rather than leaving the ribbon stuck on a dead tool.
@@ -142,6 +141,7 @@ export default function PdfEditorPage() {
         <Inspector
           block={e.blocks.find((b) => b.id === e.selected)}
           onFamily={e.setFamily}
+          onFormat={e.updateFormat}
           match={live ? "Click a block to see its matched font" : "Open a PDF to begin"}
           watermark={e.watermark}
           onWatermark={e.editWatermark}

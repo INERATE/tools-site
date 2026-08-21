@@ -42,6 +42,7 @@ export interface TextBlock {
   fontFamily: string;
   fontWeight: "normal" | "bold" | "600" | "700";
   fontStyle: "normal" | "italic";
+  underline?: boolean;
   color: string;
   align: "left" | "center" | "right" | "justify";
   lineHeight: number;

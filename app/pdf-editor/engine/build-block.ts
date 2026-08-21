@@ -2,6 +2,7 @@ import type { Line } from "./extract-blocks";
 import { styleOf } from "./extract-blocks";
 import { matchFont } from "./font-match";
 import { sampleBackground } from "./sample-background";
+import { sampleInk } from "./sample-ink";
 import type { TextBlock } from "../types";
 
 /** Turns one extracted line into a full editable TextBlock, sampling its background from the rendered page. */
@@ -21,6 +22,8 @@ export function buildBlock(
   const relY = (ph - line.y - line.height) / ph;
   const relWidth = line.width / pw;
   const relHeight = line.height / ph;
+  const px = { x: relX * canvas.width, y: relY * canvas.height, w: relWidth * canvas.width, h: relHeight * canvas.height };
+  const color = sampleInk(ctx, px, canvas.width, canvas.height);
   const bg = sampleBackground(
     ctx,
     { x: relX * canvas.width, y: relY * canvas.height, w: relWidth * canvas.width, h: relHeight * canvas.height },
@@ -38,7 +41,7 @@ export function buildBlock(
     fontFamily: match.label,
     fontWeight: style.bold ? "bold" : "normal",
     fontStyle: style.italic ? "italic" : "normal",
-    color: "#000000",
+    color,
     align: "left",
     lineHeight: 1.2,
     letterSpacing: 0,

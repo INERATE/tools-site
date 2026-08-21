@@ -56,6 +56,22 @@ export default function PdfEditorPage() {
     e.setSelected(id);
   };
 
+  const handleFit = () => {
+    if (!live || !e.pages[e.page]) {
+      setZoom((z) => (z === 100 ? 135 : 100));
+      return;
+    }
+    const curPage = e.pages[e.page];
+    const stageEl = document.querySelector("main");
+    if (stageEl && curPage.width > 0) {
+      const availWidth = stageEl.clientWidth - 64;
+      const idealZoom = Math.round((availWidth / curPage.width) * 100);
+      setZoom((z) => (Math.abs(z - idealZoom) < 5 ? 100 : Math.max(60, Math.min(200, idealZoom))));
+    } else {
+      setZoom((z) => (z === 100 ? 135 : 100));
+    }
+  };
+
   return (
     <div
       data-lenis-prevent
@@ -73,6 +89,9 @@ export default function PdfEditorPage() {
         onZoom={setZoom}
         onToggleSearch={() => setSearchOpen((prev) => !prev)}
         onToggleGrid={() => setGridOpen((prev) => !prev)}
+        onRotatePage={() => e.pageOps.rotatePage(e.page)}
+        onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
+        onOpenWatermark={() => e.editWatermark({ enabled: true })}
       />
 
       <div className="relative flex min-h-0 flex-1">
@@ -127,7 +146,7 @@ export default function PdfEditorPage() {
             tool={tool}
             onTool={setTool}
             onToggleGrid={() => setGridOpen(true)}
-            onFit={() => setZoom(100)}
+            onFit={handleFit}
           />
         </div>
 
@@ -140,8 +159,11 @@ export default function PdfEditorPage() {
 
         <Inspector
           block={e.blocks.find((b) => b.id === e.selected)}
+          annotation={e.anno.items.find((a) => a.id === e.anno.picked)}
           onFamily={e.setFamily}
           onFormat={e.updateFormat}
+          onUpdateAnnotation={e.anno.update}
+          onRemoveAnnotation={e.anno.remove}
           match={live ? "Click a block to see its matched font" : "Open a PDF to begin"}
           watermark={e.watermark}
           onWatermark={e.editWatermark}
@@ -149,6 +171,7 @@ export default function PdfEditorPage() {
           onRotatePage={() => e.pageOps.rotatePage(e.page)}
           onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
           onToolSelect={(t) => setTool(t as EditorMode)}
+          onOpenAi={() => setAiOpen(true)}
         />
       </div>
 

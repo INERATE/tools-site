@@ -14,6 +14,7 @@ import { usePersistence, type Session } from "./use-persistence";
 
 export function usePdfEditor() {
   const [file, setFile] = useState<File | null>(null);
+  const [docName, setDocName] = useState<string | null>(null);
   const [pages, setPages] = useState<LoadedPage[]>([]);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [page, setPage] = useState(0);
@@ -40,6 +41,7 @@ export function usePdfEditor() {
     try {
       const loaded = await loadDocument(pdf, (done, total) => setProgress({ done, total }));
       setFile(pdf);
+      setDocName(keep?.docName ?? pdf.name);
       setPages(loaded.pages);
       setBookmarks(loaded.bookmarks);
       history.reset(keep?.blocks ?? loaded.blocks);
@@ -108,7 +110,7 @@ export function usePdfEditor() {
   }, [file, blocks, overlays.watermark, overlays.signatures, anno.items, pageOps.ops]);
 
   const session: Session | null = file
-    ? { file, blocks, annotations: anno.items, watermark: overlays.watermark, pageOps: pageOps.ops }
+    ? { file, docName: docName ?? file.name, blocks, annotations: anno.items, watermark: overlays.watermark, pageOps: pageOps.ops }
     : null;
   const persist = usePersistence(session);
 
@@ -123,6 +125,7 @@ export function usePdfEditor() {
   const startNew = useCallback(async () => {
     await persist.startNew();
     setFile(null);
+    setDocName(null);
     setPages([]);
     setBookmarks([]);
     history.reset([]);
@@ -135,7 +138,7 @@ export function usePdfEditor() {
   }, [persist, history, overlays, anno, pageOps, stale]);
 
   return {
-    file, pages, bookmarks, blocks, page, setPage, selected, setSelected,
+    file, docName, renameDoc: setDocName, pages, bookmarks, blocks, page, setPage, selected, setSelected,
     busy, progress, error, outUrl,
     restoredAt: persist.restoredAt, dismissNotice: persist.dismissNotice, startNew,
     edited: blocks.filter((b) => b.isEdited).length,

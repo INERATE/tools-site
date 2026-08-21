@@ -17,6 +17,10 @@ export function EditorChrome({
   onZoom,
   onToggleSearch,
   onToggleGrid,
+  onOpenWatermark,
+  onRotatePage,
+  onDeletePage,
+  onOpenAi,
 }: {
   e: ReturnType<typeof usePdfEditor>;
   live: boolean;
@@ -28,11 +32,15 @@ export function EditorChrome({
   onZoom: (v: number) => void;
   onToggleSearch?: () => void;
   onToggleGrid?: () => void;
+  onOpenWatermark?: () => void;
+  onRotatePage?: () => void;
+  onDeletePage?: () => void;
+  onOpenAi?: () => void;
 }) {
   return (
     <>
       <EditorTopbar
-        fileName={e.file?.name ?? "No document open"}
+        fileName={e.docName ?? "No document open"}
         edited={e.edited}
         busy={e.busy}
         outUrl={e.outUrl}
@@ -44,6 +52,7 @@ export function EditorChrome({
         canUndo={e.canUndo}
         canRedo={e.canRedo}
         onStartNew={e.startNew}
+        onRename={e.renameDoc}
         hasDoc={live}
       />
       <ToolRibbon
@@ -55,6 +64,10 @@ export function EditorChrome({
         onZoom={onZoom}
         onToggleSearch={onToggleSearch}
         onToggleGrid={onToggleGrid}
+        onOpenWatermark={onOpenWatermark}
+        onRotatePage={onRotatePage}
+        onDeletePage={onDeletePage}
+        onOpenAi={onOpenAi}
       />
     </>
   );

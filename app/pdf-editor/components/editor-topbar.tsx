@@ -1,6 +1,7 @@
 "use client";
 
-import { Cloud, ChevronDown, FilePlus2, Redo2, Share2, Undo2 } from "lucide-react";
+import { Cloud, FilePlus2, Redo2, Share2, Undo2 } from "lucide-react";
+import { DocName } from "./doc-name";
 import type { ExportRisk } from "../engine/risk";
 import { ExportButton } from "./export-button";
 
@@ -23,6 +24,7 @@ export function EditorTopbar({
   canUndo = false,
   canRedo = false,
   onStartNew,
+  onRename,
   hasDoc = false,
 }: {
   fileName: string;
@@ -37,6 +39,7 @@ export function EditorTopbar({
   canUndo?: boolean;
   canRedo?: boolean;
   onStartNew?: () => void;
+  onRename?: (next: string) => void;
   hasDoc?: boolean;
 }) {
   return (
@@ -54,10 +57,7 @@ export function EditorTopbar({
         </div>
 
         {/* Filename Dropdown */}
-        <button className="flex min-w-0 items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50/60 px-2.5 py-1 text-[13px] font-medium text-slate-700 transition-colors hover:bg-slate-100/80">
-          <span className="max-w-[200px] truncate">{fileName || "Untitled Document.pdf"}</span>
-          <ChevronDown className="size-3.5 shrink-0 text-slate-400" />
-        </button>
+        <DocName name={fileName || "Untitled Document.pdf"} onRename={onRename} disabled={!hasDoc} />
 
         {/* Saved Status */}
         <span className="hidden items-center gap-1.5 rounded-full bg-slate-100/70 px-2.5 py-0.5 text-[11.5px] font-medium text-slate-500 sm:flex">

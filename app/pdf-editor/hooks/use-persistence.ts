@@ -12,6 +12,7 @@ const DEBOUNCE = 900;
 
 export interface Session {
   file: File;
+  docName: string;
   blocks: TextBlock[];
   annotations: Annotation[];
   watermark: WatermarkConfig;

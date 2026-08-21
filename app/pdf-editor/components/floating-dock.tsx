@@ -83,7 +83,7 @@ export function FloatingDock({
       <button
         onClick={onFit}
         className="grid size-7 place-items-center rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
-        title="Fit to view (100%)"
+        title="Fit page to width / 100%"
       >
         <Maximize2 className="size-3.5" />
       </button>

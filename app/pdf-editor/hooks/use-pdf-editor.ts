@@ -9,6 +9,7 @@ import { withFamily, withText } from "./edit-ops";
 import { useAnnotations } from "./use-annotations";
 import { useHistory } from "./use-history";
 import { useOverlays } from "./use-overlays";
+import { usePageOps } from "./use-page-ops";
 
 export function usePdfEditor() {
   const [file, setFile] = useState<File | null>(null);
@@ -24,6 +25,7 @@ export function usePdfEditor() {
   const history = useHistory<TextBlock[]>([]);
   const overlays = useOverlays(stale);
   const anno = useAnnotations(stale);
+  const pageOps = usePageOps(stale);
   const blocks = history.value;
 
   const open = useCallback(async (picked: File[]) => {
@@ -41,12 +43,13 @@ export function usePdfEditor() {
       setSelected(null);
       overlays.resetOverlays();
       anno.resetAnnotations();
+      pageOps.resetOps();
     } catch {
       setError("Could not open this PDF — it may be encrypted or damaged.");
     } finally {
       setBusy(false);
     }
-  }, [history, overlays, anno, stale]);
+  }, [history, overlays, anno, pageOps, stale]);
 
   const editBlock = useCallback((id: string, text: string) => {
     stale();
@@ -66,6 +69,7 @@ export function usePdfEditor() {
         watermark: overlays.watermark,
         signatures: overlays.signatures,
         annotations: anno.items,
+        pageOps: pageOps.ops,
       });
       if (url.current) URL.revokeObjectURL(url.current);
       url.current = URL.createObjectURL(blob);
@@ -75,7 +79,7 @@ export function usePdfEditor() {
     } finally {
       setBusy(false);
     }
-  }, [file, blocks, overlays.watermark, overlays.signatures, anno.items]);
+  }, [file, blocks, overlays.watermark, overlays.signatures, anno.items, pageOps.ops]);
 
   return {
     file, pages, blocks, page, setPage, selected, setSelected,
@@ -83,7 +87,7 @@ export function usePdfEditor() {
     edited: blocks.filter((b) => b.isEdited).length,
     risk: exportRisk(blocks),
     ...overlays,
-    anno,
+    anno, pageOps,
     undo: history.undo, redo: history.redo, canUndo: history.canUndo, canRedo: history.canRedo,
     open, editBlock, setFamily, exportPdf,
   };

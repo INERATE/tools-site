@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
+import { buildToolMetadata, buildToolJsonLd } from "../lib/tool-seo";
+import { TOOL_SEO } from "../lib/tool-seo-data";
 
-// Work in progress: the shell is public so the design can be reviewed on a real
-// device, but the engine is not wired yet — keep it out of the index until it is.
-export const metadata: Metadata = {
-  title: "PDF Editor (preview) | Inerate Tools",
-  robots: { index: false, follow: false },
-};
+const seo = { slug: "pdf-editor", ...TOOL_SEO["pdf-editor"] };
+
+export const metadata: Metadata = buildToolMetadata(seo);
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildToolJsonLd(seo)) }}
+      />
+      {children}
+    </>
+  );
 }

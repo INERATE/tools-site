@@ -1660,6 +1660,42 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
       }
     ]
   },
+  "pdf-editor": {
+    "metaTitle": "PDF Editor Online Free — Edit Existing PDF Text | Inerate Tools",
+    "metaDescription": "Edit the text already inside a PDF, not just add text boxes. Sign, redact, watermark and reorder pages. Runs 100% in your browser - nothing is uploaded.",
+    "keywords": [
+      "pdf editor online free",
+      "edit pdf text online",
+      "edit existing text in pdf",
+      "free pdf editor no upload",
+      "pdf editor no watermark",
+      "redact pdf online",
+      "sign pdf online free"
+    ],
+    "h1": "Edit a PDF, In Your Browser",
+    "faq": [
+      {
+        "q": "Can I edit the text that is already in the PDF?",
+        "a": "Yes - click any line and retype it. Most free editors only let you lay a new text box on top; this edits the existing line in place and keeps the rest of the page untouched."
+      },
+      {
+        "q": "Will it keep my formatting?",
+        "a": "The page is preserved exactly and only the line you edit is redrawn, matched to the closest standard font. If an edit will not come out cleanly - it is too long for the space, or it sits on a photo - you are told before you export rather than after."
+      },
+      {
+        "q": "Can it edit a scanned PDF?",
+        "a": "No, and no tool can - a scan is an image with no text in it. Run it through OCR PDF first, which adds a real text layer, then edit it here."
+      },
+      {
+        "q": "Is redaction actually safe?",
+        "a": "Yes. Pages you redact are flattened to an image, so the covered text is genuinely gone rather than hidden behind a black box that can be copied out."
+      },
+      {
+        "q": "Is my PDF uploaded anywhere?",
+        "a": "No. The file is opened, edited and saved entirely inside this browser tab - it never leaves your device."
+      }
+    ]
+  },
   "delete-pdf-pages": {
     "metaTitle": "Delete Pages from PDF Online Free | Inerate Tools",
     "metaDescription": "Delete pages from a PDF online free - type which pages to remove or click them off the board, then save. Runs entirely in your browser, nothing is uploaded.",

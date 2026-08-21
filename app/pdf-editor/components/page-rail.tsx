@@ -1,6 +1,8 @@
 "use client";
 
-import { Bookmark, FileText, Layers, MessageSquare, PenTool, Plus } from "lucide-react";
+import { Bookmark, FileText, Layers, MessageSquare, PenTool } from "lucide-react";
+import type { PageOp } from "../hooks/use-page-ops";
+import { PageThumb } from "./page-thumb";
 
 const RAIL = [
   { icon: FileText, label: "Pages" },
@@ -10,13 +12,19 @@ const RAIL = [
   { icon: PenTool, label: "Signatures" },
 ];
 
+const BLANK: PageOp = { rotate: 0, deleted: false };
+
 export function PageRail({
-  pages, active, onPick, thumbs = [],
+  pages, active, onPick, thumbs = [], opFor, onRotate, onToggleDelete, deleted = 0,
 }: {
   pages: number;
   active: number;
   onPick: (i: number) => void;
   thumbs?: { index: number; url: string }[];
+  opFor?: (i: number) => PageOp;
+  onRotate?: (i: number) => void;
+  onToggleDelete?: (i: number) => void;
+  deleted?: number;
 }) {
   return (
     <aside className="flex shrink-0 border-r border-[var(--border)]">
@@ -44,39 +52,24 @@ export function PageRail({
           </span>
         </div>
 
-        {Array.from({ length: pages }, (_, i) => (
-          <button key={i} onClick={() => onPick(i)} className="group text-left">
-            <div
-              className={`aspect-[3/4] overflow-hidden rounded-lg border transition-all ${
-                i === active
-                  ? "border-[var(--accent)] ring-2 ring-[var(--accent)]/30"
-                  : "border-[var(--border)] group-hover:border-[var(--accent)]/50"
-              }`}
-              style={{ background: "linear-gradient(160deg,#fff,#eceaf5)" }}
-            >
-              {thumbs[i] ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={thumbs[i].url} alt={`Page ${i + 1}`} className="size-full object-cover object-top" />
-              ) : (
-                <div className="flex h-full flex-col gap-[3px] p-2">
-                  <div className="h-1.5 w-3/4 rounded-full bg-[#3b3654]/70" />
-                  <div className="h-[3px] w-full rounded-full bg-[#3b3654]/20" />
-                  <div className="h-[3px] w-2/3 rounded-full bg-[#3b3654]/20" />
-                  <div className="mt-1 h-6 w-full rounded bg-[#3b3654]/12" />
-                  <div className="h-[3px] w-4/5 rounded-full bg-[#3b3654]/20" />
-                </div>
-              )}
-            </div>
-            <div className={`mt-1 text-center text-[10.5px] ${i === active ? "font-semibold text-[var(--accent)]" : "text-[var(--text-dim)]"}`}>
-              {i + 1}
-            </div>
-          </button>
-        ))}
+        {deleted > 0 && (
+          <p className="rounded-lg bg-[#ff8fa3]/10 px-2 py-1 text-[10.5px] text-[#ff8fa3]">
+            {deleted} page{deleted === 1 ? "" : "s"} will be removed on export.
+          </p>
+        )}
 
-        <button className="glass-btn flex items-center justify-center gap-1.5 rounded-xl py-2 text-[11.5px] font-semibold">
-          <Plus aria-hidden className="size-3.5" />
-          Add Page
-        </button>
+        {Array.from({ length: pages }, (_, i) => (
+          <PageThumb
+            key={i}
+            index={i}
+            active={i === active}
+            op={opFor?.(i) ?? BLANK}
+            url={thumbs[i]?.url}
+            onPick={onPick}
+            onRotate={onRotate ?? (() => {})}
+            onToggleDelete={onToggleDelete ?? (() => {})}
+          />
+        ))}
       </div>
     </aside>
   );

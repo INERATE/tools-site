@@ -46,7 +46,16 @@ export default function PdfEditorPage() {
       <EditorChrome e={e} live={live} tab={tab} onTab={setTab} tool={tool} onTool={setTool} zoom={zoom} onZoom={setZoom} />
 
       <div className="relative flex min-h-0 flex-1">
-        <PageRail pages={live ? e.pages.length : 4} active={e.page} onPick={e.setPage} thumbs={e.pages} />
+        <PageRail
+          pages={live ? e.pages.length : 4}
+          active={e.page}
+          onPick={e.setPage}
+          thumbs={e.pages}
+          opFor={e.pageOps.opFor}
+          onRotate={e.pageOps.rotatePage}
+          onToggleDelete={e.pageOps.toggleDeleted}
+          deleted={e.pageOps.deletedCount}
+        />
 
         <div className="relative flex min-w-0 flex-1">
           {live ? (

@@ -1,6 +1,7 @@
 import { MergeIcon } from "./icons/merge-icon";
 import { SplitIcon } from "./icons/split-icon";
 import { WatermarkIcon } from "./icons/watermark-icon";
+import { AiObjectEraserIcon } from "./icons/ai-object-eraser-icon";
 import { RotatePdfIcon } from "./icons/rotate-pdf-icon";
 import { PageNumbersIcon } from "./icons/page-numbers-icon";
 import { SignPdfIcon } from "./icons/sign-pdf-icon";
@@ -58,7 +59,7 @@ export const TOOLS = [
   },
   {
     href: "/ai-object-eraser",
-    icon: WatermarkIcon,
+    icon: AiObjectEraserIcon,
     title: "AI Object & Watermark Eraser",
     description: "Erase watermarks, logos, text, stamps, and photobombers with AI Generative Fill.",
     category: "AI & Image Tools",

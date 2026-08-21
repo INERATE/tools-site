@@ -1,3 +1,4 @@
+import { AiObjectEraserIcon } from "./icons/ai-object-eraser-icon";
 import { AiSummarizerIcon } from "./icons/ai-summarizer-icon";
 import { SmartFormsIcon } from "./icons/smart-forms-icon";
 import { TranslatePdfIcon } from "./icons/translate-pdf-icon";
@@ -7,7 +8,7 @@ import { WatermarkPdfIcon } from "./icons/watermark-pdf-icon";
 export const TOOLS_INTELLIGENCE = [
   {
     href: "/ai-object-eraser",
-    icon: SmartFormsIcon,
+    icon: AiObjectEraserIcon,
     title: "AI Object & Watermark Eraser",
     description: "Erase watermarks, text, photobombers, and logos with AI generative fill.",
     category: "AI & Image Tools",

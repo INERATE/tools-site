@@ -40,8 +40,6 @@ export function ToolCard({ href, icon: Icon, title, description, live, category,
       transition={{ type: "spring", bounce: 0, duration: 0.6, delay: index * 0.06 }}
       onPointerMove={tilt.move}
       onPointerEnter={tilt.enter}
-      onPointerDown={tilt.down}
-      onPointerUp={tilt.enter}
       onPointerLeave={tilt.leave}
     >
       <div className="card-float h-full" style={phase}>

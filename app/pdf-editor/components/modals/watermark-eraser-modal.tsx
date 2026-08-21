@@ -54,14 +54,12 @@ export function WatermarkEraserModal({
           maskCanvas,
         });
         setCleanedUrl(output);
-      } catch (err: unknown) {
-        const errorMsg = err instanceof Error ? err.message : "Cloudflare inpainting failed.";
-        alert(errorMsg);
-      } finally {
         setIsProcessing(false);
         setProgress(0);
+        return;
+      } catch (err) {
+        console.warn("Cloudflare AI busy, auto-falling back to Fast Client inpainting:", err);
       }
-      return;
     }
 
     // 2. BYOK Studio Generative Fill (Google Gemini, OpenAI, Stability, Replicate)

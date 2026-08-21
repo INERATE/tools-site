@@ -22,7 +22,7 @@ export function SearchOverlay() {
 
   const q = query.trim().toLowerCase();
   const matches = !q
-    ? []
+    ? TOOLS
     : TOOLS.filter((t) => {
         const text = `${t.title} ${t.description} ${t.category} ${t.href} ${(t as { keywords?: string }).keywords || ""}`.toLowerCase();
         return text.includes(q);

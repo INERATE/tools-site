@@ -82,7 +82,7 @@ export function usePdfEditor() {
   );
 
   const updateFormat = useCallback(
-    (id: string, patch: Partial<Pick<TextBlock, "fontWeight" | "fontSize" | "color" | "align" | "matchedFamily">>) => {
+    (id: string, patch: Partial<TextBlock>) => {
       stale();
       history.commit((v) => withFormat(v, id, patch));
     },

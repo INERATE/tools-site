@@ -132,6 +132,7 @@ export function EditorStage({
               onEdit={e.editBlock}
               onResizeBlock={e.updateGeometry}
               onFormatBlock={e.updateFormat}
+              onDeleteBlock={e.deleteBlock}
               tool={tool}
               color={color}
               redactStyle={redactStyle}

@@ -28,6 +28,7 @@ export function LiveCanvas({
   onEdit,
   onResizeBlock,
   onFormatBlock,
+  onDeleteBlock,
   tool,
   anno,
   color,
@@ -41,6 +42,7 @@ export function LiveCanvas({
   onEdit: (id: string, text: string) => void;
   onResizeBlock?: (id: string, patch: { relX?: number; relY?: number; relWidth?: number; relHeight?: number }) => void;
   onFormatBlock?: (id: string, patch: Partial<TextBlock>) => void;
+  onDeleteBlock?: (id: string) => void;
   tool: EditorMode;
   color: string;
   redactStyle?: "blackout" | "blur" | "whiteout";
@@ -101,6 +103,7 @@ export function LiveCanvas({
             onEdit={onEdit}
             onResize={onResizeBlock}
             onFormat={onFormatBlock}
+            onDelete={onDeleteBlock}
           />
         ))}
 

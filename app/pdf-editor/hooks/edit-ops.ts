@@ -29,7 +29,7 @@ export function withGeometry(
 export function withFormat(
   blocks: TextBlock[],
   id: string,
-  patch: Partial<Pick<TextBlock, "fontWeight" | "fontSize" | "color" | "align" | "matchedFamily">>
+  patch: Partial<TextBlock>
 ): TextBlock[] {
   return blocks.map((b) => (b.id === id ? { ...b, ...patch } : b));
 }

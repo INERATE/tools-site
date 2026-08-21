@@ -15,6 +15,7 @@ import { PageGridModal } from "./components/page-grid-modal";
 import { PageRail } from "./components/page-rail";
 import { StageOverlays } from "./components/stage-overlays";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
+import { useShortcuts } from "./hooks/use-shortcuts";
 import { ACCENT, EDITOR_THEME } from "./editor-theme";
 import type { EditorMode } from "./types";
 
@@ -35,6 +36,8 @@ export default function PdfEditorPage() {
   const imageInput = useRef<HTMLInputElement>(null);
   const e = usePdfEditor();
   const live = e.pages.length > 0;
+
+  useShortcuts(e);
 
   // eSign and Image are one-shot actions, not drag modes — open the flow and
   // drop back to Select rather than leaving the ribbon stuck on a dead tool.
@@ -191,6 +194,7 @@ export default function PdfEditorPage() {
           hasDoc={live}
           onRotatePage={() => e.pageOps.rotatePage(e.page)}
           onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
+          onDeleteBlock={e.deleteBlock}
           onToolSelect={(t) => setTool(t as EditorMode)}
           onOpenAi={() => setAiOpen(true)}
           onOpenOcr={() => setOcrOpen(true)}

@@ -51,7 +51,7 @@ export default function AiObjectEraserPage() {
   const [tool, setTool] = useState<"brush" | "box" | "eraser">("brush");
   const [brushSize, setBrushSize] = useState<number>(32);
   const [prompt, setPrompt] = useState<string>("");
-  const [provider, setProvider] = useState<"local" | "gemini" | "openai" | "stability" | "replicate">("local");
+  const [provider, setProvider] = useState<"local" | "cloudflare" | "gemini" | "openai" | "stability" | "replicate">("local");
   const [apiSettingsOpen, setApiSettingsOpen] = useState(false);
   const [hasMask, setHasMask] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -117,9 +117,32 @@ export default function AiObjectEraserPage() {
 
     if (!imgCanvas || !maskCanvas) return;
 
-    // Check if cloud generative fill is requested
+    // 1. Cloudflare Workers AI Inpainting (Free Serverless GPU)
+    if (provider === "cloudflare") {
+      setIsProcessing(true);
+      setProgress(25);
+      try {
+        const cleanedUrl = await runCloudInpainting({
+          provider: "cloudflare",
+          prompt,
+          imageCanvas: imgCanvas,
+          maskCanvas,
+        });
+        setResultSrc(cleanedUrl);
+        setShowCompare(true);
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : "Cloudflare inpainting failed.";
+        alert(errorMsg);
+      } finally {
+        setIsProcessing(false);
+        setProgress(0);
+      }
+      return;
+    }
+
+    // 2. BYOK Studio Generative Fill (Google Gemini, OpenAI, Stability, Replicate)
     if (provider !== "local" || prompt.trim()) {
-      const activeP: "gemini" | "openai" | "stability" | "replicate" = provider === "local" ? "gemini" : provider;
+      const activeP = provider === "local" ? "gemini" : provider;
       const key = localStorage.getItem(`inerate_byok_${activeP}`);
       if (!key) {
         setProvider(activeP);

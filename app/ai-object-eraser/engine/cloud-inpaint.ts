@@ -159,5 +159,29 @@ export async function runCloudInpainting(options: CloudInpaintOptions): Promise<
     return prediction.urls?.get || imageBase64;
   }
 
+  // 5. Cloudflare Workers AI Inpainting (@cf/runwayml/stable-diffusion-v1-5-inpainting)
+  if (provider === "cloudflare") {
+    const imageBase64 = imageCanvas.toDataURL("image/png");
+    const maskBase64 = maskCanvas.toDataURL("image/png");
+
+    const res = await fetch("/api/ai-inpaint", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image: imageBase64,
+        mask: maskBase64,
+        prompt: prompt.trim() || "clean background, high resolution, seamless realistic continuation",
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Cloudflare inpainting failed.");
+    }
+
+    const data = await res.json();
+    return data.result;
+  }
+
   throw new Error("Unknown AI provider.");
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Key, ShieldCheck, Check, ExternalLink } from "lucide-react";
+import { X, Key, ShieldCheck, Check, ExternalLink, Cloud, Zap } from "lucide-react";
+
+export type AIProvider = "local" | "cloudflare" | "gemini" | "openai" | "stability" | "replicate";
 
 export function ApiSettingsModal({
   isOpen,
@@ -11,10 +13,10 @@ export function ApiSettingsModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  activeProvider: "local" | "gemini" | "openai" | "stability" | "replicate";
-  onSelectProvider: (p: "local" | "gemini" | "openai" | "stability" | "replicate") => void;
+  activeProvider: AIProvider;
+  onSelectProvider: (p: AIProvider) => void;
 }) {
-  const [provider, setProvider] = useState<"local" | "gemini" | "openai" | "stability" | "replicate">(activeProvider);
+  const [provider, setProvider] = useState<AIProvider>(activeProvider);
   const [geminiKey, setGeminiKey] = useState("");
   const [openaiKey, setOpenaiKey] = useState("");
   const [stabilityKey, setStabilityKey] = useState("");
@@ -50,7 +52,7 @@ export function ApiSettingsModal({
 
   return (
     <div className="fixed inset-0 z-[250] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900 p-6 text-slate-100 shadow-2xl">
+      <div className="relative w-full max-w-xl rounded-3xl border border-slate-700 bg-slate-900 p-6 text-slate-100 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-3">
@@ -58,13 +60,13 @@ export function ApiSettingsModal({
               <Key className="size-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">AI Engine & API Settings</h3>
-              <p className="text-xs text-slate-400">Bring Your Own Key (BYOK) for studio models</p>
+              <h3 className="text-base font-bold text-white">AI Engine & Model Selection</h3>
+              <p className="text-xs text-slate-400">Choose Free Local/Edge AI or connect your own API Key</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="flex size-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white"
+            className="flex size-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer"
           >
             <X className="size-5" />
           </button>
@@ -72,66 +74,108 @@ export function ApiSettingsModal({
 
         {/* Engine Selection */}
         <div className="my-5 flex flex-col gap-3">
-          <label className="text-xs font-bold text-slate-300">Select AI Engine:</label>
-          <div className="grid grid-cols-2 gap-2">
+          <label className="text-xs font-bold text-slate-300">Select AI Model / Engine:</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {/* 1. Fast Client AI */}
             <button
               onClick={() => setProvider("local")}
-              className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all ${
+              className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all cursor-pointer ${
                 provider === "local"
-                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm"
-                  : "border-slate-800 bg-slate-900/80 text-slate-400 hover:border-slate-700"
+                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm ring-1 ring-indigo-500/40"
+                  : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
               }`}
             >
               <div className="flex items-center justify-between w-full">
-                <span className="text-xs font-bold text-white">⚡ Fast Client AI</span>
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Zap className="size-3.5 text-amber-400" />
+                  Fast Client AI (Default)
+                </span>
                 {provider === "local" && <Check className="size-3.5 text-indigo-400" />}
               </div>
-              <span className="text-[10px] text-slate-400">Free, instant, 0-latency (Default)</span>
+              <span className="text-[10.5px] text-slate-400">100% on-device, instant, zero upload</span>
             </button>
 
+            {/* 2. Cloudflare Workers AI */}
+            <button
+              onClick={() => setProvider("cloudflare")}
+              className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all cursor-pointer ${
+                provider === "cloudflare"
+                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm ring-1 ring-indigo-500/40"
+                  : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Cloud className="size-3.5 text-sky-400" />
+                  Cloudflare Workers AI
+                </span>
+                {provider === "cloudflare" && <Check className="size-3.5 text-indigo-400" />}
+              </div>
+              <span className="text-[10.5px] text-slate-400">Stable Diffusion 1.5 Edge GPU (Free)</span>
+            </button>
+
+            {/* 3. Google Gemini AI */}
             <button
               onClick={() => setProvider("gemini")}
-              className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all ${
+              className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all cursor-pointer ${
                 provider === "gemini"
-                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm"
-                  : "border-slate-800 bg-slate-900/80 text-slate-400 hover:border-slate-700"
+                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm ring-1 ring-indigo-500/40"
+                  : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
               }`}
             >
               <div className="flex items-center justify-between w-full">
                 <span className="text-xs font-bold text-white">✨ Google Gemini AI</span>
                 {provider === "gemini" && <Check className="size-3.5 text-indigo-400" />}
               </div>
-              <span className="text-[10px] text-slate-400">Gemini 2.5 Flash Generative Fill</span>
+              <span className="text-[10.5px] text-slate-400">Gemini 2.5 Flash Generative Fill (BYOK)</span>
             </button>
 
+            {/* 4. OpenAI DALL-E */}
             <button
               onClick={() => setProvider("openai")}
-              className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all ${
+              className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all cursor-pointer ${
                 provider === "openai"
-                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm"
-                  : "border-slate-800 bg-slate-900/80 text-slate-400 hover:border-slate-700"
+                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm ring-1 ring-indigo-500/40"
+                  : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
               }`}
             >
               <div className="flex items-center justify-between w-full">
                 <span className="text-xs font-bold text-white">🌟 OpenAI DALL-E</span>
                 {provider === "openai" && <Check className="size-3.5 text-indigo-400" />}
               </div>
-              <span className="text-[10px] text-slate-400">Custom object prompt generation</span>
+              <span className="text-[10.5px] text-slate-400">DALL-E 2 / 3 Inpaint (BYOK)</span>
             </button>
 
+            {/* 5. Stability AI */}
             <button
               onClick={() => setProvider("stability")}
-              className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all ${
+              className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all cursor-pointer ${
                 provider === "stability"
-                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm"
-                  : "border-slate-800 bg-slate-900/80 text-slate-400 hover:border-slate-700"
+                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm ring-1 ring-indigo-500/40"
+                  : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
               }`}
             >
               <div className="flex items-center justify-between w-full">
                 <span className="text-xs font-bold text-white">🎨 Stability AI</span>
                 {provider === "stability" && <Check className="size-3.5 text-indigo-400" />}
               </div>
-              <span className="text-[10px] text-slate-400">Stable Diffusion 3.5 Inpaint</span>
+              <span className="text-[10.5px] text-slate-400">SD 3.5 & SDXL Inpaint (BYOK)</span>
+            </button>
+
+            {/* 6. Replicate */}
+            <button
+              onClick={() => setProvider("replicate")}
+              className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all cursor-pointer ${
+                provider === "replicate"
+                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm ring-1 ring-indigo-500/40"
+                  : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-xs font-bold text-white">🚀 Replicate (FLUX)</span>
+                {provider === "replicate" && <Check className="size-3.5 text-indigo-400" />}
+              </div>
+              <span className="text-[10.5px] text-slate-400">FLUX.1-Fill & SDXL (BYOK)</span>
             </button>
           </div>
 
@@ -205,11 +249,34 @@ export function ApiSettingsModal({
             </div>
           )}
 
+          {provider === "replicate" && (
+            <div className="mt-2 flex flex-col gap-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-slate-300">Replicate API Token:</span>
+                <a
+                  href="https://replicate.com/account/api-tokens"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 text-[11px] text-indigo-400 hover:underline"
+                >
+                  Get Token <ExternalLink className="size-3" />
+                </a>
+              </div>
+              <input
+                type="password"
+                placeholder="r8_..."
+                value={replicateKey}
+                onChange={(e) => setReplicateKey(e.target.value)}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-white outline-none focus:border-indigo-500"
+              />
+            </div>
+          )}
+
           {/* Privacy Note */}
           <div className="mt-3 flex items-start gap-2 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 p-3 text-[11px] text-indigo-200">
             <ShieldCheck className="size-4 shrink-0 text-indigo-400 mt-0.5" />
             <span>
-              <strong>100% Client-Side Privacy:</strong> Your API keys are saved only in your browser’s localStorage. They are never sent to our servers or stored in any database.
+              <strong>100% Client-Side Privacy:</strong> Fast Client AI & Cloudflare run with zero configuration. BYOK keys are saved only in your browser’s localStorage.
             </span>
           </div>
         </div>
@@ -218,7 +285,7 @@ export function ApiSettingsModal({
         <div className="flex items-center justify-end gap-2 border-t border-slate-800 pt-4">
           <button
             onClick={onClose}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700"
+            className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700 cursor-pointer"
           >
             Cancel
           </button>

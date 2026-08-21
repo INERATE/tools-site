@@ -1,77 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AmbientBlob } from "../components/ambient-blob";
 import { CanvasStage } from "./components/canvas-stage";
-import { OpenPanel } from "./components/open-panel";
-import { EditorTopbar } from "./components/editor-topbar";
+import { EditorChrome } from "./components/editor-chrome";
+import { EditorStage } from "./components/editor-stage";
+import { ESignModal } from "./components/esign-modal";
 import { FloatingDock } from "./components/floating-dock";
+import { ImagePicker } from "./components/image-picker";
 import { Inspector } from "./components/inspector";
-import { LiveCanvas } from "./components/live-canvas";
+import { OpenPanel } from "./components/open-panel";
 import { PageRail } from "./components/page-rail";
-import { ToolRibbon } from "./components/tool-ribbon";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
 import type { EditorMode } from "./types";
+
+const ACCENT = "#e11d48";
 
 export default function PdfEditorPage() {
   const [tab, setTab] = useState("Edit");
   const [tool, setTool] = useState<EditorMode>("select");
   const [zoom, setZoom] = useState(100);
   const [demoPick, setDemoPick] = useState<string | null>("abs");
+  const [signing, setSigning] = useState(false);
+  const imageInput = useRef<HTMLInputElement>(null);
   const e = usePdfEditor();
-
   const live = e.pages.length > 0;
-  const current = e.pages[e.page];
+  const page = e.pages[e.page];
+
+  // eSign and Image are one-shot actions, not drag modes — open the flow and
+  // drop back to Select rather than leaving the ribbon stuck on a dead tool.
+  useEffect(() => {
+    if (!live) return;
+    if (tool === "esign") {
+      setSigning(true);
+      setTool("select");
+    } else if (tool === "image") {
+      imageInput.current?.click();
+      setTool("select");
+    }
+  }, [tool, live]);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <AmbientBlob />
-      <EditorTopbar
-        fileName={e.file?.name ?? "No document open"}
-        edited={e.edited}
-        busy={e.busy}
-        outUrl={e.outUrl}
-        onExport={e.exportPdf}
-        canExport={live}
-        risk={e.risk}
-        onUndo={e.undo}
-        onRedo={e.redo}
-        canUndo={e.canUndo}
-        canRedo={e.canRedo}
-      />
-      <ToolRibbon tab={tab} onTab={setTab} tool={tool} onTool={setTool} zoom={zoom} onZoom={setZoom} />
+      <EditorChrome e={e} live={live} tab={tab} onTab={setTab} tool={tool} onTool={setTool} zoom={zoom} onZoom={setZoom} />
 
       <div className="relative flex min-h-0 flex-1">
         <PageRail pages={live ? e.pages.length : 4} active={e.page} onPick={e.setPage} thumbs={e.pages} />
 
         <div className="relative flex min-w-0 flex-1">
-          {live && current ? (
-            <main
-              className="flex-1 overflow-auto p-6"
-              style={{ background: "color-mix(in srgb, var(--bg) 92%, black)" }}
-            >
-              {current.scanned && (
-                <div className="mx-auto mb-4 w-fit max-w-full rounded-xl border border-amber-500/30 bg-amber-500/8 px-4 py-2.5 text-[12.5px] text-amber-400">
-                  This page is a scan — an image with no text layer. Nothing on it can be edited as text.
-                  Run it through <a href="/ocr-pdf" className="underline">OCR PDF</a> first to make the text real.
-                </div>
-              )}
-              <div className="mx-auto w-fit">
-                <LiveCanvas
-                  page={current}
-                  blocks={e.blocks.filter((b) => b.pageIndex === e.page)}
-                  zoom={zoom}
-                  selected={e.selected}
-                  onSelect={e.setSelected}
-                  onEdit={e.editBlock}
-                />
-              </div>
-            </main>
+          {live ? (
+            <EditorStage e={e} zoom={zoom} tool={tool} color={ACCENT} />
           ) : (
             <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} />
           )}
 
           {!live && <OpenPanel onFiles={e.open} error={e.error} />}
+          {signing && page && (
+            <ESignModal
+              onClose={() => setSigning(false)}
+              onPlace={(dataUrl, ratio) => e.anno.placeSignature(e.page, dataUrl, ratio, page.width / page.height)}
+            />
+          )}
 
           <FloatingDock page={e.page} pages={live ? e.pages.length : 24} onPage={e.setPage} />
         </div>
@@ -85,6 +75,13 @@ export default function PdfEditorPage() {
           hasDoc={live}
         />
       </div>
+
+      <ImagePicker
+        ref={imageInput}
+        onPick={(dataUrl) =>
+          e.anno.place({ kind: "image", pageIndex: e.page, relX: 0.2, relY: 0.2, relWidth: 0.3, relHeight: 0.2, dataUrl })
+        }
+      />
     </div>
   );
 }

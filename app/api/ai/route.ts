@@ -4,9 +4,12 @@ import { buildPrompt, type AiTask } from "../../lib/ai-prompts";
 // The root layout is force-static; a POST handler has to opt back out.
 export const dynamic = "force-dynamic";
 
-const MODEL = "@cf/meta/llama-3.1-8b-instruct";
-/** Free-tier budget is shared by everyone, so one request cannot eat it all. */
-const MAX_CHARS = 12000;
+// llama-3.1-8b-instruct was deprecated 2026-05-30 and now hard-fails. The
+// -fast variant is current and carries a 128k context instead of 7,968.
+const MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
+/** The model would take far more, but the free allowance is shared by every
+ *  visitor, so one long document must not be able to spend it all. */
+const MAX_CHARS = 24000;
 
 interface Body {
   text?: string;

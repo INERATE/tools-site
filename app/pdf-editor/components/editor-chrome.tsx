@@ -24,6 +24,7 @@ export function EditorChrome({
   onAddText,
   onOpenOcr,
   onOpenForm,
+  onOpenWatermarkEraser,
   redactStyle,
   onRedactStyle,
 }: {
@@ -44,6 +45,7 @@ export function EditorChrome({
   onAddText?: () => void;
   onOpenOcr?: () => void;
   onOpenForm?: () => void;
+  onOpenWatermarkEraser?: () => void;
   redactStyle?: "blackout" | "blur" | "whiteout";
   onRedactStyle?: (s: "blackout" | "blur" | "whiteout") => void;
 }) {
@@ -81,6 +83,7 @@ export function EditorChrome({
         onAddText={onAddText}
         onOpenOcr={onOpenOcr}
         onOpenForm={onOpenForm}
+        onOpenWatermarkEraser={onOpenWatermarkEraser}
         redactStyle={redactStyle}
         onRedactStyle={onRedactStyle}
       />

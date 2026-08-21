@@ -11,6 +11,7 @@ import { ImagePicker } from "./components/image-picker";
 import { Inspector } from "./components/inspector";
 import { FormModal } from "./components/modals/form-modal";
 import { OcrModal } from "./components/modals/ocr-modal";
+import { WatermarkEraserModal } from "./components/modals/watermark-eraser-modal";
 import { PageGridModal } from "./components/page-grid-modal";
 import { PageRail } from "./components/page-rail";
 import { StageOverlays } from "./components/stage-overlays";
@@ -31,6 +32,7 @@ export default function PdfEditorPage() {
   const [focusPanel, setFocusPanel] = useState<{ mode: "edit" | "annotate" | "form" | "ocr" | "ai"; at: number } | null>(null);
   const [ocrOpen, setOcrOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [watermarkEraserOpen, setWatermarkEraserOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [redactStyle, setRedactStyle] = useState<"blackout" | "blur" | "whiteout">("blackout");
   const imageInput = useRef<HTMLInputElement>(null);
@@ -108,6 +110,7 @@ export default function PdfEditorPage() {
         onAddText={e.addTextBlock}
         onOpenOcr={() => setOcrOpen(true)}
         onOpenForm={() => setFormOpen(true)}
+        onOpenWatermarkEraser={() => setWatermarkEraserOpen(true)}
         onRotatePage={() => e.pageOps.rotatePage(e.page)}
         onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
         onOpenWatermark={() => {
@@ -226,6 +229,24 @@ export default function PdfEditorPage() {
         onAddCheckbox={() => setTool("shapes")}
         onAddSignature={() => setTool("esign")}
       />
+
+      {watermarkEraserOpen && (
+        <WatermarkEraserModal
+          pageUrl={e.pages[e.page]?.url || ""}
+          pageIndex={e.page}
+          onClose={() => setWatermarkEraserOpen(false)}
+          onApplyCleanedPage={(pIdx, cleanedUrl) => {
+            if (e.pages[pIdx]) {
+              e.pages[pIdx].url = cleanedUrl;
+              // Force state refresh
+              e.pageOps.rotatePage(pIdx);
+              e.pageOps.rotatePage(pIdx);
+              e.pageOps.rotatePage(pIdx);
+              e.pageOps.rotatePage(pIdx);
+            }
+          }}
+        />
+      )}
 
       <ImagePicker
         ref={imageInput}

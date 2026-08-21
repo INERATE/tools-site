@@ -74,6 +74,7 @@ export function ToolRibbon({
   onAddText,
   onOpenOcr,
   onOpenForm,
+  onOpenWatermarkEraser,
   redactStyle = "blackout",
   onRedactStyle,
 }: {
@@ -92,6 +93,7 @@ export function ToolRibbon({
   onAddText?: () => void;
   onOpenOcr?: () => void;
   onOpenForm?: () => void;
+  onOpenWatermarkEraser?: () => void;
   redactStyle?: "blackout" | "blur" | "whiteout";
   onRedactStyle?: (s: "blackout" | "blur" | "whiteout") => void;
 }) {
@@ -601,6 +603,16 @@ export function ToolRibbon({
                 >
                   <LayoutGrid className="size-3.5 text-indigo-600" />
                   Page Grid / Reorder
+                </button>
+                <button
+                  onClick={() => {
+                    onOpenWatermarkEraser?.();
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-rose-50 hover:text-rose-600"
+                >
+                  <Sparkles className="size-3.5 text-rose-500" />
+                  AI Watermark & Object Eraser
                 </button>
                 <button
                   onClick={() => {

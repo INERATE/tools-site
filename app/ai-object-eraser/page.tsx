@@ -359,7 +359,7 @@ export default function AiObjectEraserPage() {
                 className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 to-indigo-600 px-5 py-2 text-xs font-extrabold text-white shadow-lg shadow-indigo-500/30 hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
               >
                 <Sparkles className="size-4 animate-pulse" />
-                {isProcessing ? `Erasing... ${progress}%` : "✨ Erase Object"}
+                {isProcessing ? `Erasing... ${progress}%` : "✨ Erase with Generative Fill"}
               </button>
             </div>
 

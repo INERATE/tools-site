@@ -20,9 +20,13 @@ export function SearchOverlay() {
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const matches = TOOLS.filter((t) =>
-    `${t.title} ${t.description} ${t.category}`.toLowerCase().includes(query.toLowerCase()),
-  );
+  const q = query.trim().toLowerCase();
+  const matches = !q
+    ? []
+    : TOOLS.filter((t) => {
+        const text = `${t.title} ${t.description} ${t.category} ${t.href} ${(t as { keywords?: string }).keywords || ""}`.toLowerCase();
+        return text.includes(q);
+      });
 
   function close() {
     setOpen(false);

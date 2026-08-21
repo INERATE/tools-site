@@ -17,7 +17,32 @@ interface Body {
   question?: string;
 }
 
+// In-memory sliding window rate limiter per IP: max 10 requests/minute
+const ipRequests = new Map<string, number[]>();
+
 export async function POST(req: Request) {
+  const ip = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "anonymous";
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const maxReqs = 10;
+
+  const timestamps = (ipRequests.get(ip) || []).filter((t) => now - t < windowMs);
+  if (timestamps.length >= maxReqs) {
+    return Response.json(
+      { error: "Too many requests. Please wait a minute or use your own API key." },
+      { status: 429 },
+    );
+  }
+  timestamps.push(now);
+  ipRequests.set(ip, timestamps);
+
+  // Clean old IPs periodically
+  if (ipRequests.size > 5000) {
+    for (const [k, v] of ipRequests.entries()) {
+      if (v.every((t) => now - t >= windowMs)) ipRequests.delete(k);
+    }
+  }
+
   let body: Body;
   try {
     body = (await req.json()) as Body;

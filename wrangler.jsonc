@@ -3,6 +3,7 @@
   "name": "tools-site",
   "account_id": "09fc9d2f5f1796915f66c4cd4302d111",
   "main": ".open-next/worker.js",
+  "minify": true,
   "compatibility_date": "2025-04-01",
   "compatibility_flags": [
     "nodejs_compat"

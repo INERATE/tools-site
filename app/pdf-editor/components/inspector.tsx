@@ -34,6 +34,8 @@ export function Inspector({
   onDeletePage,
   onToolSelect,
   onOpenAi,
+  onOpenOcr,
+  onOpenForm,
 }: {
   block?: TextBlock | null;
   annotation?: Annotation | null;
@@ -49,6 +51,8 @@ export function Inspector({
   onDeletePage?: () => void;
   onToolSelect?: (tool: string) => void;
   onOpenAi?: () => void;
+  onOpenOcr?: () => void;
+  onOpenForm?: () => void;
 }) {
   const [mode, setMode] = useState<Mode>("edit");
   const [open, setOpen] = useState(true);
@@ -104,9 +108,9 @@ export function Inspector({
               onDeletePage={onDeletePage}
             />
           )}
-          {mode === "ocr" && <OcrPanel />}
+          {mode === "ocr" && <OcrPanel onOpenOcr={onOpenOcr} />}
           {mode === "ai" && <AiPanel onOpenAi={onOpenAi} />}
-          {mode === "form" && <FormPanel />}
+          {mode === "form" && <FormPanel onOpenForm={onOpenForm} />}
           {mode === "annotate" && (
             <>
               <AnnotatePanel onToolSelect={onToolSelect} />

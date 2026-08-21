@@ -9,13 +9,14 @@ import { EditorStage } from "./components/editor-stage";
 import { FloatingDock } from "./components/floating-dock";
 import { ImagePicker } from "./components/image-picker";
 import { Inspector } from "./components/inspector";
+import { FormModal } from "./components/modals/form-modal";
+import { OcrModal } from "./components/modals/ocr-modal";
 import { PageGridModal } from "./components/page-grid-modal";
 import { PageRail } from "./components/page-rail";
 import { StageOverlays } from "./components/stage-overlays";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
 import { ACCENT, EDITOR_THEME } from "./editor-theme";
 import type { EditorMode } from "./types";
-
 
 export default function PdfEditorPage() {
   const [tab, setTab] = useState("Edit");
@@ -25,6 +26,8 @@ export default function PdfEditorPage() {
   const [signing, setSigning] = useState(false);
   const [gridOpen, setGridOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
+  const [ocrOpen, setOcrOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [redactStyle, setRedactStyle] = useState<"blackout" | "blur" | "whiteout">("blackout");
   const imageInput = useRef<HTMLInputElement>(null);
@@ -181,6 +184,8 @@ export default function PdfEditorPage() {
           onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
           onToolSelect={(t) => setTool(t as EditorMode)}
           onOpenAi={() => setAiOpen(true)}
+          onOpenOcr={() => setOcrOpen(true)}
+          onOpenForm={() => setFormOpen(true)}
         />
       </div>
 
@@ -193,6 +198,20 @@ export default function PdfEditorPage() {
           onClose={() => setGridOpen(false)}
         />
       )}
+
+      <OcrModal
+        isOpen={ocrOpen}
+        onClose={() => setOcrOpen(false)}
+        pageCount={live ? e.pages.length : 1}
+      />
+
+      <FormModal
+        isOpen={formOpen}
+        onClose={() => setFormOpen(false)}
+        onAddTextField={() => setTool("add-text")}
+        onAddCheckbox={() => setTool("shapes")}
+        onAddSignature={() => setTool("esign")}
+      />
 
       <ImagePicker
         ref={imageInput}

@@ -41,6 +41,7 @@ const MODES = [
 export function Inspector({
   block,
   onFamily,
+  onFormat,
   match,
   watermark,
   onWatermark,
@@ -51,6 +52,7 @@ export function Inspector({
 }: {
   block?: TextBlock | null;
   onFamily?: (id: string, family: FontFamily) => void;
+  onFormat?: (id: string, patch: Partial<TextBlock>) => void;
   match: string;
   watermark?: WatermarkConfig;
   onWatermark?: (patch: Partial<WatermarkConfig>) => void;
@@ -96,7 +98,7 @@ export function Inspector({
             </div>
 
             {/* Typography Controls */}
-            <TypographyPanel block={block} onFamily={onFamily} />
+            <TypographyPanel block={block} onFamily={onFamily} onFormat={onFormat} />
 
             {/* Content Quick Actions */}
             <div className="mt-5 border-t border-slate-200/70 pt-4">

@@ -13,6 +13,9 @@ export type EditorMode =
   | "image"
   | "draw"
   | "shapes"
+  | "circle"
+  | "line"
+  | "highlight"
   | "redact"
   | "link";
 

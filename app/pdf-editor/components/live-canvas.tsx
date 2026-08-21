@@ -10,11 +10,14 @@ import { EditableBlock } from "./editable-block";
 const DRAG_TOOL: Partial<Record<EditorMode, AnnotationKind>> = {
   draw: "draw",
   shapes: "rect",
+  circle: "circle",
+  line: "line",
+  highlight: "highlight",
   redact: "redact",
 };
 
 export function LiveCanvas({
-  page, blocks, zoom, selected, onSelect, onEdit, onResizeBlock, tool, anno, color,
+  page, blocks, zoom, selected, onSelect, onEdit, onResizeBlock, onFormatBlock, tool, anno, color,
 }: {
   page: LoadedPage;
   blocks: TextBlock[];
@@ -23,6 +26,7 @@ export function LiveCanvas({
   onSelect: (id: string | null) => void;
   onEdit: (id: string, text: string) => void;
   onResizeBlock?: (id: string, patch: { relX?: number; relY?: number; relWidth?: number; relHeight?: number }) => void;
+  onFormatBlock?: (id: string, patch: Partial<TextBlock>) => void;
   tool: EditorMode;
   color: string;
   anno: {
@@ -81,6 +85,7 @@ export function LiveCanvas({
             onSelect={onSelect}
             onEdit={onEdit}
             onResize={onResizeBlock}
+            onFormat={onFormatBlock}
           />
         ))}
 

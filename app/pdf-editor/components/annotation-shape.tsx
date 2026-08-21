@@ -3,9 +3,7 @@
 import { isStroke, type Annotation, type BoxLike } from "../annotation-types";
 
 /**
- * The visual for one annotation. `fill` renders it filling its parent box
- * (used by placed, draggable items); otherwise it positions itself absolutely
- * from its own fractional coordinates (used by strokes and the live draft).
+ * Visual rendering for placed annotations and shapes.
  */
 export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boolean }) {
   if (isStroke(a)) {
@@ -27,21 +25,97 @@ export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boo
   const b = a as BoxLike;
   const box = fill
     ? { inset: 0 as const }
-    : { left: `${b.relX * 100}%`, top: `${b.relY * 100}%`, width: `${b.relWidth * 100}%`, height: `${b.relHeight * 100}%` };
+    : {
+        left: `${b.relX * 100}%`,
+        top: `${b.relY * 100}%`,
+        width: `${b.relWidth * 100}%`,
+        height: `${b.relHeight * 100}%`,
+      };
   const style = { position: "absolute" as const, ...box };
 
-  if (b.kind === "redact") return <div style={{ ...style, background: "#000" }} />;
-  if (b.kind === "highlight") return <div style={{ ...style, background: b.color, opacity: 0.35 }} />;
+  // Redactions
+  if (b.kind === "redact") {
+    if (b.redactStyle === "blur") {
+      return (
+        <div
+          style={{
+            ...style,
+            backdropFilter: "blur(12px) contrast(0.7)",
+            WebkitBackdropFilter: "blur(12px) contrast(0.7)",
+            background: "rgba(255, 255, 255, 0.4)",
+            backgroundImage: "repeating-linear-gradient(45deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 8px, transparent 8px, transparent 16px)",
+            border: "1px dashed rgba(0,0,0,0.3)",
+          }}
+        />
+      );
+    }
+    if (b.redactStyle === "whiteout") {
+      return (
+        <div
+          style={{
+            ...style,
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+          }}
+        />
+      );
+    }
+    // Default blackout
+    return <div style={{ ...style, background: "#000000" }} />;
+  }
+
+  // Highlight Box
+  if (b.kind === "highlight") {
+    return (
+      <div
+        style={{
+          ...style,
+          background: b.color || "#fef08a",
+          opacity: 0.45,
+          mixBlendMode: "multiply",
+          borderRadius: 2,
+        }}
+      />
+    );
+  }
+
+  // Circle / Oval
+  if (b.kind === "circle") {
+    return (
+      <div
+        style={{
+          ...style,
+          border: `2px solid ${b.color ?? "#4f46e5"}`,
+          borderRadius: "50%",
+          background: "transparent",
+        }}
+      />
+    );
+  }
+
+  // Line
+  if (b.kind === "line") {
+    return (
+      <svg className="pointer-events-none absolute inset-0 size-full" style={style}>
+        <line x1="0%" y1="0%" x2="100%" y2="100%" stroke={b.color ?? "#4f46e5"} strokeWidth="2" />
+      </svg>
+    );
+  }
+
+  // Image or Signature
   if ((b.kind === "signature" || b.kind === "image") && b.dataUrl) {
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={b.dataUrl} alt="" draggable={false} style={{ ...style, objectFit: "contain" }} />;
   }
+
+  // Rectangle shape default
   return (
     <div
       style={{
         ...style,
-        border: `1.5px solid ${b.color ?? "#e11d48"}`,
-        borderRadius: b.kind === "circle" ? "50%" : 2,
+        border: `2px solid ${b.color ?? "#4f46e5"}`,
+        borderRadius: 2,
+        background: "transparent",
       }}
     />
   );

@@ -41,6 +41,7 @@ export function EditableBlock({
   onSelect,
   onEdit,
   onResize,
+  onFormat,
 }: {
   block: TextBlock;
   active: boolean;
@@ -48,6 +49,7 @@ export function EditableBlock({
   onSelect: (id: string) => void;
   onEdit: (id: string, text: string) => void;
   onResize?: (id: string, patch: { relX?: number; relY?: number; relWidth?: number; relHeight?: number }) => void;
+  onFormat?: (id: string, patch: Partial<TextBlock>) => void;
 }) {
   const spanRef = useRef<HTMLSpanElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,10 +71,12 @@ export function EditableBlock({
     }
   }, [active]);
 
-  // Keep DOM content in sync with external state changes without disrupting typing caret
+  // Keep DOM content in sync with external state changes (e.g. undo/redo) without wiping caret during typing
   useEffect(() => {
-    if (spanRef.current && spanRef.current.textContent !== b.text) {
-      spanRef.current.textContent = b.text;
+    if (spanRef.current && document.activeElement !== spanRef.current) {
+      if (spanRef.current.textContent !== b.text) {
+        spanRef.current.textContent = b.text;
+      }
     }
   }, [b.text]);
 
@@ -186,9 +190,11 @@ export function EditableBlock({
           />
 
           <ContextToolbar
+            block={b}
             font={b.matchedFamily === "serif" ? "Times New Roman" : b.matchedFamily === "mono" ? "Courier" : "Helvetica"}
             size={Math.round(b.fontSize)}
             color={b.color || "#4f46e5"}
+            onFormat={(patch) => onFormat?.(b.id, patch)}
           />
           {warning && (
             <span className="absolute top-full left-0 z-40 mt-1 rounded-md bg-amber-500 px-2 py-0.5 text-[9.5px] font-bold whitespace-nowrap text-white shadow-md">

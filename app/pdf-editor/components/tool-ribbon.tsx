@@ -1,8 +1,15 @@
 "use client";
 
 import {
+  ArrowUpRight,
+  Circle,
+  Crop,
+  EyeOff,
+  FileText,
+  Highlighter,
   Image as ImageIcon,
   LayoutGrid,
+  Link as LinkIcon,
   Minus,
   MoreHorizontal,
   MousePointer2,
@@ -11,9 +18,12 @@ import {
   Plus,
   Search,
   ShieldAlert,
+  Sparkles,
   Square,
   Type,
+  Waves,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { EditorMode } from "../types";
 
 const TABS = [
@@ -28,21 +38,6 @@ const TABS = [
   "Protect",
 ] as const;
 
-/**
- * Labels must name what the button actually does. Shape/Draw/eSign were
- * briefly relabelled Crop/Header & Footer/Bates Number to match a mockup,
- * which left the signature pad opening from a button reading "Bates Number".
- * Only list a tool here once it is wired.
- */
-export const TOOLS: { id: EditorMode; icon: typeof Type; label: string }[] = [
-  { id: "select", icon: MousePointer2, label: "Select" },
-  { id: "image", icon: ImageIcon, label: "Image" },
-  { id: "shapes", icon: Square, label: "Shape" },
-  { id: "draw", icon: PenLine, label: "Draw" },
-  { id: "esign", icon: PenTool, label: "eSign" },
-  { id: "redact", icon: ShieldAlert, label: "Redact" },
-];
-
 export function ToolRibbon({
   tab,
   onTab,
@@ -52,6 +47,7 @@ export function ToolRibbon({
   onZoom,
   onToggleSearch,
   onToggleGrid,
+  onOpenWatermark,
 }: {
   tab: string;
   onTab: (v: string) => void;
@@ -61,9 +57,35 @@ export function ToolRibbon({
   onZoom: (v: number) => void;
   onToggleSearch?: () => void;
   onToggleGrid?: () => void;
+  onOpenWatermark?: () => void;
 }) {
+  const [shapesOpen, setShapesOpen] = useState(false);
+  const [redactOpen, setRedactOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  const shapesRef = useRef<HTMLDivElement>(null);
+  const redactRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
+
+  // Close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (shapesRef.current && !shapesRef.current.contains(e.target as Node)) {
+        setShapesOpen(false);
+      }
+      if (redactRef.current && !redactRef.current.contains(e.target as Node)) {
+        setRedactOpen(false);
+      }
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="relative z-20 flex shrink-0 flex-col border-b border-slate-200/90 bg-white">
+    <div className="relative z-30 flex shrink-0 flex-col border-b border-slate-200/90 bg-white select-none">
       {/* Category Tabs */}
       <div className="flex items-center gap-1 border-b border-slate-100 px-4 pt-1">
         {TABS.map((t) => {
@@ -73,15 +95,11 @@ export function ToolRibbon({
               key={t}
               onClick={() => onTab(t)}
               className={`relative px-3.5 py-2 text-[12.5px] font-medium transition-colors ${
-                active
-                  ? "text-indigo-600 font-semibold"
-                  : "text-slate-600 hover:text-slate-900"
+                active ? "text-indigo-600 font-semibold" : "text-slate-600 hover:text-slate-900"
               }`}
             >
               {t}
-              {active && (
-                <div className="absolute inset-x-2 -bottom-[1px] h-0.5 rounded-full bg-indigo-600" />
-              )}
+              {active && <div className="absolute inset-x-2 -bottom-[1px] h-0.5 rounded-full bg-indigo-600" />}
             </button>
           );
         })}
@@ -90,31 +108,248 @@ export function ToolRibbon({
       {/* Tool Actions Ribbon */}
       <div className="flex items-center justify-between gap-3 px-4 py-2 bg-slate-50/50">
         <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-          {TOOLS.map((t) => {
-            const active = tool === t.id;
-            return (
-              <button
-                key={t.id}
-                onClick={() => onTool(t.id)}
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
-                  active
-                    ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}
-              >
-                <t.icon className={`size-3.5 ${active ? "text-indigo-600" : "text-slate-500"}`} />
-                {t.label}
-              </button>
-            );
-          })}
-
+          {/* Select Tool */}
           <button
-            className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-            title="More tools"
+            onClick={() => onTool("select")}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
+              tool === "select"
+                ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            }`}
           >
-            <MoreHorizontal className="size-3.5 text-slate-500" />
-            <span>More</span>
+            <MousePointer2 className="size-3.5 text-slate-500" />
+            Select
           </button>
+
+          {/* Image Tool */}
+          <button
+            onClick={() => onTool("image")}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
+              tool === "image"
+                ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            }`}
+          >
+            <ImageIcon className="size-3.5 text-slate-500" />
+            Image
+          </button>
+
+          {/* Shapes Dropdown Tool */}
+          <div ref={shapesRef} className="relative">
+            <button
+              onClick={() => {
+                setShapesOpen((prev) => !prev);
+                setRedactOpen(false);
+                setMoreOpen(false);
+              }}
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
+                tool === "shapes" || tool === "circle" || tool === "line" || tool === "highlight"
+                  ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
+            >
+              <Square className="size-3.5 text-slate-500" />
+              Shape
+              <span className="text-[10px] text-slate-400">▾</span>
+            </button>
+
+            {shapesOpen && (
+              <div className="absolute top-full left-0 mt-1.5 w-44 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl z-50">
+                <button
+                  onClick={() => {
+                    onTool("shapes");
+                    setShapesOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <Square className="size-3.5" />
+                  Rectangle
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("circle");
+                    setShapesOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <Circle className="size-3.5" />
+                  Circle / Oval
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("line");
+                    setShapesOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <ArrowUpRight className="size-3.5" />
+                  Line / Arrow
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("highlight");
+                    setShapesOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <Highlighter className="size-3.5" />
+                  Highlighter Box
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Draw Tool */}
+          <button
+            onClick={() => onTool("draw")}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
+              tool === "draw"
+                ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            }`}
+          >
+            <PenLine className="size-3.5 text-slate-500" />
+            Draw
+          </button>
+
+          {/* eSign Tool */}
+          <button
+            onClick={() => onTool("esign")}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
+              tool === "esign"
+                ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            }`}
+          >
+            <PenTool className="size-3.5 text-slate-500" />
+            eSign
+          </button>
+
+          {/* Redact Dropdown Tool */}
+          <div ref={redactRef} className="relative">
+            <button
+              onClick={() => {
+                setRedactOpen((prev) => !prev);
+                setShapesOpen(false);
+                setMoreOpen(false);
+              }}
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
+                tool === "redact"
+                  ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
+            >
+              <ShieldAlert className="size-3.5 text-slate-500" />
+              Redact
+              <span className="text-[10px] text-slate-400">▾</span>
+            </button>
+
+            {redactOpen && (
+              <div className="absolute top-full left-0 mt-1.5 w-48 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl z-50">
+                <button
+                  onClick={() => {
+                    onTool("redact");
+                    setRedactOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <div className="size-3.5 rounded-xs bg-black" />
+                  Blackout Redact
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("redact");
+                    setRedactOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <EyeOff className="size-3.5 text-indigo-600" />
+                  Blur / Pixelate
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("redact");
+                    setRedactOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <div className="size-3.5 rounded-xs border border-slate-300 bg-white" />
+                  Whiteout
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* ... More Tools Dropdown */}
+          <div ref={moreRef} className="relative">
+            <button
+              onClick={() => {
+                setMoreOpen((prev) => !prev);
+                setShapesOpen(false);
+                setRedactOpen(false);
+              }}
+              className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              title="More tools"
+            >
+              <MoreHorizontal className="size-3.5 text-slate-500" />
+              <span>More</span>
+            </button>
+
+            {moreOpen && (
+              <div className="absolute top-full left-0 mt-1.5 w-52 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl z-50">
+                <button
+                  onClick={() => {
+                    onTool("add-text");
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <Type className="size-3.5" />
+                  Add New Text Box
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("link");
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <LinkIcon className="size-3.5" />
+                  Add Link / URL
+                </button>
+                <button
+                  onClick={() => {
+                    onOpenWatermark?.();
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <Waves className="size-3.5" />
+                  Watermark
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("shapes");
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <Crop className="size-3.5" />
+                  Crop Page Area
+                </button>
+                <button
+                  onClick={() => {
+                    onTool("highlight");
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <FileText className="size-3.5" />
+                  Header & Footer
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Zoom & View Controls */}
@@ -127,9 +362,7 @@ export function ToolRibbon({
             >
               <Minus className="size-3" />
             </button>
-            <span className="w-12 text-center font-mono text-[11.5px] font-semibold text-slate-700">
-              {zoom}%
-            </span>
+            <span className="w-12 text-center font-mono text-[11.5px] font-semibold text-slate-700">{zoom}%</span>
             <button
               onClick={() => onZoom(Math.min(200, zoom + 25))}
               className="grid size-7 place-items-center text-slate-500 hover:bg-slate-50 hover:text-slate-900"

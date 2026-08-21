@@ -35,11 +35,14 @@ export function ContextToolbar({
   const isStrike = !!block?.strikethrough;
   const align = block?.align ?? "left";
   const currentFontName = block?.fontFamily || block?.matchedFontName || font || "Poppins";
+  const isNearTop = (block?.relY ?? 0) < 0.08;
 
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="absolute -top-12 left-0 z-50 flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2.5 py-1 text-[12px] font-medium whitespace-nowrap text-slate-700 shadow-xl select-none"
+      className={`absolute ${
+        isNearTop ? "top-full mt-3" : "-top-13"
+      } left-1/2 -translate-x-1/2 z-[100] flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-white/98 backdrop-blur-md px-3 py-1.5 text-[12px] font-medium whitespace-nowrap text-slate-700 shadow-2xl ring-1 ring-slate-950/5 select-none`}
     >
       <span className="font-serif text-[13px] font-bold text-slate-500">Aa</span>
       

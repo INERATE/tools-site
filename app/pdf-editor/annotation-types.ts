@@ -2,7 +2,11 @@
  * Everything the user places ON TOP of a page, as one union.
  */
 
-export type AnnotationKind = "draw" | "rect" | "circle" | "line" | "highlight" | "signature" | "image" | "redact";
+export type AnnotationKind =
+  | "draw" | "rect" | "circle" | "line" | "highlight"
+  | "signature" | "image" | "redact"
+  /** Real AcroForm widgets, created on export rather than drawn. */
+  | "text-field" | "checkbox" | "sig-field";
 
 interface Base {
   id: string;
@@ -12,7 +16,7 @@ interface Base {
 
 /** Fractional box, 0-1 of the page, top-left origin. */
 export interface BoxLike extends Base {
-  kind: "rect" | "circle" | "line" | "highlight" | "signature" | "image" | "redact";
+  kind: Exclude<AnnotationKind, "draw">;
   relX: number;
   relY: number;
   relWidth: number;
@@ -23,6 +27,9 @@ export interface BoxLike extends Base {
   dataUrl?: string;
   /** Style for redaction */
   redactStyle?: "blackout" | "blur" | "whiteout";
+  /** Field name and default for the AcroForm kinds. */
+  fieldName?: string;
+  fieldLabel?: string;
 }
 
 export interface Stroke extends Base {

@@ -1,11 +1,14 @@
 import { rgb, type PDFDocument, type PDFPage } from "pdf-lib";
-import { isStroke, type Annotation } from "../annotation-types";
+import { isBox, isStroke, type Annotation } from "../annotation-types";
+import { isFormField } from "./draw-form-fields";
 import { hexToRgb } from "./font-pick";
 
 /** Draws every non-redact annotation onto its page. Redactions are handled by the rasterizing path. */
 export async function drawAnnotations(doc: PDFDocument, pages: PDFPage[], items: Annotation[]) {
   for (const a of items) {
-    if (a.kind === "redact") continue;
+    // Redactions are burned in by the rasterizer; form fields become real
+    // widgets, so painting either here would double-draw them.
+    if (a.kind === "redact" || isFormField(a)) continue;
     const page = pages[a.pageIndex];
     if (!page) continue;
     const { width, height } = page.getSize();
@@ -26,6 +29,8 @@ export async function drawAnnotations(doc: PDFDocument, pages: PDFPage[], items:
       }
       continue;
     }
+
+    if (!isBox(a)) continue;
 
     const x = a.relX * width;
     const w = a.relWidth * width;

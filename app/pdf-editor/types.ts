@@ -17,6 +17,9 @@ export type EditorMode =
   | "line"
   | "highlight"
   | "redact"
+  | "text-field"
+  | "checkbox"
+  | "sig-field"
   | "link";
 
 /**

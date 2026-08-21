@@ -59,11 +59,11 @@ export function EditableBlock({
         e.stopPropagation();
         onSelect(b.id);
       }}
-      className={`absolute cursor-text rounded-xs transition-all ${
+      className={`absolute cursor-text rounded-xs overflow-visible transition-all ${
         active
           ? risky
-            ? "z-30 bg-amber-500/10 outline-2 outline-amber-500"
-            : "z-30 bg-indigo-50/20 shadow-md outline-2 outline-indigo-600"
+            ? "z-40 bg-amber-500/10 outline-2 outline-amber-500"
+            : "z-40 bg-indigo-50/20 shadow-md outline-2 outline-indigo-600"
           : b.isEdited
             ? "z-20"
             : "z-10 outline-1 outline-dashed outline-transparent hover:bg-indigo-50/10 hover:outline-indigo-400"

@@ -5,6 +5,7 @@ import type { TextBlock } from "../types";
 import { drawSignatures, drawWatermark } from "./apply-overlays";
 import { drawAnnotations } from "./draw-annotations";
 import { drawBlocks } from "./draw-blocks";
+import { drawFormFields } from "./draw-form-fields";
 import { embedFontSet } from "./font-pick";
 import { applyPageOps } from "./page-ops";
 import { rasterizeRedacted } from "./rasterize-redacted";
@@ -43,6 +44,8 @@ export async function applyEdits(
 
   drawBlocks(pages, blocks, await embedFontSet(doc));
   await drawAnnotations(doc, pages, annotations);
+  // Real AcroForm widgets, added after the painted layers so nothing covers them.
+  drawFormFields(doc, pages, annotations);
   if (overlays.watermark) await drawWatermark(doc, pages, overlays.watermark);
   if (overlays.signatures?.length) await drawSignatures(doc, pages, overlays.signatures);
   applyPageOps(doc, overlays.pageOps);

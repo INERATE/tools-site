@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Download,
   Eraser,
@@ -14,11 +12,15 @@ import {
   Upload,
   Split,
   Eye,
+  Key,
+  Settings2,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { ApiSettingsModal } from "./components/api-settings-modal";
 import { CompareSlider } from "./components/compare-slider";
 import { MagicBrushCanvas } from "./components/magic-brush-canvas";
 import { runInpainting } from "./engine/inpaint-engine";
+import { runCloudInpainting } from "./engine/cloud-inpaint";
 
 const SAMPLE_IMAGES = [
   {
@@ -43,6 +45,9 @@ export default function AiObjectEraserPage() {
   const [resultSrc, setResultSrc] = useState<string | null>(null);
   const [tool, setTool] = useState<"brush" | "box" | "eraser">("brush");
   const [brushSize, setBrushSize] = useState<number>(32);
+  const [prompt, setPrompt] = useState<string>("");
+  const [provider, setProvider] = useState<"local" | "openai" | "stability" | "replicate">("local");
+  const [apiSettingsOpen, setApiSettingsOpen] = useState(false);
   const [hasMask, setHasMask] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
@@ -107,9 +112,41 @@ export default function AiObjectEraserPage() {
 
     if (!imgCanvas || !maskCanvas) return;
 
+    // Check if cloud generative fill is requested
+    if (provider !== "local" || prompt.trim()) {
+      const activeP = provider === "local" ? "openai" : provider;
+      const key = localStorage.getItem(`inerate_byok_${activeP}`);
+      if (!key) {
+        setProvider(activeP);
+        setApiSettingsOpen(true);
+        return;
+      }
+
+      setIsProcessing(true);
+      setProgress(25);
+      try {
+        const cleanedUrl = await runCloudInpainting({
+          provider: activeP,
+          apiKey: key,
+          prompt,
+          imageCanvas: imgCanvas,
+          maskCanvas,
+        });
+        setResultSrc(cleanedUrl);
+        setShowCompare(true);
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : "Cloud inpainting failed. Please check your API key.";
+        alert(errorMsg);
+      } finally {
+        setIsProcessing(false);
+        setProgress(0);
+      }
+      return;
+    }
+
+    // Default fast client inpainting
     setIsProcessing(true);
     setProgress(10);
-
     try {
       const outputCanvas = await runInpainting(imgCanvas, maskCanvas, {
         featherRadius: 3,
@@ -352,6 +389,28 @@ export default function AiObjectEraserPage() {
                 </button>
               )}
 
+              {/* Prompt Input (Optional Generative Replace) */}
+              <div className="flex items-center gap-2 bg-slate-800/80 rounded-xl px-3 py-1.5 border border-slate-700/60 min-w-[220px] max-w-sm flex-1">
+                <Sparkles className="size-3.5 text-indigo-400 shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Prompt (optional): e.g. clean background, add sunglasses..."
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  className="bg-transparent text-xs text-white placeholder:text-slate-400 outline-none w-full"
+                />
+              </div>
+
+              {/* Engine / BYOK Button */}
+              <button
+                onClick={() => setApiSettingsOpen(true)}
+                title="AI Engine & API Key Settings"
+                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-300 hover:text-white hover:border-slate-600 transition-all cursor-pointer"
+              >
+                <Settings2 className="size-3.5 text-indigo-400" />
+                <span className="capitalize">{provider === "local" ? "⚡ Fast AI" : `🌟 ${provider}`}</span>
+              </button>
+
               {/* Action Button */}
               <button
                 disabled={isProcessing}
@@ -359,7 +418,7 @@ export default function AiObjectEraserPage() {
                 className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 to-indigo-600 px-5 py-2 text-xs font-extrabold text-white shadow-lg shadow-indigo-500/30 hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
               >
                 <Sparkles className="size-4 animate-pulse" />
-                {isProcessing ? `Erasing... ${progress}%` : "✨ Erase with Generative Fill"}
+                {isProcessing ? `Erasing... ${progress}%` : prompt.trim() ? "✨ Generate Object" : "✨ Erase with Generative Fill"}
               </button>
             </div>
 
@@ -391,12 +450,19 @@ export default function AiObjectEraserPage() {
               <span className="hidden md:inline">•</span>
               <span className="hidden md:flex items-center gap-1.5">
                 <Sparkles className="size-3.5 text-rose-400" />
-                Click <strong>Erase Object</strong> to synthesize the background seamlessly
+                Type a prompt to replace, or click <strong>Erase</strong> to synthesize the background seamlessly
               </span>
             </div>
           </div>
         )}
       </main>
+
+      <ApiSettingsModal
+        isOpen={apiSettingsOpen}
+        onClose={() => setApiSettingsOpen(false)}
+        activeProvider={provider}
+        onSelectProvider={setProvider}
+      />
     </div>
   );
 }

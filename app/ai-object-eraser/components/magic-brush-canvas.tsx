@@ -310,23 +310,30 @@ export function MagicBrushCanvas({
         />
       )}
 
-      {/* MS Paint / Photoshop Dynamic Circular Brush Cursor */}
+      {/* Enterprise / Photoshop Multi-Contrast Circular Brush Cursor */}
       {cursorPos && tool !== "box" && (
         <div
-          className={`pointer-events-none fixed z-[9999] rounded-full border-2 -translate-x-1/2 -translate-y-1/2 shadow-2xl flex items-center justify-center ${
-            tool === "eraser"
-              ? "border-rose-400 bg-rose-500/20 ring-1 ring-rose-300/40"
-              : "border-purple-400 bg-purple-500/20 ring-1 ring-purple-300/40"
-          }`}
+          className="pointer-events-none fixed z-[9999] rounded-full -translate-x-1/2 -translate-y-1/2 flex items-center justify-center transition-[width,height] duration-75 ease-out"
           style={{
             left: `${cursorPos.x}px`,
             top: `${cursorPos.y}px`,
             width: `${brushSize}px`,
             height: `${brushSize}px`,
+            border: tool === "eraser" ? "2px solid #f43f5e" : "2px solid #a855f7",
+            boxShadow:
+              "0 0 0 1.5px rgba(0, 0, 0, 0.85), inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 4px 12px rgba(0, 0, 0, 0.25)",
+            backgroundColor:
+              tool === "eraser" ? "rgba(244, 63, 94, 0.22)" : "rgba(168, 85, 247, 0.22)",
           }}
         >
-          {/* Precision center dot like Photoshop */}
-          <div className="size-1 rounded-full bg-white shadow-xs pointer-events-none" />
+          {/* Dual-contrast precision center dot (White with Black border) */}
+          <div
+            className="size-1.5 rounded-full pointer-events-none"
+            style={{
+              backgroundColor: "#ffffff",
+              boxShadow: "0 0 0 1px #000000",
+            }}
+          />
         </div>
       )}
     </div>

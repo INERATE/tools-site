@@ -63,8 +63,8 @@ export function WatermarkEraserModal({
     }
 
     // 2. BYOK Studio Generative Fill (Google Gemini, OpenAI, Stability, Replicate)
-    if (provider !== "local" || prompt.trim()) {
-      const activeP = provider === "local" ? "gemini" : provider;
+    if ((provider !== "local" && provider !== "cloudflare") || prompt.trim()) {
+      const activeP = (provider === "local" || provider === "cloudflare") ? "gemini" : provider;
       const key = localStorage.getItem(`inerate_byok_${activeP}`);
       if (!key) {
         setProvider(activeP);

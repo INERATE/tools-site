@@ -13,6 +13,7 @@ import { OpenPanel } from "./components/open-panel";
 import { LoadingSkeleton } from "./components/loading-skeleton";
 import { PageGridModal } from "./components/page-grid-modal";
 import { RestoreBanner } from "./components/restore-banner";
+import { ToolHint } from "./components/tool-hint";
 import { PageRail } from "./components/page-rail";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
 import type { EditorMode } from "./types";
@@ -124,6 +125,7 @@ export default function PdfEditorPage() {
 
           {!live && !e.busy && <OpenPanel onFiles={e.open} error={e.error} />}
           {e.busy && <LoadingSkeleton done={e.progress.done} total={e.progress.total} />}
+          {live && !e.busy && <ToolHint tool={tool} onDone={() => setTool("select")} />}
           {!live && !e.busy && e.restorable && (
             <RestoreBanner savedAt={e.restorable.savedAt} onRestore={e.restore} onDiscard={e.discardSaved} />
           )}

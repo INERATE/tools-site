@@ -21,12 +21,35 @@ export function SearchOverlay() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const q = query.trim().toLowerCase();
+  
+  // 1. Deduplicate TOOLS by href so no tool ever repeats
+  const uniqueTools = Array.from(new Map(TOOLS.map((t) => [t.href, t])).values());
+
+  // 2. Score relevance so exact/title matches (e.g. "PDF Editor") rank highest
   const matches = !q
-    ? TOOLS
-    : TOOLS.filter((t) => {
-        const text = `${t.title} ${t.description} ${t.category} ${t.href} ${(t as { keywords?: string }).keywords || ""}`.toLowerCase();
-        return text.includes(q);
-      });
+    ? uniqueTools
+    : uniqueTools
+        .map((t) => {
+          const title = t.title.toLowerCase();
+          const desc = t.description.toLowerCase();
+          const cat = t.category.toLowerCase();
+          const href = t.href.toLowerCase();
+          const kw = ((t as { keywords?: string }).keywords || "").toLowerCase();
+
+          let score = 0;
+          if (title === q) score += 300;
+          else if (title.startsWith(q)) score += 150;
+          else if (title.includes(q)) score += 100;
+          else if (href.includes(q)) score += 70;
+          else if (cat.includes(q)) score += 40;
+          else if (desc.includes(q)) score += 25;
+          else if (kw.includes(q)) score += 15;
+
+          return { tool: t, score };
+        })
+        .filter((item) => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map((item) => item.tool);
 
   function close() {
     setOpen(false);

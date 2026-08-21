@@ -17,6 +17,7 @@ import {
 import { useRef } from "react";
 import type { Annotation, BoxLike } from "../annotation-types";
 import type { FontFamily, TextBlock } from "../types";
+import { convertKrutiDevToUnicode, isLikelyKrutiDev } from "../engine/krutidev-converter";
 import { TypographyPanel } from "./typography-panel";
 
 const CONTENT = [
@@ -256,6 +257,31 @@ export function InspectorEdit({
           {block ? `${block.matchedFontName} · ${confidence}% confidence` : match}
         </p>
       </div>
+
+      {block && isLikelyKrutiDev(block.text) && (
+        <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50/80 p-3 shadow-2xs">
+          <div className="flex items-center gap-1.5 text-amber-900">
+            <span className="text-[13px]">🇮🇳</span>
+            <p className="text-[11.5px] font-bold">Legacy Kruti Dev Hindi Detected</p>
+          </div>
+          <p className="mt-1 text-[11px] text-amber-800 leading-relaxed">
+            This PDF uses 8-bit ASCII Kruti Dev encoding. Convert to readable Unicode Hindi with 1 click.
+          </p>
+          <button
+            onClick={() => {
+              const converted = convertKrutiDevToUnicode(block.text);
+              onFormat?.(block.id, {
+                text: converted,
+                matchedFamily: "sans",
+                fontFamily: "Noto Sans Devanagari",
+              });
+            }}
+            className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-[11.5px] font-bold text-white shadow-sm hover:bg-amber-700 transition-colors"
+          >
+            ✨ Convert to Unicode Hindi
+          </button>
+        </div>
+      )}
 
       <TypographyPanel block={block} onFamily={onFamily} onFormat={onFormat} />
 

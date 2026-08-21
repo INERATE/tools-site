@@ -1,11 +1,12 @@
 export interface FontOption {
   name: string;
   family: string;
-  category: "popular" | "serif" | "mono" | "display" | "handwriting";
+  category: "popular" | "hindi" | "serif" | "mono" | "display" | "handwriting";
 }
 
 export const FONT_CATEGORIES = [
   { id: "popular", label: "⭐ Frequently Used / Popular" },
+  { id: "hindi", label: "🇮🇳 Hindi & Indic (हिंदी फॉन्ट्स)" },
   { id: "serif", label: "🖋️ Serif & Editorial" },
   { id: "mono", label: "💻 Monospace & Code" },
   { id: "display", label: "🎨 Display & Modern" },
@@ -21,6 +22,12 @@ export const AVAILABLE_FONTS: FontOption[] = [
   { name: "Open Sans", family: "'Open Sans', sans-serif", category: "popular" },
   { name: "Lato", family: "'Lato', sans-serif", category: "popular" },
   { name: "Helvetica / Arial", family: "Helvetica, Arial, sans-serif", category: "popular" },
+
+  // Hindi & Indic
+  { name: "Noto Sans Devanagari", family: "'Noto Sans Devanagari', 'Poppins', sans-serif", category: "hindi" },
+  { name: "Tiro Devanagari Hindi", family: "'Tiro Devanagari Hindi', serif", category: "hindi" },
+  { name: "Rozha One", family: "'Rozha One', serif", category: "hindi" },
+  { name: "Yatra One", family: "'Yatra One', cursive", category: "hindi" },
 
   // Serif
   { name: "Times New Roman", family: "'Times New Roman', Times, Georgia, serif", category: "serif" },

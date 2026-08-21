@@ -27,10 +27,13 @@ export function LiveCanvas({
   anno: {
     items: Annotation[];
     drafting: Annotation | null;
+    picked: string | null;
+    setPicked: (id: string | null) => void;
     begin: (k: AnnotationKind, page: number, x: number, y: number, color: string) => void;
     extend: (x: number, y: number) => void;
     finish: () => void;
     remove: (id: string) => void;
+    update: (id: string, patch: { relX?: number; relY?: number; relWidth?: number; relHeight?: number }) => void;
   };
 }) {
   const kind = DRAG_TOOL[tool];
@@ -43,11 +46,12 @@ export function LiveCanvas({
 
   return (
     <div
+      data-page
       className={`relative shrink-0 overflow-hidden rounded-lg bg-white ${placing ? "cursor-crosshair" : ""}`}
       style={{
         width: page.width * (zoom / 100),
         height: page.height * (zoom / 100),
-        boxShadow: "0 40px 90px -20px rgba(0,0,0,.7)",
+        boxShadow: "0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0,0,0,0.05)",
       }}
       onClick={() => !placing && onSelect(null)}
       onPointerDown={(e) => {
@@ -74,7 +78,10 @@ export function LiveCanvas({
       <AnnotationLayer
         items={anno.items.filter((a) => a.pageIndex === page.index)}
         drafting={anno.drafting?.pageIndex === page.index ? anno.drafting : null}
+        picked={anno.picked}
+        onPick={anno.setPicked}
         onRemove={anno.remove}
+        onUpdate={anno.update}
         interactive={!placing}
       />
     </div>

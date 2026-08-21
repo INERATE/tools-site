@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { applyEdits } from "../engine/apply-edits";
-import { loadDocument, type LoadedPage } from "../engine/load-document";
+import { loadDocument, type Bookmark, type LoadedPage } from "../engine/load-document";
 import { exportRisk } from "../engine/risk";
 import type { TextBlock } from "../types";
 import { withFamily, withText } from "./edit-ops";
@@ -14,6 +14,7 @@ import { usePageOps } from "./use-page-ops";
 export function usePdfEditor() {
   const [file, setFile] = useState<File | null>(null);
   const [pages, setPages] = useState<LoadedPage[]>([]);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -38,6 +39,7 @@ export function usePdfEditor() {
       const loaded = await loadDocument(pdf);
       setFile(pdf);
       setPages(loaded.pages);
+      setBookmarks(loaded.bookmarks);
       history.reset(loaded.blocks);
       setPage(0);
       setSelected(null);
@@ -82,7 +84,7 @@ export function usePdfEditor() {
   }, [file, blocks, overlays.watermark, overlays.signatures, anno.items, pageOps.ops]);
 
   return {
-    file, pages, blocks, page, setPage, selected, setSelected,
+    file, pages, bookmarks, blocks, page, setPage, selected, setSelected,
     busy, error, outUrl,
     edited: blocks.filter((b) => b.isEdited).length,
     risk: exportRisk(blocks),

@@ -3,23 +3,24 @@
 import type { WatermarkConfig } from "../element-types";
 
 const FIELD =
-  "w-full rounded-lg border border-[var(--border)] bg-[var(--bg)]/50 px-2.5 py-1.5 text-[12px] text-[var(--text)] outline-none focus:border-[var(--accent)]";
-const HEAD = "text-[10.5px] font-bold tracking-[0.09em] text-[var(--text-dim)] uppercase";
-const LABEL = "mb-1 block text-[10.5px] text-[var(--text-dim)]";
+  "w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-medium text-slate-700 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-2xs";
+const LABEL = "mb-1 block text-[11px] font-semibold text-slate-700";
 
 const LAYOUTS: WatermarkConfig["layout"][] = ["diagonal", "grid", "horizontal", "footer"];
 
 export function WatermarkPanel({
-  value, onChange, disabled,
+  value,
+  onChange,
+  disabled,
 }: {
   value: WatermarkConfig;
   onChange: (patch: Partial<WatermarkConfig>) => void;
   disabled: boolean;
 }) {
   return (
-    <section className="mb-5 border-t border-[var(--border)] pt-4">
-      <div className="mb-2.5 flex items-center justify-between">
-        <h3 className={HEAD}>Watermark</h3>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-bold tracking-wide text-slate-800">Watermark</span>
         <button
           type="button"
           role="switch"
@@ -27,11 +28,15 @@ export function WatermarkPanel({
           aria-label="Enable watermark"
           disabled={disabled}
           onClick={() => onChange({ enabled: !value.enabled })}
-          className={`h-4 w-7 rounded-full transition-colors disabled:opacity-40 ${
-            value.enabled ? "bg-[var(--accent)]" : "bg-[var(--border)]"
+          className={`h-5 w-9 rounded-full transition-colors p-0.5 disabled:opacity-40 ${
+            value.enabled ? "bg-indigo-600" : "bg-slate-200"
           }`}
         >
-          <span className={`block size-3 rounded-full bg-white transition-transform ${value.enabled ? "translate-x-3.5" : "translate-x-0.5"}`} />
+          <span
+            className={`block size-4 rounded-full bg-white shadow-xs transition-transform ${
+              value.enabled ? "translate-x-4" : "translate-x-0"
+            }`}
+          />
         </button>
       </div>
 
@@ -42,47 +47,69 @@ export function WatermarkPanel({
         value={value.text}
         disabled={disabled || !value.enabled}
         onChange={(e) => onChange({ text: e.target.value })}
-        placeholder="Watermark text"
+        placeholder="CONFIDENTIAL"
       />
 
-      <label className={`${LABEL} mt-2`}>Layout</label>
-      <select
-        className={FIELD}
-        value={value.layout}
-        disabled={disabled || !value.enabled}
-        onChange={(e) => onChange({ layout: e.target.value as WatermarkConfig["layout"] })}
-      >
-        {LAYOUTS.map((l) => (
-          <option key={l} value={l}>{l[0].toUpperCase() + l.slice(1)}</option>
-        ))}
-      </select>
+      <div>
+        <label className={LABEL}>Layout</label>
+        <select
+          className={FIELD}
+          value={value.layout}
+          disabled={disabled || !value.enabled}
+          onChange={(e) => onChange({ layout: e.target.value as WatermarkConfig["layout"] })}
+        >
+          {LAYOUTS.map((l) => (
+            <option key={l} value={l}>
+              {l[0].toUpperCase() + l.slice(1)}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <label className={`${LABEL} mt-2`}>Angle — {value.rotation}°</label>
-      <input
-        type="range" min={-90} max={90} value={value.rotation}
-        disabled={disabled || !value.enabled}
-        onChange={(e) => onChange({ rotation: Number(e.target.value) })}
-        className="w-full accent-[var(--accent)] disabled:opacity-40"
-      />
+      <div>
+        <div className="flex justify-between text-[11px] font-semibold text-slate-700">
+          <span>Angle</span>
+          <span className="font-mono text-slate-500">{value.rotation}°</span>
+        </div>
+        <input
+          type="range"
+          min={-90}
+          max={90}
+          value={value.rotation}
+          disabled={disabled || !value.enabled}
+          onChange={(e) => onChange({ rotation: Number(e.target.value) })}
+          className="w-full accent-indigo-600 disabled:opacity-40"
+        />
+      </div>
 
-      <label className={`${LABEL} mt-1`}>Opacity — {Math.round(value.opacity * 100)}%</label>
-      <input
-        type="range" min={5} max={90} value={Math.round(value.opacity * 100)}
-        disabled={disabled || !value.enabled}
-        onChange={(e) => onChange({ opacity: Number(e.target.value) / 100 })}
-        className="w-full accent-[var(--accent)] disabled:opacity-40"
-      />
+      <div>
+        <div className="flex justify-between text-[11px] font-semibold text-slate-700">
+          <span>Opacity</span>
+          <span className="font-mono text-slate-500">{Math.round(value.opacity * 100)}%</span>
+        </div>
+        <input
+          type="range"
+          min={5}
+          max={90}
+          value={Math.round(value.opacity * 100)}
+          disabled={disabled || !value.enabled}
+          onChange={(e) => onChange({ opacity: Number(e.target.value) / 100 })}
+          className="w-full accent-indigo-600 disabled:opacity-40"
+        />
+      </div>
 
-      <label className={`${LABEL} mt-2`}>Pages</label>
-      <select
-        className={FIELD}
-        value={value.pages}
-        disabled={disabled || !value.enabled}
-        onChange={(e) => onChange({ pages: e.target.value as WatermarkConfig["pages"] })}
-      >
-        <option value="all">Every page</option>
-        <option value="first">First page only</option>
-      </select>
-    </section>
+      <div>
+        <label className={LABEL}>Pages</label>
+        <select
+          className={FIELD}
+          value={value.pages}
+          disabled={disabled || !value.enabled}
+          onChange={(e) => onChange({ pages: e.target.value as WatermarkConfig["pages"] })}
+        >
+          <option value="all">Every page</option>
+          <option value="first">First page only</option>
+        </select>
+      </div>
+    </div>
   );
 }

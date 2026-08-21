@@ -4,11 +4,17 @@ import { RotateCw, Trash2, Undo2 } from "lucide-react";
 import type { PageOp } from "../hooks/use-page-ops";
 
 const CTL =
-  "pointer-events-auto grid size-5 place-items-center rounded-md bg-[var(--bg-raised)] text-[var(--text-dim)] " +
-  "shadow-sm transition-colors hover:text-[var(--text)]";
+  "pointer-events-auto grid size-6 place-items-center rounded-md bg-white text-slate-600 " +
+  "shadow-md border border-slate-200/80 transition-colors hover:bg-slate-50 hover:text-slate-900";
 
 export function PageThumb({
-  index, active, op, url, onPick, onRotate, onToggleDelete,
+  index,
+  active,
+  op,
+  url,
+  onPick,
+  onRotate,
+  onToggleDelete,
 }: {
   index: number;
   active: boolean;
@@ -22,14 +28,13 @@ export function PageThumb({
     <div className="group relative">
       <button onClick={() => onPick(index)} className="w-full text-left">
         <div
-          className={`aspect-[3/4] overflow-hidden rounded-lg border transition-all ${
+          className={`aspect-[3/4] overflow-hidden rounded-lg bg-white shadow-2xs transition-all ${
             op.deleted
-              ? "border-[#ff8fa3]/50 opacity-35"
+              ? "border border-rose-300 opacity-40"
               : active
-                ? "border-[var(--accent)] ring-2 ring-[var(--accent)]/30"
-                : "border-[var(--border)] group-hover:border-[var(--accent)]/50"
+                ? "border-2 border-indigo-600 ring-3 ring-indigo-100 shadow-sm"
+                : "border border-slate-200 hover:border-indigo-400 hover:shadow-xs"
           }`}
-          style={{ background: "linear-gradient(160deg,#fff,#eceaf5)" }}
         >
           {url ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -40,28 +45,34 @@ export function PageThumb({
               style={{ transform: `rotate(${op.rotate}deg)` }}
             />
           ) : (
-            <div className="flex h-full flex-col gap-[3px] p-2">
-              <div className="h-1.5 w-3/4 rounded-full bg-[#3b3654]/70" />
-              <div className="h-[3px] w-full rounded-full bg-[#3b3654]/20" />
-              <div className="mt-1 h-6 w-full rounded bg-[#3b3654]/12" />
+            <div className="flex h-full flex-col gap-1.5 p-2.5 bg-slate-50">
+              <div className="h-2 w-3/4 rounded-full bg-slate-300" />
+              <div className="h-1.5 w-full rounded-full bg-slate-200" />
+              <div className="h-1.5 w-5/6 rounded-full bg-slate-200" />
+              <div className="mt-2 h-10 w-full rounded-md bg-slate-200/80" />
             </div>
           )}
         </div>
-        <div className={`mt-1 text-center text-[10.5px] ${active ? "font-semibold text-[var(--accent)]" : "text-[var(--text-dim)]"}`}>
+        <div
+          className={`mt-1.5 text-center text-[11px] ${
+            active ? "font-bold text-indigo-600" : "font-medium text-slate-500"
+          }`}
+        >
           {index + 1}
         </div>
       </button>
 
-      <div className="pointer-events-none absolute top-1 right-1 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+      {/* Hover action controls */}
+      <div className="pointer-events-none absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
         <button className={CTL} title="Rotate 90°" onClick={() => onRotate(index)}>
-          <RotateCw aria-hidden className="size-3" />
+          <RotateCw className="size-3" />
         </button>
         <button
           className={CTL}
           title={op.deleted ? "Keep this page" : "Delete this page"}
           onClick={() => onToggleDelete(index)}
         >
-          {op.deleted ? <Undo2 aria-hidden className="size-3" /> : <Trash2 aria-hidden className="size-3" />}
+          {op.deleted ? <Undo2 className="size-3" /> : <Trash2 className="size-3" />}
         </button>
       </div>
     </div>

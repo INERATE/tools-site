@@ -4,9 +4,10 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { SignaturePad } from "../../sign-pdf/signature-pad";
 
-/** Draw a signature, then drop it onto the current page. Reuses the Sign PDF pad verbatim. */
+/** Draw a signature, then drop it onto the current page. */
 export function ESignModal({
-  onClose, onPlace,
+  onClose,
+  onPlace,
 }: {
   onClose: () => void;
   onPlace: (dataUrl: string, ratio: number) => void;
@@ -14,19 +15,19 @@ export function ESignModal({
   const [sig, setSig] = useState<{ url: string; w: number; h: number } | null>(null);
 
   return (
-    <div className="absolute inset-0 z-50 grid place-items-center bg-black/50 p-6" onClick={onClose}>
-      <div className="liquid-card w-[min(560px,100%)] p-5" onClick={(e) => e.stopPropagation()}>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-[15px] font-semibold">Add your signature</h2>
-          <button onClick={onClose} aria-label="Close" className="grid size-7 place-items-center rounded-lg text-[var(--text-dim)] hover:text-[var(--text)]">
-            <X aria-hidden className="size-4" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-xs" onClick={onClose}>
+      <div className="w-[min(560px,100%)] rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
+          <h2 className="text-[15px] font-bold text-slate-900">Add Your Signature</h2>
+          <button onClick={onClose} aria-label="Close" className="grid size-7 place-items-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700">
+            <X className="size-4" />
           </button>
         </div>
 
         <SignaturePad onChange={setSig} />
 
-        <p className="mb-3 text-[12px] text-[var(--text-dim)]">
-          It is placed on the page you are viewing. Drag the corner handle to remove it.
+        <p className="mt-3 mb-4 text-[12px] text-slate-500">
+          The signature will be placed onto the current page. You can drag, resize, or reposition it freely.
         </p>
 
         <button
@@ -36,9 +37,9 @@ export function ESignModal({
             onPlace(sig.url, sig.h / sig.w);
             onClose();
           }}
-          className="clay shimmer h-10 w-full text-[13.5px] font-semibold disabled:cursor-not-allowed disabled:opacity-45"
+          className="flex h-10 w-full items-center justify-center rounded-xl bg-indigo-600 font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40 text-[13.5px]"
         >
-          Place signature
+          Place Signature
         </button>
       </div>
     </div>

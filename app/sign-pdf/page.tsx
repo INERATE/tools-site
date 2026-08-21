@@ -62,6 +62,7 @@ export default function SignPdfPage() {
                     yFrac={s.pos.yFrac}
                     widthFrac={s.pos.widthFrac}
                     onMove={s.move}
+                    onResize={s.resize}
                   />
                 ) : (
                   <p className="rounded-xl bg-[var(--glass-bg)] p-6 text-center text-[13px] text-[var(--text-dim)]">

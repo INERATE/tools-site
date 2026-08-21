@@ -23,11 +23,10 @@ export function ExportButton({
       <a
         href={outUrl}
         download={fileName.replace(/\.pdf$/i, "") + "-edited.pdf"}
-        className="shimmer flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold text-[var(--on-accent)]"
-        style={{ background: "linear-gradient(135deg,var(--accent-3),var(--accent))" }}
+        className="flex h-8.5 items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 text-[12.5px] font-bold text-white shadow-sm hover:bg-indigo-700 transition-colors"
       >
-        <Download aria-hidden className="size-3.5" />
-        Download
+        <Download className="size-3.5" />
+        Download PDF
       </a>
     );
   }
@@ -37,12 +36,13 @@ export function ExportButton({
       <button
         onClick={() => (risk.total > 0 ? setConfirming(true) : onExport?.())}
         disabled={!canExport || busy}
-        className={`flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold disabled:cursor-not-allowed disabled:opacity-45 ${
-          risk.total > 0 && !busy ? "bg-amber-500/15 text-amber-400" : "shimmer text-[var(--on-accent)]"
+        className={`flex h-8.5 items-center gap-1.5 rounded-lg px-3.5 text-[12.5px] font-bold transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-45 ${
+          risk.total > 0 && !busy
+            ? "bg-amber-50 text-amber-700 border border-amber-300"
+            : "bg-indigo-600 hover:bg-indigo-700 text-white"
         }`}
-        style={risk.total > 0 && !busy ? undefined : { background: "linear-gradient(135deg,var(--accent),var(--accent-2))" }}
       >
-        <Download aria-hidden className="size-3.5" />
+        <Download className="size-3.5" />
         {busy ? "Working…" : risk.total > 0 ? `${risk.total} to review` : "Export"}
       </button>
       {confirming && (

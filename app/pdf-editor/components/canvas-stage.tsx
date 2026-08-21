@@ -1,31 +1,86 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ContextToolbar, SelectionHandles } from "./context-toolbar";
 import { DemoPage } from "./demo-page";
 
 /**
- * The page stage. Today it renders a static specimen page so the interaction
- * model can be reviewed; the real build swaps DemoPage for the pdf.js canvas
- * and drives block geometry from the parsed document.
+ * Specimen stage for demonstration before a PDF is loaded.
+ * Multi-page continuous vertical scrolling so mouse wheel/trackpad test naturally.
  */
 export function CanvasStage({
-  zoom, selected, onSelect,
+  zoom,
+  selected,
+  onSelect,
+  onPageInView,
 }: {
-  zoom: number; selected: string | null; onSelect: (id: string | null) => void;
+  zoom: number;
+  selected: string | null;
+  onSelect: (id: string | null) => void;
+  onPageInView?: (pageIndex: number) => void;
 }) {
+  const containerRef = useRef<HTMLElement>(null);
+  const pages = [0, 1, 2, 3];
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !onPageInView) return;
+
+    const pageElements = container.querySelectorAll<HTMLElement>("[data-page-index]");
+    if (!pageElements.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let maxRatio = 0;
+        let mostVisibleIndex = -1;
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            const idx = Number(entry.target.getAttribute("data-page-index"));
+            if (!Number.isNaN(idx)) {
+              mostVisibleIndex = idx;
+            }
+          }
+        });
+
+        if (mostVisibleIndex >= 0) {
+          onPageInView(mostVisibleIndex);
+        }
+      },
+      {
+        root: container,
+        threshold: [0.2, 0.5, 0.8],
+      }
+    );
+
+    pageElements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [onPageInView]);
+
   return (
     <main
-      className="relative flex-1 overflow-auto p-6"
+      ref={containerRef}
+      data-lenis-prevent
+      className="relative flex-1 overflow-y-auto overflow-x-auto p-6 pb-36 overscroll-contain bg-[#f3f4f8]"
       onClick={() => onSelect(null)}
-      style={{ background: "color-mix(in srgb, var(--bg) 92%, black)" }}
     >
-      <div className="mx-auto w-fit" style={{ zoom: `${zoom}%` }}>
-        <div
-          className="relative rounded-lg bg-white text-[#14121c]"
-          style={{ width: 640, minHeight: 828, boxShadow: "0 40px 90px -20px rgba(0,0,0,.7)" }}
-        >
-          <DemoPage selected={selected} onSelect={onSelect} />
-        </div>
+      <div className="mx-auto flex flex-col items-center gap-10">
+        {pages.map((idx) => (
+          <div
+            key={idx}
+            id={`pdf-page-${idx}`}
+            data-page-index={idx}
+            className="relative rounded-xl bg-white text-[#1e293b] transition-transform"
+            style={{
+              width: 680 * (zoom / 100),
+              minHeight: 880 * (zoom / 100),
+              boxShadow: "0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0,0,0,0.05)",
+            }}
+          >
+            <DemoPage selected={selected} onSelect={onSelect} pageIndex={idx} />
+          </div>
+        ))}
       </div>
     </main>
   );
@@ -33,7 +88,12 @@ export function CanvasStage({
 
 /** A selectable text block on the page — the core interaction of the editor. */
 export function Block({
-  id, selected, onSelect, children, font = "Times New Roman", size = 11,
+  id,
+  selected,
+  onSelect,
+  children,
+  font = "Poppins",
+  size = 12,
 }: {
   id: string;
   selected: string | null;
@@ -49,17 +109,16 @@ export function Block({
         e.stopPropagation();
         onSelect(id);
       }}
-      className={`relative cursor-text rounded-[3px] px-1.5 py-1 transition-colors ${
+      className={`relative cursor-text rounded-md transition-all ${
         active
-          ? "outline-2 outline-[var(--accent)]"
-          : "outline-1 outline-dashed outline-transparent hover:outline-[#8b84b8]/70"
+          ? "ring-2 ring-indigo-600 bg-indigo-50/20"
+          : "outline-1 outline-dashed outline-transparent hover:outline-indigo-300 hover:bg-slate-50/50"
       }`}
-      style={active ? { boxShadow: "0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent)" } : undefined}
     >
       {active && (
         <>
           <SelectionHandles />
-          <ContextToolbar font={font} size={size} color="var(--accent)" />
+          <ContextToolbar font={font} size={size} color="#4f46e5" />
         </>
       )}
       {children}

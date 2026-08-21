@@ -1,6 +1,7 @@
 import type { TextBlock } from "../types";
 import { buildBlock } from "./build-block";
 import { pageSpans, toLines } from "./extract-blocks";
+import { readOutline } from "./read-outline";
 
 export interface LoadedPage {
   index: number;
@@ -11,9 +12,16 @@ export interface LoadedPage {
   scanned: boolean;
 }
 
+export interface Bookmark {
+  title: string;
+  pageIndex: number;
+  depth: number;
+}
+
 export interface Loaded {
   pages: LoadedPage[];
   blocks: TextBlock[];
+  bookmarks: Bookmark[];
 }
 
 async function loadPdfjs() {
@@ -31,6 +39,7 @@ export async function loadDocument(file: File): Promise<Loaded> {
   const doc = await task.promise;
   const pages: LoadedPage[] = [];
   const blocks: TextBlock[] = [];
+  const bookmarks = await readOutline(doc);
 
   try {
     for (let n = 1; n <= doc.numPages; n++) {
@@ -58,5 +67,5 @@ export async function loadDocument(file: File): Promise<Loaded> {
     await task.destroy();
   }
 
-  return { pages, blocks };
+  return { pages, blocks, bookmarks };
 }

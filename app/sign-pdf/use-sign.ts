@@ -70,6 +70,8 @@ export function useSign() {
     setSig,
     pos,
     move: (xFrac: number, yFrac: number) => setPos((p) => ({ ...p, xFrac, yFrac })),
+    resize: (widthFrac: number) =>
+      setPos((p) => ({ ...p, widthFrac: Math.max(0.06, Math.min(0.9, widthFrac)) })),
     busy,
     url,
     error,

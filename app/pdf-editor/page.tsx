@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AmbientBlob } from "../components/ambient-blob";
 import { CanvasStage } from "./components/canvas-stage";
 import { EditorChrome } from "./components/editor-chrome";
 import { EditorStage } from "./components/editor-stage";
@@ -10,11 +9,12 @@ import { FloatingDock } from "./components/floating-dock";
 import { ImagePicker } from "./components/image-picker";
 import { Inspector } from "./components/inspector";
 import { OpenPanel } from "./components/open-panel";
+import { PageGridModal } from "./components/page-grid-modal";
 import { PageRail } from "./components/page-rail";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
 import type { EditorMode } from "./types";
 
-const ACCENT = "#e11d48";
+const ACCENT = "#4f46e5";
 
 export default function PdfEditorPage() {
   const [tab, setTab] = useState("Edit");
@@ -22,6 +22,7 @@ export default function PdfEditorPage() {
   const [zoom, setZoom] = useState(100);
   const [demoPick, setDemoPick] = useState<string | null>("abs");
   const [signing, setSigning] = useState(false);
+  const [gridOpen, setGridOpen] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
   const e = usePdfEditor();
   const live = e.pages.length > 0;
@@ -40,28 +41,66 @@ export default function PdfEditorPage() {
     }
   }, [tool, live]);
 
+  const handlePageSelect = (pageIndex: number) => {
+    e.setPage(pageIndex);
+    const targetEl = document.getElementById(`pdf-page-${pageIndex}`);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <AmbientBlob />
-      <EditorChrome e={e} live={live} tab={tab} onTab={setTab} tool={tool} onTool={setTool} zoom={zoom} onZoom={setZoom} />
+    <div
+      data-lenis-prevent
+      className="flex h-screen flex-col overflow-hidden bg-[#f3f4f8] text-[#1e293b]"
+      style={{
+        ["--bg" as string]: "#f3f4f8",
+        ["--bg-raised" as string]: "#ffffff",
+        ["--border" as string]: "#e2e8f0",
+        ["--text" as string]: "#0f172a",
+        ["--text-dim" as string]: "#64748b",
+        ["--accent" as string]: "#4f46e5",
+        ["--accent-2" as string]: "#6366f1",
+        ["--on-accent" as string]: "#ffffff",
+      }}
+    >
+      <EditorChrome
+        e={e}
+        live={live}
+        tab={tab}
+        onTab={setTab}
+        tool={tool}
+        onTool={setTool}
+        zoom={zoom}
+        onZoom={setZoom}
+      />
 
       <div className="relative flex min-h-0 flex-1">
         <PageRail
           pages={live ? e.pages.length : 4}
           active={e.page}
-          onPick={e.setPage}
+          onPick={handlePageSelect}
           thumbs={e.pages}
           opFor={e.pageOps.opFor}
           onRotate={e.pageOps.rotatePage}
           onToggleDelete={e.pageOps.toggleDeleted}
           deleted={e.pageOps.deletedCount}
+          bookmarks={e.bookmarks}
+          annotations={e.anno.items}
+          picked={e.anno.picked}
+          onPickAnno={(id) => {
+            e.anno.setPicked(id);
+            const found = e.anno.items.find((a) => a.id === id);
+            if (found) e.setPage(found.pageIndex);
+          }}
+          onRemoveAnno={e.anno.remove}
         />
 
-        <div className="relative flex min-w-0 flex-1">
+        <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
           {live ? (
-            <EditorStage e={e} zoom={zoom} tool={tool} color={ACCENT} />
+            <EditorStage e={e} zoom={zoom} tool={tool} color={ACCENT} onPageInView={e.setPage} />
           ) : (
-            <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} />
+            <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} onPageInView={e.setPage} />
           )}
 
           {!live && <OpenPanel onFiles={e.open} error={e.error} />}
@@ -72,7 +111,15 @@ export default function PdfEditorPage() {
             />
           )}
 
-          <FloatingDock page={e.page} pages={live ? e.pages.length : 24} onPage={e.setPage} />
+          <FloatingDock
+            page={e.page}
+            pages={live ? e.pages.length : 4}
+            onPage={handlePageSelect}
+            tool={tool}
+            onTool={setTool}
+            onToggleGrid={() => setGridOpen(true)}
+            onFit={() => setZoom(100)}
+          />
         </div>
 
         <Inspector
@@ -84,6 +131,16 @@ export default function PdfEditorPage() {
           hasDoc={live}
         />
       </div>
+
+      {gridOpen && (
+        <PageGridModal
+          pages={live ? e.pages.length : 4}
+          active={e.page}
+          thumbs={e.pages}
+          onSelect={handlePageSelect}
+          onClose={() => setGridOpen(false)}
+        />
+      )}
 
       <ImagePicker
         ref={imageInput}

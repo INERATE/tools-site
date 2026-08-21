@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Key, ShieldCheck, ExternalLink, Check } from "lucide-react";
+import { X, Key, ShieldCheck, Check, ExternalLink } from "lucide-react";
 
 export function ApiSettingsModal({
   isOpen,
@@ -11,25 +11,33 @@ export function ApiSettingsModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  activeProvider: "local" | "openai" | "stability" | "replicate";
-  onSelectProvider: (p: "local" | "openai" | "stability" | "replicate") => void;
+  activeProvider: "local" | "gemini" | "openai" | "stability" | "replicate";
+  onSelectProvider: (p: "local" | "gemini" | "openai" | "stability" | "replicate") => void;
 }) {
-  const [provider, setProvider] = useState<"local" | "openai" | "stability" | "replicate">(activeProvider);
+  const [provider, setProvider] = useState<"local" | "gemini" | "openai" | "stability" | "replicate">(activeProvider);
+  const [geminiKey, setGeminiKey] = useState("");
   const [openaiKey, setOpenaiKey] = useState("");
   const [stabilityKey, setStabilityKey] = useState("");
   const [replicateKey, setReplicateKey] = useState("");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    setOpenaiKey(localStorage.getItem("inerate_byok_openai") || "");
-    setStabilityKey(localStorage.getItem("inerate_byok_stability") || "");
-    setReplicateKey(localStorage.getItem("inerate_byok_replicate") || "");
-  }, []);
+    setProvider(activeProvider);
+    if (typeof window !== "undefined") {
+      setGeminiKey(localStorage.getItem("inerate_byok_gemini") || "");
+      setOpenaiKey(localStorage.getItem("inerate_byok_openai") || "");
+      setStabilityKey(localStorage.getItem("inerate_byok_stability") || "");
+      setReplicateKey(localStorage.getItem("inerate_byok_replicate") || "");
+    }
+  }, [isOpen, activeProvider]);
 
   const handleSave = () => {
-    localStorage.setItem("inerate_byok_openai", openaiKey.trim());
-    localStorage.setItem("inerate_byok_stability", stabilityKey.trim());
-    localStorage.setItem("inerate_byok_replicate", replicateKey.trim());
+    if (typeof window !== "undefined") {
+      localStorage.setItem("inerate_byok_gemini", geminiKey.trim());
+      localStorage.setItem("inerate_byok_openai", openaiKey.trim());
+      localStorage.setItem("inerate_byok_stability", stabilityKey.trim());
+      localStorage.setItem("inerate_byok_replicate", replicateKey.trim());
+    }
     onSelectProvider(provider);
     setSaved(true);
     setTimeout(() => {
@@ -41,12 +49,12 @@ export function ApiSettingsModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
-      <div className="relative flex max-h-[90vh] w-full max-w-lg flex-col rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-2xl text-slate-100">
+    <div className="fixed inset-0 z-[250] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
+      <div className="relative w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900 p-6 text-slate-100 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
               <Key className="size-4" />
             </div>
             <div>
@@ -82,6 +90,21 @@ export function ApiSettingsModal({
             </button>
 
             <button
+              onClick={() => setProvider("gemini")}
+              className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all ${
+                provider === "gemini"
+                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm"
+                  : "border-slate-800 bg-slate-900/80 text-slate-400 hover:border-slate-700"
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-xs font-bold text-white">✨ Google Gemini AI</span>
+                {provider === "gemini" && <Check className="size-3.5 text-indigo-400" />}
+              </div>
+              <span className="text-[10px] text-slate-400">Gemini 2.5 Flash Generative Fill</span>
+            </button>
+
+            <button
               onClick={() => setProvider("openai")}
               className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all ${
                 provider === "openai"
@@ -110,24 +133,32 @@ export function ApiSettingsModal({
               </div>
               <span className="text-[10px] text-slate-400">Stable Diffusion 3.5 Inpaint</span>
             </button>
-
-            <button
-              onClick={() => setProvider("replicate")}
-              className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all ${
-                provider === "replicate"
-                  ? "border-indigo-500 bg-indigo-500/10 text-white shadow-sm"
-                  : "border-slate-800 bg-slate-900/80 text-slate-400 hover:border-slate-700"
-              }`}
-            >
-              <div className="flex items-center justify-between w-full">
-                <span className="text-xs font-bold text-white">🚀 Replicate (FLUX)</span>
-                {provider === "replicate" && <Check className="size-3.5 text-indigo-400" />}
-              </div>
-              <span className="text-[10px] text-slate-400">FLUX.1 Fill & SDXL</span>
-            </button>
           </div>
 
           {/* API Key Inputs */}
+          {provider === "gemini" && (
+            <div className="mt-2 flex flex-col gap-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-slate-300">Google Gemini API Key:</span>
+                <a
+                  href="https://aistudio.google.com/app/apikey"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 text-[11px] text-indigo-400 hover:underline"
+                >
+                  Get Free Key <ExternalLink className="size-3" />
+                </a>
+              </div>
+              <input
+                type="password"
+                placeholder="AIzaSy..."
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-white outline-none focus:border-indigo-500"
+              />
+            </div>
+          )}
+
           {provider === "openai" && (
             <div className="mt-2 flex flex-col gap-1.5">
               <div className="flex items-center justify-between text-xs">
@@ -174,29 +205,6 @@ export function ApiSettingsModal({
             </div>
           )}
 
-          {provider === "replicate" && (
-            <div className="mt-2 flex flex-col gap-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-slate-300">Replicate API Token:</span>
-                <a
-                  href="https://replicate.com/account/api-tokens"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1 text-[11px] text-indigo-400 hover:underline"
-                >
-                  Get Token <ExternalLink className="size-3" />
-                </a>
-              </div>
-              <input
-                type="password"
-                placeholder="r8_..."
-                value={replicateKey}
-                onChange={(e) => setReplicateKey(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-xs text-white outline-none focus:border-indigo-500"
-              />
-            </div>
-          )}
-
           {/* Privacy Note */}
           <div className="mt-3 flex items-start gap-2 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 p-3 text-[11px] text-indigo-200">
             <ShieldCheck className="size-4 shrink-0 text-indigo-400 mt-0.5" />
@@ -216,7 +224,7 @@ export function ApiSettingsModal({
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2 text-xs font-bold text-white shadow-md hover:bg-indigo-500 transition-all"
+            className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2 text-xs font-bold text-white shadow-md hover:bg-indigo-500 transition-all cursor-pointer"
           >
             {saved ? <Check className="size-3.5" /> : null}
             {saved ? "Saved!" : "Save & Use"}

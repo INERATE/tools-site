@@ -35,6 +35,7 @@ export function MagicBrushCanvas({
   const historyIdx = useRef<number>(-1);
 
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
+  const [boxPreview, setBoxPreview] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
 
   const saveHistory = useCallback(() => {
     const maskCanvas = maskCanvasRef.current;
@@ -51,6 +52,48 @@ export function MagicBrushCanvas({
     onCanRedoChange?.(false);
     onMaskChange(true);
   }, [onCanUndoChange, onCanRedoChange, onMaskChange]);
+
+  const handleUndo = useCallback(() => {
+    if (historyIdx.current <= 0) return;
+    historyIdx.current -= 1;
+    const maskCanvas = maskCanvasRef.current;
+    const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
+    if (maskCanvas && ctx && history.current[historyIdx.current]) {
+      ctx.putImageData(history.current[historyIdx.current], 0, 0);
+      onCanUndoChange?.(historyIdx.current > 0);
+      onCanRedoChange?.(historyIdx.current < history.current.length - 1);
+      onMaskChange(historyIdx.current > 0);
+    }
+  }, [onCanUndoChange, onCanRedoChange, onMaskChange]);
+
+  const handleRedo = useCallback(() => {
+    if (historyIdx.current >= history.current.length - 1) return;
+    historyIdx.current += 1;
+    const maskCanvas = maskCanvasRef.current;
+    const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
+    if (maskCanvas && ctx && history.current[historyIdx.current]) {
+      ctx.putImageData(history.current[historyIdx.current], 0, 0);
+      onCanUndoChange?.(historyIdx.current > 0);
+      onCanRedoChange?.(historyIdx.current < history.current.length - 1);
+      onMaskChange(true);
+    }
+  }, [onCanUndoChange, onCanRedoChange, onMaskChange]);
+
+  // Keyboard shortcuts (Ctrl+Z / Cmd+Z, Ctrl+Y / Cmd+Shift+Z)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (e.shiftKey) handleRedo();
+        else handleUndo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleUndo, handleRedo]);
 
   // Load image onto background canvas
   useEffect(() => {
@@ -83,37 +126,17 @@ export function MagicBrushCanvas({
     img.src = imageUrl;
   }, [imageUrl, onCanUndoChange, onCanRedoChange, onMaskChange]);
 
-  // Handle undo signal
+  // Handle undo/redo/clear signals from parent buttons
   useEffect(() => {
-    if (undoSignal === undefined || historyIdx.current <= 0) return;
-    historyIdx.current -= 1;
-    const maskCanvas = maskCanvasRef.current;
-    const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
-    if (maskCanvas && ctx && history.current[historyIdx.current]) {
-      ctx.putImageData(history.current[historyIdx.current], 0, 0);
-      onCanUndoChange?.(historyIdx.current > 0);
-      onCanRedoChange?.(historyIdx.current < history.current.length - 1);
-      onMaskChange(historyIdx.current > 0);
-    }
-  }, [undoSignal, onCanUndoChange, onCanRedoChange, onMaskChange]);
+    if (undoSignal !== undefined && undoSignal > 0) handleUndo();
+  }, [undoSignal, handleUndo]);
 
-  // Handle redo signal
   useEffect(() => {
-    if (redoSignal === undefined || historyIdx.current >= history.current.length - 1) return;
-    historyIdx.current += 1;
-    const maskCanvas = maskCanvasRef.current;
-    const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
-    if (maskCanvas && ctx && history.current[historyIdx.current]) {
-      ctx.putImageData(history.current[historyIdx.current], 0, 0);
-      onCanUndoChange?.(historyIdx.current > 0);
-      onCanRedoChange?.(historyIdx.current < history.current.length - 1);
-      onMaskChange(true);
-    }
-  }, [redoSignal, onCanUndoChange, onCanRedoChange, onMaskChange]);
+    if (redoSignal !== undefined && redoSignal > 0) handleRedo();
+  }, [redoSignal, handleRedo]);
 
-  // Handle clear signal
   useEffect(() => {
-    if (clearSignal === undefined) return;
+    if (clearSignal === undefined || clearSignal === 0) return;
     const maskCanvas = maskCanvasRef.current;
     const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
     if (maskCanvas && ctx) {
@@ -158,6 +181,23 @@ export function MagicBrushCanvas({
         drawLine(lastPoint.current.x, lastPoint.current.y, coords.x, coords.y);
       }
       lastPoint.current = coords;
+    } else if (tool === "box" && boxStart.current) {
+      // Update live dragging box preview
+      const maskCanvas = maskCanvasRef.current;
+      if (maskCanvas) {
+        const rect = maskCanvas.getBoundingClientRect();
+        const startClientX = (boxStart.current.x / maskCanvas.width) * rect.width;
+        const startClientY = (boxStart.current.y / maskCanvas.height) * rect.height;
+        const currentClientX = (coords.x / maskCanvas.width) * rect.width;
+        const currentClientY = (coords.y / maskCanvas.height) * rect.height;
+
+        setBoxPreview({
+          x: Math.min(startClientX, currentClientX),
+          y: Math.min(startClientY, currentClientY),
+          w: Math.abs(currentClientX - startClientX),
+          h: Math.abs(currentClientY - startClientY),
+        });
+      }
     }
   };
 
@@ -169,6 +209,7 @@ export function MagicBrushCanvas({
       const coords = getCanvasCoords(e.clientX, e.clientY);
       drawBox(boxStart.current.x, boxStart.current.y, coords.x, coords.y);
       boxStart.current = null;
+      setBoxPreview(null);
     }
 
     lastPoint.current = null;
@@ -241,7 +282,10 @@ export function MagicBrushCanvas({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onPointerLeave={() => setCursorPos(null)}
+      onPointerLeave={() => {
+        setCursorPos(null);
+        setBoxPreview(null);
+      }}
       className="relative max-h-[70vh] w-fit max-w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-slate-900/50 shadow-2xl touch-none mx-auto select-none cursor-crosshair backdrop-blur-xs"
     >
       {/* Background Image Canvas */}
@@ -254,10 +298,27 @@ export function MagicBrushCanvas({
         className="pointer-events-none absolute inset-0 size-full object-contain rounded-2xl"
       />
 
-      {/* Floating Apple-Style Brush Cursor Indicator */}
-      {cursorPos && (
+      {/* Live Dragging Box Select Outline (MS Paint / Photoshop Style) */}
+      {boxPreview && (
         <div
-          className="pointer-events-none fixed z-50 rounded-full border-2 border-purple-400 bg-purple-500/25 -translate-x-1/2 -translate-y-1/2 shadow-lg backdrop-blur-[1px]"
+          className="pointer-events-none absolute border-2 border-dashed border-purple-400 bg-purple-500/25 rounded-md shadow-md"
+          style={{
+            left: `${boxPreview.x}px`,
+            top: `${boxPreview.y}px`,
+            width: `${boxPreview.w}px`,
+            height: `${boxPreview.h}px`,
+          }}
+        />
+      )}
+
+      {/* Floating Apple-Style Brush Cursor Indicator (Always on Top) */}
+      {cursorPos && tool !== "box" && (
+        <div
+          className={`pointer-events-none fixed z-[9999] rounded-full border-2 -translate-x-1/2 -translate-y-1/2 shadow-xl backdrop-blur-[1px] ${
+            tool === "eraser"
+              ? "border-rose-400 bg-rose-500/30"
+              : "border-purple-400 bg-purple-500/30"
+          }`}
           style={{
             left: cursorPos.x,
             top: cursorPos.y,

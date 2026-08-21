@@ -51,7 +51,7 @@ export default function AiObjectEraserPage() {
   const [tool, setTool] = useState<"brush" | "box" | "eraser">("brush");
   const [brushSize, setBrushSize] = useState<number>(32);
   const [prompt, setPrompt] = useState<string>("");
-  const [provider, setProvider] = useState<"local" | "openai" | "stability" | "replicate">("local");
+  const [provider, setProvider] = useState<"local" | "gemini" | "openai" | "stability" | "replicate">("local");
   const [apiSettingsOpen, setApiSettingsOpen] = useState(false);
   const [hasMask, setHasMask] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -119,7 +119,7 @@ export default function AiObjectEraserPage() {
 
     // Check if cloud generative fill is requested
     if (provider !== "local" || prompt.trim()) {
-      const activeP = provider === "local" ? "openai" : provider;
+      const activeP: "gemini" | "openai" | "stability" | "replicate" = provider === "local" ? "gemini" : provider;
       const key = localStorage.getItem(`inerate_byok_${activeP}`);
       if (!key) {
         setProvider(activeP);

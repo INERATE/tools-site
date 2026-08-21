@@ -134,8 +134,8 @@ export function ToolRibbon({
       </div>
 
       {/* Dynamic Actions Ribbon per Tab */}
-      <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-1.5 sm:py-2 bg-slate-50/50 overflow-x-auto no-scrollbar">
-        <div className="flex min-w-0 flex-nowrap sm:flex-wrap items-center gap-1 sm:gap-1.5 shrink-0">
+      <div className="relative flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-slate-50/50 overflow-visible">
+        <div className="flex min-w-0 flex-wrap items-center gap-1 sm:gap-1.5">
           {/* TAB: Home or Edit */}
           {(tab === "Home" || tab === "Edit") && (
             <>

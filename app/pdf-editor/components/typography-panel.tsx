@@ -12,18 +12,12 @@ import {
   Underline,
 } from "lucide-react";
 import { useRef } from "react";
+import { AVAILABLE_FONTS, FONT_CATEGORIES } from "../fonts-data";
 import type { FontFamily, TextBlock } from "../types";
 
 const FIELD =
   "w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-medium text-slate-700 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-2xs cursor-pointer";
 const LABEL = "mb-1 block text-[11px] font-semibold text-slate-700";
-
-const FAMILIES: { value: FontFamily; label: string }[] = [
-  { value: "sans", label: "Poppins / Sans-serif" },
-  { value: "sans", label: "Helvetica / Inter" },
-  { value: "serif", label: "Times New Roman / Serif" },
-  { value: "mono", label: "Courier / Monospace" },
-];
 
 export function TypographyPanel({
   block,
@@ -42,6 +36,7 @@ export function TypographyPanel({
   const isStrike = !!block?.strikethrough;
   const currentSize = block?.fontSize ? Math.round(block.fontSize) : 14;
   const currentColor = block?.color || "#111827";
+  const currentFontName = block?.fontFamily || block?.matchedFontName || "Poppins";
 
   return (
     <div className="flex flex-col gap-4">
@@ -50,19 +45,33 @@ export function TypographyPanel({
         <label className={LABEL}>Font Family</label>
         <select
           className={FIELD}
-          value={block?.matchedFamily ?? "sans"}
+          value={currentFontName}
           disabled={!block}
           onChange={(e) => {
             if (!block) return;
-            const fam = e.target.value as FontFamily;
-            onFamily?.(block.id, fam);
-            onFormat?.(block.id, { matchedFamily: fam, fontFamily: fam === "serif" ? "Times New Roman" : fam === "mono" ? "Courier" : "Helvetica" });
+            const fontObj = AVAILABLE_FONTS.find((f) => f.name === e.target.value);
+            const matchedFamily: FontFamily =
+              fontObj?.category === "serif"
+                ? "serif"
+                : fontObj?.category === "mono"
+                ? "mono"
+                : "sans";
+            onFamily?.(block.id, matchedFamily);
+            onFormat?.(block.id, {
+              fontFamily: fontObj?.name || e.target.value,
+              matchedFamily,
+              matchedFontName: fontObj?.name || e.target.value,
+            });
           }}
         >
-          {FAMILIES.map((f, i) => (
-            <option key={i} value={f.value}>
-              {f.label}
-            </option>
+          {FONT_CATEGORIES.map((cat) => (
+            <optgroup key={cat.id} label={cat.label}>
+              {AVAILABLE_FONTS.filter((f) => f.category === cat.id).map((f) => (
+                <option key={f.name} value={f.name}>
+                  {f.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
 

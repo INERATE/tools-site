@@ -58,8 +58,14 @@ export default function PdfEditorPage() {
   };
 
   const handleFit = () => {
+    // If currently zoomed away from 100%, reset back to standard 100%
+    if (zoom !== 100) {
+      setZoom(100);
+      return;
+    }
+    // If at 100%, fit to the stage width
     if (!live || !e.pages[e.page]) {
-      setZoom((z) => (z === 100 ? 135 : 100));
+      setZoom(135);
       return;
     }
     const curPage = e.pages[e.page];
@@ -67,9 +73,9 @@ export default function PdfEditorPage() {
     if (stageEl && curPage.width > 0) {
       const availWidth = stageEl.clientWidth - 64;
       const idealZoom = Math.round((availWidth / curPage.width) * 100);
-      setZoom((z) => (Math.abs(z - idealZoom) < 5 ? 100 : Math.max(60, Math.min(200, idealZoom))));
+      setZoom(Math.max(60, Math.min(200, idealZoom === 100 ? 135 : idealZoom)));
     } else {
-      setZoom((z) => (z === 100 ? 135 : 100));
+      setZoom(135);
     }
   };
 
@@ -111,7 +117,7 @@ export default function PdfEditorPage() {
           annotations={e.anno.items}
           picked={e.anno.picked}
           onPickAnno={(id) => {
-            e.anno.setPicked(id);
+            e.selectAnnotation(id);
             const found = e.anno.items.find((a) => a.id === id);
             if (found) e.setPage(found.pageIndex);
           }}

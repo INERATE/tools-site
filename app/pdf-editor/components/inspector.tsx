@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Edit3, FileCheck, FileSearch, Sparkles, Square, X } from "lucide-react";
 import type { Annotation, BoxLike } from "../annotation-types";
 import type { WatermarkConfig } from "../element-types";
@@ -52,6 +52,17 @@ export function Inspector({
 }) {
   const [mode, setMode] = useState<Mode>("edit");
   const [open, setOpen] = useState(true);
+
+  // Selecting something on the page has to bring its properties into view.
+  // Without this the header renamed itself to match the selection while the
+  // body kept showing whichever tab happened to be open — the panel claimed
+  // to be editing text and offered annotation tools.
+  const selectionId = annotation?.id ?? block?.id ?? null;
+  useEffect(() => {
+    if (!selectionId) return;
+    setMode("edit");
+    setOpen(true);
+  }, [selectionId]);
 
   // Dynamic title based on selection
   let title = "Document properties";

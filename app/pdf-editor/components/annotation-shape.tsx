@@ -36,22 +36,17 @@ export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boo
   // Redactions
   if (b.kind === "redact") {
     if (b.redactStyle === "blur") {
-      // Authentic Mosaic Pixelated Censor Effect
+      // Clean, premium frosted glass blur filter
       return (
         <div
           style={{
             ...style,
-            backdropFilter: "blur(14px) contrast(1.1) brightness(0.95)",
-            WebkitBackdropFilter: "blur(14px) contrast(1.1) brightness(0.95)",
-            backgroundColor: "rgba(225, 230, 240, 0.45)",
-            backgroundImage: `
-              linear-gradient(to right, rgba(0, 0, 0, 0.14) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(0, 0, 0, 0.14) 1px, transparent 1px),
-              repeating-conic-gradient(rgba(0,0,0,0.06) 0% 25%, rgba(255,255,255,0.18) 0% 50%)
-            `,
-            backgroundSize: "10px 10px, 10px 10px, 20px 20px",
-            border: "1px dashed rgba(99, 102, 241, 0.6)",
-            boxShadow: "inset 0 0 10px rgba(0,0,0,0.08)",
+            backdropFilter: "blur(12px) saturate(1.2)",
+            WebkitBackdropFilter: "blur(12px) saturate(1.2)",
+            backgroundColor: "rgba(255, 255, 255, 0.55)",
+            border: "1px solid rgba(255, 255, 255, 0.9)",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.06)",
+            borderRadius: 2,
           }}
         />
       );

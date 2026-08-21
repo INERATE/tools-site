@@ -122,6 +122,22 @@ export function usePdfEditor() {
     if (saved?.file) void install(saved.file, saved);
   }, [file, busy, persist, install]);
 
+  /**
+   * One selection at a time. Text blocks and annotations were independent
+   * state, so both could be set at once and the inspector — which checks the
+   * annotation first — would keep showing a shape while a text block was
+   * visibly highlighted.
+   */
+  const selectBlock = useCallback((id: string | null) => {
+    setSelected(id);
+    if (id) anno.setPicked(null);
+  }, [anno]);
+
+  const selectAnnotation = useCallback((id: string | null) => {
+    anno.setPicked(id);
+    if (id) setSelected(null);
+  }, [anno]);
+
   const startNew = useCallback(async () => {
     await persist.startNew();
     setFile(null);
@@ -138,7 +154,7 @@ export function usePdfEditor() {
   }, [persist, history, overlays, anno, pageOps, stale]);
 
   return {
-    file, docName, renameDoc: setDocName, pages, bookmarks, blocks, page, setPage, selected, setSelected,
+    file, docName, renameDoc: setDocName, pages, bookmarks, blocks, page, setPage, selected, setSelected: selectBlock, selectAnnotation,
     busy, progress, error, outUrl,
     restoredAt: persist.restoredAt, dismissNotice: persist.dismissNotice, startNew,
     edited: blocks.filter((b) => b.isEdited).length,

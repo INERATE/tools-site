@@ -97,7 +97,7 @@ export function PlacedAnnotation({
   return (
     <div
       className={`pointer-events-auto absolute cursor-move ${
-        selected ? "ring-2 ring-indigo-600 shadow-sm" : "hover:ring-1 hover:ring-indigo-300"
+        selected ? "z-[45] ring-2 ring-indigo-600 shadow-sm" : "z-[35] hover:ring-1 hover:ring-indigo-300"
       }`}
       style={{
         left: pct(a.relX),

@@ -22,7 +22,13 @@ function warningFor(b: TextBlock): string | null {
 
 /** One editable line sitting over the rendered page. */
 export function EditableBlock({
-  block: b, active, zoom, onSelect, onEdit, onResize, onFormat,
+  block: b,
+  active,
+  zoom,
+  onSelect,
+  onEdit,
+  onResize,
+  onFormat,
 }: {
   block: TextBlock;
   active: boolean;
@@ -32,8 +38,6 @@ export function EditableBlock({
   onResize?: (id: string, patch: { relX?: number; relWidth?: number; relHeight?: number }) => void;
   onFormat?: (id: string, patch: Partial<TextBlock>) => void;
 }) {
-  // Childless on purpose — see useEditableText: React-owned children would
-  // reset the caret to the start on every keystroke.
   const spanRef = useEditableText(b.id, b.text);
   const warning = warningFor(b);
   const risky = b.isOverflowing || b.bgFlat === false;
@@ -41,6 +45,13 @@ export function EditableBlock({
   const bg = b.bgColor
     ? `rgb(${Math.round(b.bgColor.r * 255)},${Math.round(b.bgColor.g * 255)},${Math.round(b.bgColor.b * 255)})`
     : "#ffffff";
+
+  const textDeco = [
+    b.underline ? "underline" : "",
+    b.strikethrough ? "line-through" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div
@@ -63,7 +74,8 @@ export function EditableBlock({
         minWidth: `${b.relWidth * 100}%`,
         minHeight: `${b.relHeight * 100}%`,
         width: "max-content",
-        maxWidth: "95%",
+        maxWidth: "98%",
+        textAlign: b.align || "left",
       }}
     >
       {active && (
@@ -93,14 +105,16 @@ export function EditableBlock({
         onInput={(e) => onEdit(b.id, e.currentTarget.textContent ?? "")}
         className="block min-w-full px-0.5 outline-none select-text"
         style={{
-          fontFamily: FAMILY[family],
+          fontFamily: b.fontFamily
+            ? `'${b.fontFamily}', ${FAMILY[family] || "sans-serif"}`
+            : FAMILY[family] || "sans-serif",
           fontWeight: b.fontWeight === "bold" || b.fontWeight === "700" ? 700 : 400,
           fontStyle: b.fontStyle || "normal",
-          textDecoration: b.underline ? "underline" : undefined,
-          textAlign: b.align,
+          textDecoration: textDeco || "none",
+          textAlign: b.align || "left",
           fontSize: b.fontSize * (zoom / 100),
-          lineHeight: 1.15,
-          letterSpacing: b.letterSpacing ? `${b.letterSpacing}px` : undefined,
+          lineHeight: b.lineHeight || 1.2,
+          letterSpacing: b.letterSpacing ? `${b.letterSpacing}px` : "normal",
           whiteSpace: "pre",
           color: active || b.isEdited ? b.color || "#0f172a" : "transparent",
           background: active || b.isEdited ? bg : "transparent",

@@ -487,7 +487,7 @@ export function ToolRibbon({
                       className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                     >
                       <EyeOff className="size-3.5 text-indigo-600" />
-                      Mosaic / Pixelate
+                      Blur Filter / Frosted Glass
                     </button>
                     <button
                       onClick={() => {

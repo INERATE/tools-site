@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContextToolbar, SelectionHandles } from "./context-toolbar";
 import { DemoPage } from "./demo-page";
 
@@ -13,13 +13,17 @@ export function CanvasStage({
   selected,
   onSelect,
   onPageInView,
+  tool = "select",
 }: {
   zoom: number;
   selected: string | null;
   onSelect: (id: string | null) => void;
   onPageInView?: (pageIndex: number) => void;
+  tool?: string;
 }) {
   const containerRef = useRef<HTMLElement>(null);
+  const [isPanning, setIsPanning] = useState(false);
+  const panStartRef = useRef<{ clientX: number; clientY: number; scrollLeft: number; scrollTop: number } | null>(null);
   const pages = [0, 1, 2, 3];
 
   useEffect(() => {
@@ -58,11 +62,46 @@ export function CanvasStage({
     return () => observer.disconnect();
   }, [onPageInView]);
 
+  const handlePointerDown = (evt: React.PointerEvent<HTMLElement>) => {
+    if (tool !== "pan" || !containerRef.current) return;
+    evt.preventDefault();
+    setIsPanning(true);
+    evt.currentTarget.setPointerCapture(evt.pointerId);
+    panStartRef.current = {
+      clientX: evt.clientX,
+      clientY: evt.clientY,
+      scrollLeft: containerRef.current.scrollLeft,
+      scrollTop: containerRef.current.scrollTop,
+    };
+  };
+
+  const handlePointerMove = (evt: React.PointerEvent<HTMLElement>) => {
+    if (!isPanning || !panStartRef.current || !containerRef.current) return;
+    const dx = evt.clientX - panStartRef.current.clientX;
+    const dy = evt.clientY - panStartRef.current.clientY;
+    containerRef.current.scrollLeft = panStartRef.current.scrollLeft - dx;
+    containerRef.current.scrollTop = panStartRef.current.scrollTop - dy;
+  };
+
+  const handlePointerUp = () => {
+    setIsPanning(false);
+    panStartRef.current = null;
+  };
+
   return (
     <main
       ref={containerRef}
       data-lenis-prevent
-      className="relative flex-1 overflow-y-auto overflow-x-auto p-6 pb-36 overscroll-contain bg-[#f3f4f8]"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      className={`relative flex-1 overflow-y-auto overflow-x-auto p-6 pb-36 overscroll-contain bg-[#f3f4f8] ${
+        tool === "pan"
+          ? isPanning
+            ? "cursor-grabbing select-none"
+            : "cursor-grab select-none"
+          : ""
+      }`}
       onClick={() => onSelect(null)}
     >
       <div className="mx-auto flex flex-col items-center gap-10">

@@ -33,7 +33,10 @@ async function loadPdfjs() {
 const SCALE = 2;
 
 /** Renders every page and extracts its editable text lines in one pass. */
-export async function loadDocument(file: File): Promise<Loaded> {
+export async function loadDocument(
+  file: File,
+  onProgress?: (done: number, total: number) => void,
+): Promise<Loaded> {
   const pdfjs = await loadPdfjs();
   const task = pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
   const doc = await task.promise;
@@ -62,6 +65,10 @@ export async function loadDocument(file: File): Promise<Loaded> {
         blocks.push(buildBlock(`p${n - 1}-l${i}`, n - 1, line, ctx, canvas, pw, ph));
       });
       p.cleanup();
+      onProgress?.(n, doc.numPages);
+      // Yield to the event loop so the progress UI can actually paint between
+      // pages — without this the whole parse blocks and the bar jumps 0 to 100.
+      await new Promise((r) => setTimeout(r, 0));
     }
   } finally {
     await task.destroy();

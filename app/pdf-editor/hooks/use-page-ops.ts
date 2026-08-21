@@ -31,7 +31,8 @@ export function usePageOps(onChange: () => void) {
     });
   }, [onChange]);
 
-  const resetOps = useCallback(() => setOps({}), []);
+  /** `keep` re-installs restored page operations instead of clearing. */
+  const resetOps = useCallback((keep?: Record<number, PageOp>) => setOps(keep ?? {}), []);
 
   const deletedCount = Object.values(ops).filter((o) => o.deleted).length;
 

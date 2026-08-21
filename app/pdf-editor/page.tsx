@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CanvasStage } from "./components/canvas-stage";
+import { DocumentSearchBar } from "./components/document-search-bar";
 import { EditorChrome } from "./components/editor-chrome";
 import { EditorStage } from "./components/editor-stage";
 import { ESignModal } from "./components/esign-modal";
@@ -9,7 +10,9 @@ import { FloatingDock } from "./components/floating-dock";
 import { ImagePicker } from "./components/image-picker";
 import { Inspector } from "./components/inspector";
 import { OpenPanel } from "./components/open-panel";
+import { LoadingSkeleton } from "./components/loading-skeleton";
 import { PageGridModal } from "./components/page-grid-modal";
+import { RestoreBanner } from "./components/restore-banner";
 import { PageRail } from "./components/page-rail";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
 import type { EditorMode } from "./types";
@@ -23,6 +26,7 @@ export default function PdfEditorPage() {
   const [demoPick, setDemoPick] = useState<string | null>("abs");
   const [signing, setSigning] = useState(false);
   const [gridOpen, setGridOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
   const e = usePdfEditor();
   const live = e.pages.length > 0;
@@ -49,6 +53,11 @@ export default function PdfEditorPage() {
     }
   };
 
+  const handleSelectSearchBlock = (id: string, pageIndex: number) => {
+    handlePageSelect(pageIndex);
+    e.setSelected(id);
+  };
+
   return (
     <div
       data-lenis-prevent
@@ -73,6 +82,8 @@ export default function PdfEditorPage() {
         onTool={setTool}
         zoom={zoom}
         onZoom={setZoom}
+        onToggleSearch={() => setSearchOpen((prev) => !prev)}
+        onToggleGrid={() => setGridOpen((prev) => !prev)}
       />
 
       <div className="relative flex min-h-0 flex-1">
@@ -97,13 +108,25 @@ export default function PdfEditorPage() {
         />
 
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
+          {searchOpen && (
+            <DocumentSearchBar
+              blocks={e.blocks}
+              onSelectBlock={handleSelectSearchBlock}
+              onClose={() => setSearchOpen(false)}
+            />
+          )}
+
           {live ? (
             <EditorStage e={e} zoom={zoom} tool={tool} color={ACCENT} onPageInView={e.setPage} />
           ) : (
-            <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} onPageInView={e.setPage} />
+            <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} onPageInView={e.setPage} tool={tool} />
           )}
 
-          {!live && <OpenPanel onFiles={e.open} error={e.error} />}
+          {!live && !e.busy && <OpenPanel onFiles={e.open} error={e.error} />}
+          {e.busy && <LoadingSkeleton done={e.progress.done} total={e.progress.total} />}
+          {!live && !e.busy && e.restorable && (
+            <RestoreBanner savedAt={e.restorable.savedAt} onRestore={e.restore} onDiscard={e.discardSaved} />
+          )}
           {signing && page && (
             <ESignModal
               onClose={() => setSigning(false)}
@@ -129,6 +152,9 @@ export default function PdfEditorPage() {
           watermark={e.watermark}
           onWatermark={e.editWatermark}
           hasDoc={live}
+          onRotatePage={() => e.pageOps.rotatePage(e.page)}
+          onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
+          onToolSelect={(t) => setTool(t as EditorMode)}
         />
       </div>
 

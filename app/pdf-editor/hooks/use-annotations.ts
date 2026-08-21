@@ -42,8 +42,9 @@ export function useAnnotations(onChange: () => void) {
     onChange();
   }, [onChange]);
 
-  const resetAnnotations = useCallback(() => {
-    setItems([]);
+  /** `keep` re-installs restored annotations instead of clearing. */
+  const resetAnnotations = useCallback((keep?: Annotation[]) => {
+    setItems(keep ?? []);
     setPicked(null);
     draft.clearDraft();
   }, [draft]);

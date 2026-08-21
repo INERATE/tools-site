@@ -50,6 +50,8 @@ export function ToolRibbon({
   onTool,
   zoom,
   onZoom,
+  onToggleSearch,
+  onToggleGrid,
 }: {
   tab: string;
   onTab: (v: string) => void;
@@ -57,6 +59,8 @@ export function ToolRibbon({
   onTool: (v: EditorMode) => void;
   zoom: number;
   onZoom: (v: number) => void;
+  onToggleSearch?: () => void;
+  onToggleGrid?: () => void;
 }) {
   return (
     <div className="relative z-20 flex shrink-0 flex-col border-b border-slate-200/90 bg-white">
@@ -135,10 +139,18 @@ export function ToolRibbon({
             </button>
           </div>
 
-          <button className="grid size-7.5 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50" title="Search document">
+          <button
+            onClick={onToggleSearch}
+            className="grid size-7.5 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+            title="Search text in document"
+          >
             <Search className="size-3.5" />
           </button>
-          <button className="grid size-7.5 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50" title="View options">
+          <button
+            onClick={onToggleGrid}
+            className="grid size-7.5 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+            title="View page grid"
+          >
             <LayoutGrid className="size-3.5" />
           </button>
         </div>

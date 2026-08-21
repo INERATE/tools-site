@@ -5,6 +5,7 @@ export type { FontFamily };
 
 export type EditorMode =
   | "select"
+  | "pan"
   | "edit-text"
   | "add-text"
   | "watermark"

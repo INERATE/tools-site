@@ -30,8 +30,9 @@ export function useOverlays(onChange: () => void) {
     setSignatures((s) => s.filter((x) => x.id !== id));
   }, [onChange]);
 
-  const resetOverlays = useCallback(() => {
-    setWatermark(NO_WATERMARK);
+  /** `keep` re-installs a restored watermark instead of clearing to default. */
+  const resetOverlays = useCallback((keep?: WatermarkConfig) => {
+    setWatermark(keep ?? NO_WATERMARK);
     setSignatures([]);
   }, []);
 

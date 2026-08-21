@@ -7,7 +7,16 @@ import { ToolRibbon } from "./tool-ribbon";
 
 /** Topbar + ribbon, wired to the editor state. Split out to keep page.tsx small. */
 export function EditorChrome({
-  e, live, tab, onTab, tool, onTool, zoom, onZoom,
+  e,
+  live,
+  tab,
+  onTab,
+  tool,
+  onTool,
+  zoom,
+  onZoom,
+  onToggleSearch,
+  onToggleGrid,
 }: {
   e: ReturnType<typeof usePdfEditor>;
   live: boolean;
@@ -17,6 +26,8 @@ export function EditorChrome({
   onTool: (v: EditorMode) => void;
   zoom: number;
   onZoom: (v: number) => void;
+  onToggleSearch?: () => void;
+  onToggleGrid?: () => void;
 }) {
   return (
     <>
@@ -33,7 +44,16 @@ export function EditorChrome({
         canUndo={e.canUndo}
         canRedo={e.canRedo}
       />
-      <ToolRibbon tab={tab} onTab={onTab} tool={tool} onTool={onTool} zoom={zoom} onZoom={onZoom} />
+      <ToolRibbon
+        tab={tab}
+        onTab={onTab}
+        tool={tool}
+        onTool={onTool}
+        zoom={zoom}
+        onZoom={onZoom}
+        onToggleSearch={onToggleSearch}
+        onToggleGrid={onToggleGrid}
+      />
     </>
   );
 }

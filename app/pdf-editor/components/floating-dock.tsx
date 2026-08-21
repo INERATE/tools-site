@@ -24,13 +24,13 @@ export function FloatingDock({
     <div className="pointer-events-auto absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-slate-200/90 bg-white/95 px-3 py-1.5 text-[12px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.06)] backdrop-blur-md">
       {/* Pan button */}
       <button
-        onClick={() => onTool?.("select")}
+        onClick={() => onTool?.("pan")}
         className={`grid size-7 place-items-center rounded-full transition-colors ${
-          tool === "select"
-            ? "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+          tool === "pan"
+            ? "bg-indigo-50 text-indigo-600 shadow-2xs font-bold ring-1 ring-indigo-200"
             : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
         }`}
-        title="Pan tool"
+        title="Pan tool (Drag to scroll)"
       >
         <Hand className="size-3.5" />
       </button>

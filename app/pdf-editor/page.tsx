@@ -15,6 +15,7 @@ import { WatermarkEraserModal } from "./components/modals/watermark-eraser-modal
 import { PageGridModal } from "./components/page-grid-modal";
 import { PageRail } from "./components/page-rail";
 import { StageOverlays } from "./components/stage-overlays";
+import { composePageSnapshot } from "./engine/compose-page-snapshot";
 import { usePdfEditor } from "./hooks/use-pdf-editor";
 import { useShortcuts } from "./hooks/use-shortcuts";
 import { ACCENT, EDITOR_THEME } from "./editor-theme";
@@ -33,6 +34,7 @@ export default function PdfEditorPage() {
   const [ocrOpen, setOcrOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [watermarkEraserOpen, setWatermarkEraserOpen] = useState(false);
+  const [eraserPageSnapshot, setEraserPageSnapshot] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [redactStyle, setRedactStyle] = useState<"blackout" | "blur" | "whiteout">("blackout");
   const imageInput = useRef<HTMLInputElement>(null);
@@ -88,6 +90,16 @@ export default function PdfEditorPage() {
       setZoom(135);
     }
   };
+  const handleOpenWatermarkEraser = async () => {
+    if (!live || !e.pages[e.page]) return;
+    try {
+      const snapshot = await composePageSnapshot(e.pages[e.page], e.blocks, e.anno.items);
+      setEraserPageSnapshot(snapshot);
+    } catch {
+      setEraserPageSnapshot(e.pages[e.page]?.url || "");
+    }
+    setWatermarkEraserOpen(true);
+  };
 
   return (
     <div
@@ -110,7 +122,7 @@ export default function PdfEditorPage() {
         onAddText={e.addTextBlock}
         onOpenOcr={() => setOcrOpen(true)}
         onOpenForm={() => setFormOpen(true)}
-        onOpenWatermarkEraser={() => setWatermarkEraserOpen(true)}
+        onOpenWatermarkEraser={handleOpenWatermarkEraser}
         onRotatePage={() => e.pageOps.rotatePage(e.page)}
         onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
         onOpenWatermark={() => {
@@ -164,16 +176,6 @@ export default function PdfEditorPage() {
             onTool={setTool}
             signing={signing}
             onCloseSign={() => setSigning(false)}
-          />
-
-          <FloatingDock
-            page={e.page}
-            pages={live ? e.pages.length : 4}
-            onPage={handlePageSelect}
-            tool={tool}
-            onTool={setTool}
-            onToggleGrid={() => setGridOpen(true)}
-            onFit={handleFit}
           />
         </div>
 
@@ -232,9 +234,12 @@ export default function PdfEditorPage() {
 
       {watermarkEraserOpen && (
         <WatermarkEraserModal
-          pageUrl={e.pages[e.page]?.url || ""}
+          pageUrl={eraserPageSnapshot || e.pages[e.page]?.url || ""}
           pageIndex={e.page}
-          onClose={() => setWatermarkEraserOpen(false)}
+          onClose={() => {
+            setWatermarkEraserOpen(false);
+            setEraserPageSnapshot(null);
+          }}
           onApplyCleanedPage={(pIdx, cleanedUrl) => {
             if (e.pages[pIdx]) {
               e.pages[pIdx].url = cleanedUrl;

@@ -1,6 +1,6 @@
 "use client";
 
-import { AlignLeft, Bold, ChevronDown, Italic, Underline } from "lucide-react";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, ChevronDown, Italic, Strikethrough, Underline } from "lucide-react";
 import { useRef } from "react";
 import type { TextBlock } from "../types";
 
@@ -20,6 +20,9 @@ export function ContextToolbar({
   const colorInputRef = useRef<HTMLInputElement>(null);
   const isBold = block?.fontWeight === "bold" || block?.fontWeight === "700";
   const isItalic = block?.fontStyle === "italic";
+  const isUnder = !!block?.underline;
+  const isStrike = !!block?.strikethrough;
+  const align = block?.align ?? "left";
 
   return (
     <div
@@ -97,25 +100,47 @@ export function ContextToolbar({
         <Italic className="size-3.5" />
       </button>
 
-      {/* Underline */}
+      {/* Underline — was toggling italic; a copy-paste slip. */}
       <button
-        onClick={() => onFormat?.({ fontStyle: isItalic ? "normal" : "italic" })}
-        className="grid size-6 place-items-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+        onClick={() => onFormat?.({ underline: !isUnder })}
+        className={`grid size-6 place-items-center rounded-md transition-colors ${
+          isUnder ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+        }`}
         title="Underline"
       >
         <Underline className="size-3.5" />
       </button>
 
+      {/* Strikethrough */}
+      <button
+        onClick={() => onFormat?.({ strikethrough: !isStrike })}
+        className={`grid size-6 place-items-center rounded-md transition-colors ${
+          isStrike ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+        }`}
+        title="Strikethrough"
+      >
+        <Strikethrough className="size-3.5" />
+      </button>
+
       <div className="h-3.5 w-px bg-slate-200" />
 
-      {/* Align Left */}
-      <button
-        onClick={() => onFormat?.({ align: "left" })}
-        className="grid size-6 place-items-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
-        title="Align left"
-      >
-        <AlignLeft className="size-3.5" />
-      </button>
+      {([
+        ["left", AlignLeft],
+        ["center", AlignCenter],
+        ["right", AlignRight],
+        ["justify", AlignJustify],
+      ] as const).map(([a, Icon]) => (
+        <button
+          key={a}
+          onClick={() => onFormat?.({ align: a })}
+          className={`grid size-6 place-items-center rounded-md transition-colors ${
+            align === a ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+          }`}
+          title={`Align ${a}`}
+        >
+          <Icon className="size-3.5" />
+        </button>
+      ))}
     </div>
   );
 }

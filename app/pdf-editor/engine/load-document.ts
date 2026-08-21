@@ -1,6 +1,8 @@
+import type { BoxLike } from "../annotation-types";
 import type { TextBlock } from "../types";
 import { buildBlock } from "./build-block";
 import { pageSpans, toLines } from "./extract-blocks";
+import { pageImages } from "./extract-images";
 import { readOutline } from "./read-outline";
 
 export interface LoadedPage {
@@ -21,6 +23,7 @@ export interface Bookmark {
 export interface Loaded {
   pages: LoadedPage[];
   blocks: TextBlock[];
+  images: BoxLike[];
   bookmarks: Bookmark[];
 }
 
@@ -32,7 +35,7 @@ async function loadPdfjs() {
 
 const SCALE = 2;
 
-/** Renders every page and extracts its editable text lines in one pass. */
+/** Renders every page and extracts editable text lines and embedded images in one pass. */
 export async function loadDocument(
   file: File,
   onProgress?: (done: number, total: number) => void,
@@ -42,6 +45,7 @@ export async function loadDocument(
   const doc = await task.promise;
   const pages: LoadedPage[] = [];
   const blocks: TextBlock[] = [];
+  const images: BoxLike[] = [];
   const bookmarks = await readOutline(doc);
 
   try {
@@ -59,6 +63,9 @@ export async function loadDocument(
       const pw = view.width / SCALE;
       const ph = view.height / SCALE;
       const lines = toLines(await pageSpans(p));
+      const extractedImgs = await pageImages(p, n - 1, pw, ph, ctx, canvas);
+      images.push(...extractedImgs);
+
       pages.push({ index: n - 1, width: pw, height: ph, url: canvas.toDataURL("image/png"), scanned: lines.length === 0 });
 
       lines.forEach((line, i) => {
@@ -66,13 +73,11 @@ export async function loadDocument(
       });
       p.cleanup();
       onProgress?.(n, doc.numPages);
-      // Yield to the event loop so the progress UI can actually paint between
-      // pages — without this the whole parse blocks and the bar jumps 0 to 100.
       await new Promise((r) => setTimeout(r, 0));
     }
   } finally {
     await task.destroy();
   }
 
-  return { pages, blocks, bookmarks };
+  return { pages, blocks, images, bookmarks };
 }

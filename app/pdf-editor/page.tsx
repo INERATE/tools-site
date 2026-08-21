@@ -26,6 +26,7 @@ export default function PdfEditorPage() {
   const [gridOpen, setGridOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [redactStyle, setRedactStyle] = useState<"blackout" | "blur" | "whiteout">("blackout");
   const imageInput = useRef<HTMLInputElement>(null);
   const e = usePdfEditor();
   const live = e.pages.length > 0;
@@ -92,6 +93,8 @@ export default function PdfEditorPage() {
         onRotatePage={() => e.pageOps.rotatePage(e.page)}
         onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
         onOpenWatermark={() => e.editWatermark({ enabled: true })}
+        redactStyle={redactStyle}
+        onRedactStyle={setRedactStyle}
       />
 
       <div className="relative flex min-h-0 flex-1">
@@ -125,7 +128,7 @@ export default function PdfEditorPage() {
           )}
 
           {live ? (
-            <EditorStage e={e} zoom={zoom} tool={tool} color={ACCENT} onPageInView={e.setPage} />
+            <EditorStage e={e} zoom={zoom} tool={tool} color={ACCENT} redactStyle={redactStyle} onPageInView={e.setPage} />
           ) : (
             <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} onPageInView={e.setPage} tool={tool} />
           )}

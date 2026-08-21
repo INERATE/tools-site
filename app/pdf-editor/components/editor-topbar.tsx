@@ -43,7 +43,7 @@ export function EditorTopbar({
   hasDoc?: boolean;
 }) {
   return (
-    <header className="relative z-30 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-slate-200/90 bg-white px-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+    <header className="relative z-40 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-slate-200/90 bg-white px-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
       {/* Brand & Document info */}
       <div className="flex min-w-0 items-center gap-3">
         {/* Brand Icon */}

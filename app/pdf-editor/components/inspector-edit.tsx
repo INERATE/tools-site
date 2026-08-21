@@ -196,11 +196,38 @@ export function InspectorEdit({
             <p className="text-[12px] font-bold text-indigo-900 capitalize">{annotation.kind} Selected</p>
           </div>
           <p className="mt-1 text-[11px] text-slate-600">
-            Drag corner handles on page to resize or move.
+            Drag corner handles on page to resize, scale, or move.
           </p>
         </div>
 
-        <div className="pt-2">
+        {annotation.kind === "image" && (
+          <div>
+            <label className="mb-2 block text-[11px] font-semibold text-slate-700">Image Options</label>
+            <label className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs">
+              <ImageIcon className="size-3.5 text-indigo-600" />
+              Replace Image
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      if (typeof ev.target?.result === "string") {
+                        onUpdateAnnotation?.(annotation.id, { dataUrl: ev.target.result });
+                      }
+                    };
+                    reader.readAsDataURL(f);
+                  }
+                }}
+              />
+            </label>
+          </div>
+        )}
+
+        <div className="pt-1">
           <button
             onClick={() => onRemoveAnnotation?.(annotation.id)}
             className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 py-2 text-[12px] font-semibold text-rose-700 hover:bg-rose-100 transition-colors"

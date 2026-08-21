@@ -17,7 +17,18 @@ const DRAG_TOOL: Partial<Record<EditorMode, AnnotationKind>> = {
 };
 
 export function LiveCanvas({
-  page, blocks, zoom, selected, onSelect, onEdit, onResizeBlock, onFormatBlock, tool, anno, color,
+  page,
+  blocks,
+  zoom,
+  selected,
+  onSelect,
+  onEdit,
+  onResizeBlock,
+  onFormatBlock,
+  tool,
+  anno,
+  color,
+  redactStyle = "blackout",
 }: {
   page: LoadedPage;
   blocks: TextBlock[];
@@ -29,16 +40,17 @@ export function LiveCanvas({
   onFormatBlock?: (id: string, patch: Partial<TextBlock>) => void;
   tool: EditorMode;
   color: string;
+  redactStyle?: "blackout" | "blur" | "whiteout";
   anno: {
     items: Annotation[];
     drafting: Annotation | null;
     picked: string | null;
     setPicked: (id: string | null) => void;
-    begin: (k: AnnotationKind, page: number, x: number, y: number, color: string) => void;
+    begin: (k: AnnotationKind, page: number, x: number, y: number, color: string, redactStyle?: "blackout" | "blur" | "whiteout") => void;
     extend: (x: number, y: number) => void;
     finish: () => void;
     remove: (id: string) => void;
-    update: (id: string, patch: { relX?: number; relY?: number; relWidth?: number; relHeight?: number }) => void;
+    update: (id: string, patch: { relX?: number; relY?: number; relWidth?: number; relHeight?: number; color?: string; redactStyle?: "blackout" | "blur" | "whiteout" }) => void;
   };
 }) {
   const kind = DRAG_TOOL[tool];
@@ -63,7 +75,7 @@ export function LiveCanvas({
         if (!kind) return;
         e.currentTarget.setPointerCapture(e.pointerId);
         const { x, y } = at(e);
-        anno.begin(kind, page.index, x, y, color);
+        anno.begin(kind, page.index, x, y, color, redactStyle);
       }}
       onPointerMove={(e) => {
         if (!kind || !anno.drafting) return;
@@ -93,7 +105,10 @@ export function LiveCanvas({
         items={anno.items.filter((a) => a.pageIndex === page.index)}
         drafting={anno.drafting?.pageIndex === page.index ? anno.drafting : null}
         picked={anno.picked}
-        onPick={anno.setPicked}
+        onPick={(id) => {
+          anno.setPicked(id);
+          if (id) onSelect(null);
+        }}
         onRemove={anno.remove}
         onUpdate={anno.update}
         interactive={!placing}

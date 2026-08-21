@@ -38,6 +38,8 @@ export function TypographyPanel({
 
   const isBold = block?.fontWeight === "bold" || block?.fontWeight === "700";
   const isItalic = block?.fontStyle === "italic";
+  const isUnder = !!block?.underline;
+  const isStrike = !!block?.strikethrough;
   const currentSize = block?.fontSize ? Math.round(block.fontSize) : 14;
   const currentColor = block?.color || "#111827";
 
@@ -161,22 +163,28 @@ export function TypographyPanel({
             <Italic className="size-3.5" />
           </button>
 
-          {/* Underline Toggle */}
+          {/* Underline — this was toggling italic, same slip as the context bar. */}
           <button
-            onClick={() => {
-              if (!block) return;
-              onFormat?.(block.id, { fontStyle: isItalic ? "normal" : "italic" });
-            }}
+            onClick={() => block && onFormat?.(block.id, { underline: !isUnder })}
             disabled={!block}
-            className="grid size-7 place-items-center rounded-md text-slate-600 hover:bg-white hover:text-slate-900"
+            className={`grid size-7 place-items-center rounded-md transition-all ${
+              isUnder
+                ? "bg-indigo-50 font-bold text-indigo-700 shadow-2xs ring-1 ring-indigo-200"
+                : "text-slate-600 hover:bg-white hover:text-slate-900"
+            }`}
             title="Underline"
           >
             <Underline className="size-3.5" />
           </button>
 
           <button
+            onClick={() => block && onFormat?.(block.id, { strikethrough: !isStrike })}
             disabled={!block}
-            className="grid size-7 place-items-center rounded-md text-slate-600 hover:bg-white hover:text-slate-900"
+            className={`grid size-7 place-items-center rounded-md transition-all ${
+              isStrike
+                ? "bg-indigo-50 font-bold text-indigo-700 shadow-2xs ring-1 ring-indigo-200"
+                : "text-slate-600 hover:bg-white hover:text-slate-900"
+            }`}
             title="Strikethrough"
           >
             <Strikethrough className="size-3.5" />

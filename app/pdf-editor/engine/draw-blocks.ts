@@ -1,5 +1,6 @@
 import { rgb, type PDFPage } from "pdf-lib";
 import type { TextBlock } from "../types";
+import { drawTextRun } from "./draw-text-run";
 import { hexToRgb, pickFont, type FontSet } from "./font-pick";
 
 const WHITE = { r: 1, g: 1, b: 1 };
@@ -26,13 +27,6 @@ export function drawBlocks(pages: PDFPage[], blocks: TextBlock[], fonts: FontSet
 
     if (b.isDeleted || !b.text.trim()) continue;
 
-    const c = hexToRgb(b.color);
-    page.drawText(b.text, {
-      x: b.pdfX,
-      y: b.pdfY,
-      size: b.fontSize,
-      font: pickFont(b, fonts),
-      color: rgb(c.r, c.g, c.b),
-    });
+    drawTextRun(page, b, pickFont(b, fonts), hexToRgb(b.color));
   }
 }

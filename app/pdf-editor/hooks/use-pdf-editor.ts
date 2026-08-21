@@ -48,7 +48,7 @@ export function usePdfEditor() {
       setPage(0);
       setSelected(null);
       overlays.resetOverlays(keep?.watermark);
-      anno.resetAnnotations(keep?.annotations);
+      anno.resetAnnotations(keep?.annotations ?? loaded.images);
       pageOps.resetOps(keep?.pageOps);
     } catch {
       setError("Could not open this PDF — it may be encrypted or damaged.");

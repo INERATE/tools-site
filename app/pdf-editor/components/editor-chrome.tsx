@@ -21,6 +21,8 @@ export function EditorChrome({
   onRotatePage,
   onDeletePage,
   onOpenAi,
+  redactStyle,
+  onRedactStyle,
 }: {
   e: ReturnType<typeof usePdfEditor>;
   live: boolean;
@@ -36,6 +38,8 @@ export function EditorChrome({
   onRotatePage?: () => void;
   onDeletePage?: () => void;
   onOpenAi?: () => void;
+  redactStyle?: "blackout" | "blur" | "whiteout";
+  onRedactStyle?: (s: "blackout" | "blur" | "whiteout") => void;
 }) {
   return (
     <>
@@ -68,6 +72,8 @@ export function EditorChrome({
         onRotatePage={onRotatePage}
         onDeletePage={onDeletePage}
         onOpenAi={onOpenAi}
+        redactStyle={redactStyle}
+        onRedactStyle={onRedactStyle}
       />
     </>
   );

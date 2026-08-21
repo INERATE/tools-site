@@ -14,12 +14,14 @@ export function EditorStage({
   zoom,
   tool,
   color,
+  redactStyle,
   onPageInView,
 }: {
   e: ReturnType<typeof usePdfEditor>;
   zoom: number;
   tool: EditorMode;
   color: string;
+  redactStyle?: "blackout" | "blur" | "whiteout";
   onPageInView?: (pageIndex: number) => void;
 }) {
   const containerRef = useRef<HTMLElement>(null);
@@ -132,6 +134,7 @@ export function EditorStage({
               onFormatBlock={e.updateFormat}
               tool={tool}
               color={color}
+              redactStyle={redactStyle}
               anno={e.anno}
             />
           </div>

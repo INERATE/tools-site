@@ -3,6 +3,7 @@ import { styleOf } from "./extract-blocks";
 import { matchFont } from "./font-match";
 import { sampleBackground } from "./sample-background";
 import { sampleInk } from "./sample-ink";
+import { detectBold } from "./detect-weight";
 import type { TextBlock } from "../types";
 
 /** Turns one extracted line into a full editable TextBlock, sampling its background from the rendered page. */
@@ -24,6 +25,8 @@ export function buildBlock(
   const relHeight = line.height / ph;
   const px = { x: relX * canvas.width, y: relY * canvas.height, w: relWidth * canvas.width, h: relHeight * canvas.height };
   const color = sampleInk(ctx, px, canvas.width, canvas.height);
+  // The font name is usually an opaque pdf.js id, so measure the glyphs.
+  const bold = style.bold || detectBold(ctx, px, canvas.width, canvas.height);
   const bg = sampleBackground(
     ctx,
     { x: relX * canvas.width, y: relY * canvas.height, w: relWidth * canvas.width, h: relHeight * canvas.height },
@@ -39,7 +42,7 @@ export function buildBlock(
     originalText: line.text,
     fontSize: line.height,
     fontFamily: match.label,
-    fontWeight: style.bold ? "bold" : "normal",
+    fontWeight: bold ? "bold" : "normal",
     fontStyle: style.italic ? "italic" : "normal",
     color,
     align: "left",

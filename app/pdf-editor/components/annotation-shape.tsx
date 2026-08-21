@@ -3,7 +3,7 @@
 import { isStroke, type Annotation, type BoxLike } from "../annotation-types";
 
 /**
- * Visual rendering for placed annotations and shapes.
+ * Visual rendering for placed annotations, shapes, and mosaic/whiteout/blackout redactions.
  */
 export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boolean }) {
   if (isStroke(a)) {
@@ -36,15 +36,22 @@ export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boo
   // Redactions
   if (b.kind === "redact") {
     if (b.redactStyle === "blur") {
+      // Authentic Mosaic Pixelated Censor Effect
       return (
         <div
           style={{
             ...style,
-            backdropFilter: "blur(12px) contrast(0.7)",
-            WebkitBackdropFilter: "blur(12px) contrast(0.7)",
-            background: "rgba(255, 255, 255, 0.4)",
-            backgroundImage: "repeating-linear-gradient(45deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 8px, transparent 8px, transparent 16px)",
-            border: "1px dashed rgba(0,0,0,0.3)",
+            backdropFilter: "blur(14px) contrast(1.1) brightness(0.95)",
+            WebkitBackdropFilter: "blur(14px) contrast(1.1) brightness(0.95)",
+            backgroundColor: "rgba(225, 230, 240, 0.45)",
+            backgroundImage: `
+              linear-gradient(to right, rgba(0, 0, 0, 0.14) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(0, 0, 0, 0.14) 1px, transparent 1px),
+              repeating-conic-gradient(rgba(0,0,0,0.06) 0% 25%, rgba(255,255,255,0.18) 0% 50%)
+            `,
+            backgroundSize: "10px 10px, 10px 10px, 20px 20px",
+            border: "1px dashed rgba(99, 102, 241, 0.6)",
+            boxShadow: "inset 0 0 10px rgba(0,0,0,0.08)",
           }}
         />
       );
@@ -56,6 +63,7 @@ export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boo
             ...style,
             background: "#ffffff",
             border: "1px solid #e2e8f0",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
           }}
         />
       );

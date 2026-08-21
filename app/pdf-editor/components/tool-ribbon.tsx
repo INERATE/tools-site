@@ -70,6 +70,8 @@ export function ToolRibbon({
   onRotatePage,
   onDeletePage,
   onOpenAi,
+  redactStyle = "blackout",
+  onRedactStyle,
 }: {
   tab: string;
   onTab: (v: string) => void;
@@ -83,6 +85,8 @@ export function ToolRibbon({
   onRotatePage?: () => void;
   onDeletePage?: () => void;
   onOpenAi?: () => void;
+  redactStyle?: "blackout" | "blur" | "whiteout";
+  onRedactStyle?: (s: "blackout" | "blur" | "whiteout") => void;
 }) {
   const [shapesOpen, setShapesOpen] = useState(false);
   const [redactOpen, setRedactOpen] = useState(false);
@@ -466,6 +470,7 @@ export function ToolRibbon({
                     <button
                       onClick={() => {
                         onTool("redact");
+                        onRedactStyle?.("blackout");
                         setRedactOpen(false);
                       }}
                       className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
@@ -476,22 +481,24 @@ export function ToolRibbon({
                     <button
                       onClick={() => {
                         onTool("redact");
+                        onRedactStyle?.("blur");
                         setRedactOpen(false);
                       }}
                       className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                     >
                       <EyeOff className="size-3.5 text-indigo-600" />
-                      Blur / Pixelate
+                      Mosaic / Pixelate
                     </button>
                     <button
                       onClick={() => {
                         onTool("redact");
+                        onRedactStyle?.("whiteout");
                         setRedactOpen(false);
                       }}
                       className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                     >
                       <div className="size-3.5 rounded-xs border border-slate-300 bg-white" />
-                      Whiteout
+                      Whiteout Mask
                     </button>
                   </div>
                 )}

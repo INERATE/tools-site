@@ -43,6 +43,7 @@ export default function WatermarkImagePage() {
               accept="image/jpeg,image/png"
               onFiles={w.addFiles}
               label={count ? "Add more photos" : "Drop JPG or PNG photos here, or click to choose"}
+              hint="JPG or PNG photos — they never leave this tab"
             />
 
             {w.error && (

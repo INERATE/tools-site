@@ -7,7 +7,7 @@ import { packageResults } from "../lib/package-results";
 
 export function useWatermarkImage() {
   const batch = useImageBatch();
-  const [text, setText] = useState("SAMPLE");
+  const [text, setText] = useState("");
   const [position, setPosition] = useState<WatermarkPosition>("tiled");
   const [opacity, setOpacity] = useState(0.35);
   const [busy, setBusy] = useState(false);
@@ -16,12 +16,13 @@ export function useWatermarkImage() {
   const [error, setError] = useState<string | null>(null);
 
   async function run() {
-    if (batch.images.length === 0 || !text.trim()) return;
+    const markText = text.trim() || "CONFIDENTIAL";
+    if (batch.images.length === 0) return;
     setBusy(true);
     try {
       const results = await Promise.all(
         batch.images.map(async (img) => {
-          const blob = await watermarkImage(img, { text, position, opacity });
+          const blob = await watermarkImage(img, { text: markText, position, opacity });
           return { name: img.file.name, url: URL.createObjectURL(blob), size: blob.size };
         }),
       );

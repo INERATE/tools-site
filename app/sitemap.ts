@@ -11,8 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
-  const toolPages: MetadataRoute.Sitemap = TOOLS.filter((t) => t.live).map((t) => ({
-    url: `${BASE_URL}${t.href}`,
+  // Deduplicate tool paths
+  const uniqueToolPaths = Array.from(new Set(TOOLS.filter((t) => t.live).map((t) => t.href)));
+
+  const toolPages: MetadataRoute.Sitemap = uniqueToolPaths.map((href) => ({
+    url: `${BASE_URL}${href}`,
     changeFrequency: "monthly",
     priority: 0.8,
   }));

@@ -29,7 +29,7 @@ export function WatermarkOptions({
         type="text"
         value={text}
         onChange={(e) => onText(e.target.value)}
-        placeholder="Watermark text"
+        placeholder="Enter watermark text (e.g. CONFIDENTIAL)"
         className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2 text-[13.5px] text-[var(--text)] outline-none focus:border-[var(--accent)]"
       />
       <div className="flex flex-wrap gap-2">

@@ -430,27 +430,27 @@ export function ToolRibbon({
           {/* TAB: Form */}
           {tab === "Form" && (
             <>
-              <button
-                onClick={() => onTool("add-text")}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium text-slate-700 hover:bg-slate-100"
-              >
-                <Type className="size-3.5 text-indigo-600" />
-                Text Input Field
-              </button>
-              <button
-                onClick={() => onTool("shapes")}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium text-slate-700 hover:bg-slate-100"
-              >
-                <Square className="size-3.5 text-slate-500" />
-                Checkbox Field
-              </button>
-              <button
-                onClick={() => onTool("esign")}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium text-slate-700 hover:bg-slate-100"
-              >
-                <PenTool className="size-3.5 text-slate-500" />
-                Signature Field
-              </button>
+              {/* These were wired to add-text, shapes and esign, so Checkbox
+                  drew a rectangle and Signature Field opened the drawing pad.
+                  They now place real AcroForm widgets. */}
+              {([
+                ["text-field", Type, "Text Input Field"],
+                ["checkbox", Square, "Checkbox Field"],
+                ["sig-field", PenTool, "Signature Field"],
+              ] as const).map(([id, Icon, label]) => (
+                <button
+                  key={id}
+                  onClick={() => onTool(id)}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px] font-medium transition-all ${
+                    tool === id
+                      ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-300 shadow-sm font-semibold"
+                      : "text-slate-700 hover:bg-slate-100"
+                  }`}
+                >
+                  <Icon className="size-3.5 text-indigo-600" />
+                  {label}
+                </button>
+              ))}
             </>
           )}
 

@@ -36,6 +36,7 @@ export function InspectorEdit({
   onToolSelect,
   onRotatePage,
   onDeletePage,
+  onDeleteBlock,
 }: {
   block?: TextBlock | null;
   annotation?: Annotation | null;
@@ -47,6 +48,7 @@ export function InspectorEdit({
   onToolSelect?: (tool: string) => void;
   onRotatePage?: () => void;
   onDeletePage?: () => void;
+  onDeleteBlock?: (id: string) => void;
 }) {
   const shapeColorRef = useRef<HTMLInputElement>(null);
 
@@ -256,6 +258,16 @@ export function InspectorEdit({
       </div>
 
       <TypographyPanel block={block} onFamily={onFamily} onFormat={onFormat} />
+
+      {block && onDeleteBlock && (
+        <button
+          onClick={() => onDeleteBlock(block.id)}
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50/70 py-2.5 text-[12px] font-semibold text-rose-700 hover:bg-rose-100 hover:border-rose-300 transition-all shadow-2xs"
+        >
+          <Trash2 className="size-3.5" />
+          Delete Selected Text Block
+        </button>
+      )}
 
       <section className="mt-5 border-t border-slate-200/70 pt-4">
         <h3 className="mb-2 text-[11px] font-bold tracking-wide text-slate-800">Content</h3>

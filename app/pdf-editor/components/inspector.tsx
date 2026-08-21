@@ -36,6 +36,7 @@ export function Inspector({
   onOpenAi,
   onOpenOcr,
   onOpenForm,
+  onDeleteBlock,
   focus,
 }: {
   block?: TextBlock | null;
@@ -50,6 +51,7 @@ export function Inspector({
   hasDoc?: boolean;
   onRotatePage?: () => void;
   onDeletePage?: () => void;
+  onDeleteBlock?: (id: string) => void;
   onToolSelect?: (tool: string) => void;
   onOpenAi?: () => void;
   onOpenOcr?: () => void;
@@ -118,6 +120,7 @@ export function Inspector({
               onToolSelect={onToolSelect}
               onRotatePage={onRotatePage}
               onDeletePage={onDeletePage}
+              onDeleteBlock={onDeleteBlock}
             />
           )}
           {mode === "ocr" && <OcrPanel onOpenOcr={onOpenOcr} />}

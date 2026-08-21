@@ -29,6 +29,7 @@ export function EditableBlock({
   onEdit,
   onResize,
   onFormat,
+  onDelete,
 }: {
   block: TextBlock;
   active: boolean;
@@ -37,6 +38,7 @@ export function EditableBlock({
   onEdit: (id: string, text: string) => void;
   onResize?: (id: string, patch: { relX?: number; relWidth?: number; relHeight?: number }) => void;
   onFormat?: (id: string, patch: Partial<TextBlock>) => void;
+  onDelete?: (id: string) => void;
 }) {
   const spanRef = useEditableText(b.id, b.text);
   const warning = warningFor(b);
@@ -87,6 +89,7 @@ export function EditableBlock({
             size={Math.round(b.fontSize)}
             color={b.color || "#0f172a"}
             onFormat={(patch) => onFormat?.(b.id, patch)}
+            onDelete={() => onDelete?.(b.id)}
           />
           {warning && (
             <span className="absolute top-full left-0 z-40 mt-1 rounded-md bg-amber-500 px-2 py-0.5 text-[9.5px] font-bold whitespace-nowrap text-white shadow-md">

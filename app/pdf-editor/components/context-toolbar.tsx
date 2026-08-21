@@ -9,6 +9,7 @@ import {
   ChevronDown,
   Italic,
   Strikethrough,
+  Trash2,
   Underline,
 } from "lucide-react";
 import { useRef } from "react";
@@ -21,12 +22,14 @@ export function ContextToolbar({
   size,
   color,
   onFormat,
+  onDelete,
 }: {
   block?: TextBlock;
   font: string;
   size: number;
   color: string;
   onFormat?: (patch: Partial<TextBlock>) => void;
+  onDelete?: () => void;
 }) {
   const colorInputRef = useRef<HTMLInputElement>(null);
   const isBold = block?.fontWeight === "bold" || block?.fontWeight === "700";
@@ -186,6 +189,19 @@ export function ContextToolbar({
           <Icon className="size-3.5" />
         </button>
       ))}
+
+      {onDelete && (
+        <>
+          <div className="h-3.5 w-px bg-slate-200" />
+          <button
+            onClick={onDelete}
+            className="grid size-6 place-items-center rounded-md text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors"
+            title="Delete this block (Del)"
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        </>
+      )}
     </div>
   );
 }

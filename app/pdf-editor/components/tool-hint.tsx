@@ -13,6 +13,9 @@ const HINT: Partial<Record<EditorMode, string>> = {
   shapes: "Click and drag on the page to draw a rectangle.",
   draw: "Click and hold, then move to draw freehand.",
   redact: "Drag over anything you want permanently removed.",
+  "text-field": "Drag to place a fillable text box.",
+  checkbox: "Drag to place a tick box.",
+  "sig-field": "Drag to place a box for someone to sign later.",
 };
 
 export function ToolHint({ tool, onDone }: { tool: EditorMode; onDone: () => void }) {

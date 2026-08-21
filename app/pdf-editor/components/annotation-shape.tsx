@@ -67,6 +67,32 @@ export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boo
     return <div style={{ ...style, background: "#000000" }} />;
   }
 
+  // Form fields — placeholders only. These become real AcroForm widgets on
+  // export, so what is drawn here is a preview, not the thing itself.
+  if (b.kind === "text-field" || b.kind === "checkbox" || b.kind === "sig-field") {
+    const label = b.kind === "checkbox" ? "✓" : b.kind === "sig-field" ? "Sign here" : "Text field";
+    return (
+      <div
+        style={{
+          ...style,
+          border: "1.5px dashed #4f46e5",
+          background: "rgba(79,70,229,0.06)",
+          borderRadius: 3,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: b.kind === "checkbox" ? "center" : "flex-start",
+          padding: b.kind === "checkbox" ? 0 : "0 4px",
+          font: "500 10px system-ui, sans-serif",
+          color: "#4f46e5",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {label}
+      </div>
+    );
+  }
+
   // Highlight Box
   if (b.kind === "highlight") {
     return (

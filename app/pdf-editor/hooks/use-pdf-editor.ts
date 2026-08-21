@@ -172,6 +172,18 @@ export function usePdfEditor() {
     anno.setPicked(null);
   }, [page, pages, history, anno]);
 
+  const deleteBlock = useCallback((id: string) => {
+    history.commit((cur) => {
+      const b = cur.find((x) => x.id === id);
+      if (!b) return cur;
+      if (b.isNew) {
+        return cur.filter((x) => x.id !== id);
+      }
+      return cur.map((x) => (x.id === id ? { ...x, text: "", isEdited: true, isDeleted: true } : x));
+    });
+    setSelected(null);
+  }, [history]);
+
   const startNew = useCallback(async () => {
     await persist.startNew();
     setFile(null);
@@ -196,6 +208,6 @@ export function usePdfEditor() {
     ...overlays,
     anno, pageOps,
     undo: history.undo, redo: history.redo, canUndo: history.canUndo, canRedo: history.canRedo,
-    open, editBlock, setFamily, updateGeometry, updateFormat, exportPdf, addTextBlock,
+    open, editBlock, setFamily, updateGeometry, updateFormat, exportPdf, addTextBlock, deleteBlock,
   };
 }

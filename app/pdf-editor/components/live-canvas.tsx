@@ -14,6 +14,9 @@ const DRAG_TOOL: Partial<Record<EditorMode, AnnotationKind>> = {
   line: "line",
   highlight: "highlight",
   redact: "redact",
+  "text-field": "text-field",
+  checkbox: "checkbox",
+  "sig-field": "sig-field",
 };
 
 export function LiveCanvas({

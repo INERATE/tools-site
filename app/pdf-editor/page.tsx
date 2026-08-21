@@ -26,6 +26,8 @@ export default function PdfEditorPage() {
   const [signing, setSigning] = useState(false);
   const [gridOpen, setGridOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
+  // Lets a ribbon action reveal the inspector panel it configures.
+  const [focusPanel, setFocusPanel] = useState<{ mode: "edit" | "annotate" | "form" | "ocr" | "ai"; at: number } | null>(null);
   const [ocrOpen, setOcrOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -99,9 +101,13 @@ export default function PdfEditorPage() {
         onZoom={setZoom}
         onToggleSearch={() => setSearchOpen((prev) => !prev)}
         onToggleGrid={() => setGridOpen((prev) => !prev)}
+        onOpenAi={() => setAiOpen(true)}
         onRotatePage={() => e.pageOps.rotatePage(e.page)}
         onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
-        onOpenWatermark={() => e.editWatermark({ enabled: true })}
+        onOpenWatermark={() => {
+          e.editWatermark({ enabled: true });
+          setFocusPanel({ mode: "annotate", at: Date.now() });
+        }}
         redactStyle={redactStyle}
         onRedactStyle={setRedactStyle}
       />
@@ -186,6 +192,7 @@ export default function PdfEditorPage() {
           onOpenAi={() => setAiOpen(true)}
           onOpenOcr={() => setOcrOpen(true)}
           onOpenForm={() => setFormOpen(true)}
+          focus={focusPanel}
         />
       </div>
 

@@ -36,6 +36,7 @@ export function Inspector({
   onOpenAi,
   onOpenOcr,
   onOpenForm,
+  focus,
 }: {
   block?: TextBlock | null;
   annotation?: Annotation | null;
@@ -53,6 +54,8 @@ export function Inspector({
   onOpenAi?: () => void;
   onOpenOcr?: () => void;
   onOpenForm?: () => void;
+  /** Bumped by a ribbon button to reveal the matching panel. */
+  focus?: { mode: Mode; at: number } | null;
 }) {
   const [mode, setMode] = useState<Mode>("edit");
   const [open, setOpen] = useState(true);
@@ -67,6 +70,15 @@ export function Inspector({
     setMode("edit");
     setOpen(true);
   }, [selectionId]);
+
+  // A ribbon action such as "Watermark Settings" has to surface the panel it
+  // configures, or the click silently changes state with nothing to show for
+  // it. Keyed on `at` so pressing the same button twice still re-opens.
+  useEffect(() => {
+    if (!focus) return;
+    setMode(focus.mode);
+    setOpen(true);
+  }, [focus?.at, focus?.mode]);
 
   // Dynamic title based on selection
   let title = "Document properties";

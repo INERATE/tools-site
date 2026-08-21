@@ -275,20 +275,30 @@ export function MagicBrushCanvas({
   return (
     <div
       ref={containerRef}
-      onPointerDown={handlePointerDown}
+      onPointerDown={(e) => {
+        setCursorPos({ x: e.clientX, y: e.clientY });
+        handlePointerDown(e);
+      }}
       onPointerMove={handlePointerMove}
       onPointerEnter={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
       onPointerOver={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
       onMouseMove={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
       onMouseEnter={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
-      onPointerUp={handlePointerUp}
+      onPointerUp={(e) => {
+        setCursorPos({ x: e.clientX, y: e.clientY });
+        handlePointerUp(e);
+      }}
       onPointerLeave={() => {
-        setCursorPos(null);
-        setBoxPreview(null);
+        if (!isDrawing.current) {
+          setCursorPos(null);
+          setBoxPreview(null);
+        }
       }}
       onMouseLeave={() => {
-        setCursorPos(null);
-        setBoxPreview(null);
+        if (!isDrawing.current) {
+          setCursorPos(null);
+          setBoxPreview(null);
+        }
       }}
       className="relative max-h-[70vh] w-fit max-w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-slate-900/50 shadow-2xl touch-none mx-auto select-none backdrop-blur-xs cursor-crosshair"
     >

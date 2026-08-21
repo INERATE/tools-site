@@ -183,7 +183,7 @@ export default function AiObjectEraserPage() {
       <Nav />
       <Dock />
 
-      <main className="mx-auto max-w-6xl px-6 pt-28 pb-16">
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 pt-36 pb-24">
         <ToolHead
           title="AI Object & Watermark Eraser"
           busy={isProcessing}
@@ -255,7 +255,7 @@ export default function AiObjectEraserPage() {
             </div>
           ) : (
             /* Interactive Canvas Workspace */
-            <div className="w-full flex flex-col items-center gap-5">
+            <div className="w-full flex flex-col items-center gap-4">
               {/* Apple-style Toolbar Dock */}
               <div className="flex flex-wrap items-center justify-between gap-3 w-full rounded-2xl border border-[var(--border)] bg-[var(--glass-lo)] p-2.5 shadow-sm backdrop-blur-md">
                 {/* Tools Segmented Control */}
@@ -367,11 +367,11 @@ export default function AiObjectEraserPage() {
               </div>
 
               {/* Prompt Input Field */}
-              <div className="flex items-center gap-2 w-full rounded-xl border border-[var(--border)] bg-[var(--glass-lo)] px-3 py-2">
+              <div className="flex items-center gap-2 w-full rounded-xl border border-[var(--border)] bg-[var(--glass-lo)] px-3.5 py-2">
                 <Sparkles className="size-3.5 text-[var(--accent)] shrink-0" />
                 <input
                   type="text"
-                  placeholder="Optional: Type what to replace (e.g. 'vintage wooden bench', 'clean beach sand', 'add sunglasses')..."
+                  placeholder="Optional: Type what to replace (e.g. 'clean beach sand', 'vintage wooden table', 'add sunglasses')..."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   className="bg-transparent text-[12.5px] text-[var(--text)] placeholder:text-[var(--text-dim)] outline-none w-full"
@@ -379,7 +379,7 @@ export default function AiObjectEraserPage() {
               </div>
 
               {/* Canvas Viewport */}
-              <div className="w-full flex justify-center rounded-2xl overflow-hidden border border-[var(--border)] bg-black/40 p-4">
+              <div className="w-full flex justify-center py-2">
                 {showCompare && resultSrc ? (
                   <CompareSlider beforeUrl={imageSrc} afterUrl={resultSrc} />
                 ) : (

@@ -43,7 +43,6 @@ export function MagicBrushCanvas({
     if (!ctx) return;
 
     const imgData = ctx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
-    // Truncate redo stack
     history.current = history.current.slice(0, historyIdx.current + 1);
     history.current.push(imgData);
     historyIdx.current = history.current.length - 1;
@@ -176,6 +175,9 @@ export function MagicBrushCanvas({
     saveHistory();
   };
 
+  // Apple-style translucent neon purple glow mask
+  const MASK_COLOR = "rgba(168, 85, 247, 0.55)";
+
   const drawDot = (x: number, y: number) => {
     const maskCanvas = maskCanvasRef.current;
     const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
@@ -186,7 +188,7 @@ export function MagicBrushCanvas({
       ctx.globalCompositeOperation = "destination-out";
     } else {
       ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "rgba(239, 68, 68, 0.65)"; // Neon coral-red mask overlay
+      ctx.fillStyle = MASK_COLOR;
     }
     ctx.beginPath();
     ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
@@ -204,7 +206,7 @@ export function MagicBrushCanvas({
       ctx.globalCompositeOperation = "destination-out";
     } else {
       ctx.globalCompositeOperation = "source-over";
-      ctx.strokeStyle = "rgba(239, 68, 68, 0.65)";
+      ctx.strokeStyle = MASK_COLOR;
     }
     ctx.lineWidth = brushSize;
     ctx.lineCap = "round";
@@ -228,7 +230,7 @@ export function MagicBrushCanvas({
 
     ctx.save();
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "rgba(239, 68, 68, 0.65)";
+    ctx.fillStyle = MASK_COLOR;
     ctx.fillRect(x, y, w, h);
     ctx.restore();
   };
@@ -240,22 +242,22 @@ export function MagicBrushCanvas({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={() => setCursorPos(null)}
-      className="relative max-h-[72vh] w-fit max-w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-900 shadow-xl touch-none mx-auto select-none cursor-crosshair"
+      className="relative max-h-[70vh] w-fit max-w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-slate-900/50 shadow-2xl touch-none mx-auto select-none cursor-crosshair backdrop-blur-xs"
     >
       {/* Background Image Canvas */}
-      <canvas ref={imageCanvasRef} className="block max-h-[72vh] w-auto max-w-full object-contain" />
+      <canvas ref={imageCanvasRef} className="block max-h-[70vh] w-auto max-w-full object-contain rounded-2xl" />
 
-      {/* Foreground Mask Canvas (Red Inpainting Overlay) */}
+      {/* Foreground Mask Canvas (Translucent Purple Glow Overlay) */}
       <canvas
         ref={maskCanvasRef}
         id="mask-canvas"
-        className="pointer-events-none absolute inset-0 size-full object-contain"
+        className="pointer-events-none absolute inset-0 size-full object-contain rounded-2xl"
       />
 
-      {/* Floating Brush Size Cursor Indicator */}
+      {/* Floating Apple-Style Brush Cursor Indicator */}
       {cursorPos && (
         <div
-          className="pointer-events-none fixed z-50 rounded-full border-2 border-red-500 bg-red-500/20 -translate-x-1/2 -translate-y-1/2 shadow-sm"
+          className="pointer-events-none fixed z-50 rounded-full border-2 border-purple-400 bg-purple-500/25 -translate-x-1/2 -translate-y-1/2 shadow-lg backdrop-blur-[1px]"
           style={{
             left: cursorPos.x,
             top: cursorPos.y,

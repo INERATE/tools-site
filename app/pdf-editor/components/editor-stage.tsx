@@ -136,6 +136,8 @@ export function EditorStage({
               tool={tool}
               color={color}
               redactStyle={redactStyle}
+              watermark={e.watermark}
+              pageCount={e.pages.length}
               anno={e.anno}
             />
           </div>

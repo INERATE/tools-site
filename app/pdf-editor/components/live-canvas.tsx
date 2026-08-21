@@ -1,10 +1,10 @@
-"use client";
-
 import type { Annotation, AnnotationKind } from "../annotation-types";
+import type { WatermarkConfig } from "../element-types";
 import type { LoadedPage } from "../engine/load-document";
 import type { EditorMode, TextBlock } from "../types";
 import { AnnotationLayer } from "./annotation-layer";
 import { EditableBlock } from "./editable-block";
+import { WatermarkLayer } from "./watermark-layer";
 
 /** Tools that place something by dragging on the page rather than editing text. */
 const DRAG_TOOL: Partial<Record<EditorMode, AnnotationKind>> = {
@@ -33,6 +33,8 @@ export function LiveCanvas({
   anno,
   color,
   redactStyle = "blackout",
+  watermark,
+  pageCount = 1,
 }: {
   page: LoadedPage;
   blocks: TextBlock[];
@@ -46,6 +48,8 @@ export function LiveCanvas({
   tool: EditorMode;
   color: string;
   redactStyle?: "blackout" | "blur" | "whiteout";
+  watermark?: WatermarkConfig | null;
+  pageCount?: number;
   anno: {
     items: Annotation[];
     drafting: Annotation | null;
@@ -91,6 +95,8 @@ export function LiveCanvas({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={page.url} alt={`Page ${page.index + 1}`} className="absolute inset-0 size-full" draggable={false} />
+
+      <WatermarkLayer watermark={watermark} pageIndex={page.index} pageCount={pageCount} />
 
       {!placing &&
         blocks.map((b) => (

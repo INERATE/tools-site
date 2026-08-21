@@ -45,15 +45,21 @@ export async function POST(req: Request) {
     const { env } = getCloudflareContext();
     const ai = (env as { AI?: { run: (m: string, o: unknown) => Promise<ArrayBuffer | Response> } }).AI;
     if (!ai) {
-      return Response.json({ error: "Cloudflare AI binding is not available." }, { status: 503 });
+      return Response.json(
+        { error: "Cloudflare AI binding is not available in this environment. Please use Fast Client AI." },
+        { status: 503 },
+      );
     }
 
     // Convert base64 data URLs to byte arrays
     const imgBase64 = image.includes(",") ? image.split(",")[1] : image;
     const maskBase64 = mask.includes(",") ? mask.split(",")[1] : mask;
 
-    const imgBytes = Array.from(Buffer.from(imgBase64, "base64"));
-    const maskBytes = Array.from(Buffer.from(maskBase64, "base64"));
+    const imgBuffer = Buffer.from(imgBase64, "base64");
+    const maskBuffer = Buffer.from(maskBase64, "base64");
+
+    const imgBytes = Array.from(new Uint8Array(imgBuffer));
+    const maskBytes = Array.from(new Uint8Array(maskBuffer));
 
     const res = await ai.run(MODEL, {
       image: imgBytes,
@@ -77,8 +83,8 @@ export async function POST(req: Request) {
     return Response.json(
       {
         error: quota
-          ? "Cloudflare free daily AI allowance is reached. Switch to Fast Client AI or add your own API key."
-          : "Cloudflare Inpainting failed. Please try Fast Client AI.",
+          ? "Cloudflare free daily AI allowance reached. Switch to Fast Client AI or add your own API key."
+          : "Cloudflare Workers AI model is currently busy. Please use Fast Client AI.",
         detail,
       },
       { status: quota ? 429 : 502 },

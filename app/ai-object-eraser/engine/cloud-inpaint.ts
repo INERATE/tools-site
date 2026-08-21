@@ -161,22 +161,43 @@ export async function runCloudInpainting(options: CloudInpaintOptions): Promise<
 
   // 5. Cloudflare Workers AI Inpainting (@cf/runwayml/stable-diffusion-v1-5-inpainting)
   if (provider === "cloudflare") {
-    const imageBase64 = imageCanvas.toDataURL("image/png");
-    const maskBase64 = maskCanvas.toDataURL("image/png");
+    // Stable Diffusion 1.5 inpainting natively requires max 512x512 resolution for fast edge execution
+    const maxDim = 512;
+    const scale = Math.min(1, maxDim / Math.max(imageCanvas.width, imageCanvas.height));
+    const targetW = Math.round(imageCanvas.width * scale);
+    const targetH = Math.round(imageCanvas.height * scale);
 
-    const res = await fetch("/api/ai-inpaint", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        image: imageBase64,
-        mask: maskBase64,
-        prompt: prompt.trim() || "clean background, high resolution, seamless realistic continuation",
-      }),
-    });
+    const sImgCanvas = document.createElement("canvas");
+    sImgCanvas.width = targetW;
+    sImgCanvas.height = targetH;
+    sImgCanvas.getContext("2d")?.drawImage(imageCanvas, 0, 0, targetW, targetH);
+
+    const sMaskCanvas = document.createElement("canvas");
+    sMaskCanvas.width = targetW;
+    sMaskCanvas.height = targetH;
+    sMaskCanvas.getContext("2d")?.drawImage(maskCanvas, 0, 0, targetW, targetH);
+
+    const imageBase64 = sImgCanvas.toDataURL("image/png");
+    const maskBase64 = sMaskCanvas.toDataURL("image/png");
+
+    let res: Response;
+    try {
+      res = await fetch("/api/ai-inpaint", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          image: imageBase64,
+          mask: maskBase64,
+          prompt: prompt.trim() || "clean background, high resolution, seamless realistic continuation",
+        }),
+      });
+    } catch {
+      throw new Error("Unable to reach Cloudflare AI server. Please switch to Fast Client AI or add your own API key.");
+    }
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || "Cloudflare inpainting failed.");
+      throw new Error(err.error || err.detail || "Cloudflare Workers AI model is currently busy. Please use Fast Client AI.");
     }
 
     const data = await res.json();

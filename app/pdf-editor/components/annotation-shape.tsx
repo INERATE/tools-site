@@ -134,7 +134,18 @@ export function AnnotationShape({ a, fill = false }: { a: Annotation; fill?: boo
   // Image or Signature
   if ((b.kind === "signature" || b.kind === "image") && b.dataUrl) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={b.dataUrl} alt="" draggable={false} style={{ ...style, objectFit: "contain" }} />;
+    return (
+      <img
+        src={b.dataUrl}
+        alt=""
+        draggable={false}
+        style={{
+          ...style,
+          objectFit: "contain",
+          backgroundColor: b.kind === "image" ? "#ffffff" : "transparent",
+        }}
+      />
+    );
   }
 
   // Rectangle shape default

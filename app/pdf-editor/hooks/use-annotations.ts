@@ -32,7 +32,25 @@ export function useAnnotations(onChange: () => void) {
   );
 
   const remove = useCallback((id: string) => {
-    setItems((v) => v.filter((a) => a.id !== id));
+    setItems((v) => {
+      const item = v.find((a) => a.id === id);
+      const remaining = v.filter((a) => a.id !== id);
+      if (item && item.kind === "image") {
+        // Place whiteout mask to erase the underlying canvas image
+        const mask: Annotation = {
+          id: nextId(),
+          pageIndex: item.pageIndex,
+          kind: "redact",
+          redactStyle: "whiteout",
+          relX: (item as any).relX ?? 0,
+          relY: (item as any).relY ?? 0,
+          relWidth: (item as any).relWidth ?? 0.1,
+          relHeight: (item as any).relHeight ?? 0.1,
+        };
+        return [...remaining, mask];
+      }
+      return remaining;
+    });
     setPicked((p) => (p === id ? null : p));
     onChange();
   }, [onChange]);

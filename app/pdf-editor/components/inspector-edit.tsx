@@ -52,6 +52,7 @@ export function InspectorEdit({
   onDeleteBlock?: (id: string) => void;
 }) {
   const shapeColorRef = useRef<HTMLInputElement>(null);
+  const replaceImageRef = useRef<HTMLInputElement>(null);
 
   // 1. Contextual Mode: Selected Redaction Box
   if (annotation && annotation.kind === "redact") {
@@ -206,27 +207,31 @@ export function InspectorEdit({
         {annotation.kind === "image" && (
           <div>
             <label className="mb-2 block text-[11px] font-semibold text-slate-700">Image Options</label>
-            <label className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs">
+            <button
+              onClick={() => replaceImageRef.current?.click()}
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+            >
               <ImageIcon className="size-3.5 text-indigo-600" />
               Replace Image
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                      if (typeof ev.target?.result === "string") {
-                        onUpdateAnnotation?.(annotation.id, { dataUrl: ev.target.result });
-                      }
-                    };
-                    reader.readAsDataURL(f);
-                  }
-                }}
-              />
-            </label>
+            </button>
+            <input
+              ref={replaceImageRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) {
+                  const reader = new FileReader();
+                  reader.onload = (ev) => {
+                    if (typeof ev.target?.result === "string") {
+                      onUpdateAnnotation?.(annotation.id, { dataUrl: ev.target.result });
+                    }
+                  };
+                  reader.readAsDataURL(f);
+                }
+              }}
+            />
           </div>
         )}
 

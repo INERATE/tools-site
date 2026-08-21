@@ -58,7 +58,7 @@ export function PageRail({
   const [tab, setTab] = useState<Tab | null>("pages");
 
   return (
-    <aside className="flex shrink-0 border-r border-slate-200/90 bg-white">
+    <aside className="hidden md:flex shrink-0 border-r border-slate-200/90 bg-white">
       {/* Icon Navigation Strip */}
       <div className="flex w-13 flex-col items-center gap-2 border-r border-slate-200/80 px-1 py-3">
         {RAIL.map((r) => {

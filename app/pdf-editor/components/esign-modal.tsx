@@ -1,5 +1,7 @@
 "use client";
 
+import { useEscape } from "../hooks/use-escape";
+
 import { useState } from "react";
 import { X } from "lucide-react";
 import { SignaturePad } from "../../sign-pdf/signature-pad";
@@ -12,6 +14,7 @@ export function ESignModal({
   onClose: () => void;
   onPlace: (dataUrl: string, ratio: number) => void;
 }) {
+  useEscape(onClose);
   const [sig, setSig] = useState<{ url: string; w: number; h: number } | null>(null);
 
   return (

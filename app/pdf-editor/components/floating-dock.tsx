@@ -21,7 +21,7 @@ export function FloatingDock({
   onFit?: () => void;
 }) {
   return (
-    <div className="pointer-events-auto absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-slate-200/90 bg-white/95 px-3 py-1.5 text-[12px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.06)] backdrop-blur-md">
+    <div className="pointer-events-auto absolute bottom-4 sm:bottom-6 left-1/2 z-30 flex -translate-x-1/2 max-w-[94vw] items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar rounded-full border border-slate-200/90 bg-white/95 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11.5px] sm:text-[12px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.06)] backdrop-blur-md">
       {/* Pan button */}
       <button
         onClick={() => onTool?.("pan")}

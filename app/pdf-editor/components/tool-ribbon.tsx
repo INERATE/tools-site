@@ -115,14 +115,14 @@ export function ToolRibbon({
   return (
     <div className="relative z-30 flex shrink-0 flex-col border-b border-slate-200/90 bg-white select-none">
       {/* Category Tabs */}
-      <div className="flex items-center gap-1 border-b border-slate-100 px-4 pt-1">
+      <div className="flex items-center gap-1 border-b border-slate-100 px-2 sm:px-4 pt-1 overflow-x-auto no-scrollbar">
         {TABS.map((t) => {
           const active = tab === t;
           return (
             <button
               key={t}
               onClick={() => onTab(t)}
-              className={`relative px-3.5 py-2 text-[12.5px] font-medium transition-colors ${
+              className={`relative shrink-0 px-3 sm:px-3.5 py-2 text-[12px] sm:text-[12.5px] font-medium transition-colors ${
                 active ? "text-indigo-600 font-semibold" : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -134,8 +134,8 @@ export function ToolRibbon({
       </div>
 
       {/* Dynamic Actions Ribbon per Tab */}
-      <div className="flex items-center justify-between gap-3 px-4 py-2 bg-slate-50/50">
-        <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+      <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-1.5 sm:py-2 bg-slate-50/50 overflow-x-auto no-scrollbar">
+        <div className="flex min-w-0 flex-nowrap sm:flex-wrap items-center gap-1 sm:gap-1.5 shrink-0">
           {/* TAB: Home or Edit */}
           {(tab === "Home" || tab === "Edit") && (
             <>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEscape } from "../hooks/use-escape";
+
 import { X } from "lucide-react";
 import type { LoadedPage } from "../engine/load-document";
 
@@ -16,6 +18,7 @@ export function PageGridModal({
   onSelect: (index: number) => void;
   onClose: () => void;
 }) {
+  useEscape(onClose);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-xs"

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/wrangler.json",
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tools-site",
   "account_id": "09fc9d2f5f1796915f66c4cd4302d111",
   "main": ".open-next/worker.js",

@@ -1720,5 +1720,30 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
         "a": "No, pages are removed entirely inside your browser - the file never leaves your device."
       }
     ]
+  },
+  "ai-object-eraser": {
+    "metaTitle": "AI Object Eraser & Watermark Remover Online Free | Inerate Tools",
+    "metaDescription": "Erase watermarks, text, stamps, logos, and photobombers from photos with AI generative inpainting. 100% free, private, and runs directly in your browser with zero uploads.",
+    "keywords": [
+      "ai object eraser",
+      "watermark remover online free",
+      "remove watermark from image",
+      "magic eraser online",
+      "photo cleanup ai",
+      "remove unwanted objects from photo",
+      "erase text from image",
+      "generative fill photo eraser"
+    ],
+    "h1": "AI Object & Watermark Eraser",
+    "faq": [
+      {
+        "q": "How does the AI Object Eraser work?",
+        "a": "Brush over any watermark, text, stamp, or unwanted person. Our AI analyzes surrounding textures, lighting, and colors to fill the area seamlessly with zero blurry seams."
+      },
+      {
+        "q": "Are my photos uploaded to a server?",
+        "a": "No, all AI inpainting runs 100% client-side in your browser using WebGPU and WebAssembly. Your photos never leave your device."
+      }
+    ]
   }
 };

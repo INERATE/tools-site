@@ -1,9 +1,26 @@
 import { AiSummarizerIcon } from "./icons/ai-summarizer-icon";
 import { SmartFormsIcon } from "./icons/smart-forms-icon";
 import { TranslatePdfIcon } from "./icons/translate-pdf-icon";
+import { WatermarkPdfIcon } from "./icons/watermark-pdf-icon";
 
-/** PDF Intelligence category — split out of tool-list-optimize.ts to stay under the file-size cap. */
+/** PDF & AI Intelligence category — split out of tool-list-optimize.ts to stay under the file-size cap. */
 export const TOOLS_INTELLIGENCE = [
+  {
+    href: "/ai-object-eraser",
+    icon: SmartFormsIcon,
+    title: "AI Object & Watermark Eraser",
+    description: "Erase watermarks, text, photobombers, and logos with AI generative fill.",
+    category: "AI & Image Tools",
+    live: true,
+  },
+  {
+    href: "/watermark-remover",
+    icon: WatermarkPdfIcon,
+    title: "AI Watermark Remover",
+    description: "Remove image watermarks, stamps, and logos seamlessly with zero blurry seams.",
+    category: "AI & Image Tools",
+    live: true,
+  },
   {
     href: "/ai-summarizer",
     icon: AiSummarizerIcon,

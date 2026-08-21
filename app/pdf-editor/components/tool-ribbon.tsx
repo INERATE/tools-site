@@ -3,6 +3,7 @@
 import {
   ArrowDownUp,
   ArrowUpRight,
+  CheckSquare,
   Circle,
   Crop,
   EyeOff,
@@ -70,6 +71,9 @@ export function ToolRibbon({
   onRotatePage,
   onDeletePage,
   onOpenAi,
+  onAddText,
+  onOpenOcr,
+  onOpenForm,
   redactStyle = "blackout",
   onRedactStyle,
 }: {
@@ -85,6 +89,9 @@ export function ToolRibbon({
   onRotatePage?: () => void;
   onDeletePage?: () => void;
   onOpenAi?: () => void;
+  onAddText?: () => void;
+  onOpenOcr?: () => void;
+  onOpenForm?: () => void;
   redactStyle?: "blackout" | "blur" | "whiteout";
   onRedactStyle?: (s: "blackout" | "blur" | "whiteout") => void;
 }) {
@@ -547,23 +554,33 @@ export function ToolRibbon({
               <div className="absolute top-full left-0 mt-1.5 w-52 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl z-50">
                 <button
                   onClick={() => {
-                    onTool("add-text");
+                    onAddText?.();
                     setMoreOpen(false);
                   }}
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                 >
-                  <Type className="size-3.5" />
+                  <Type className="size-3.5 text-indigo-600" />
                   Add New Text Box
                 </button>
                 <button
                   onClick={() => {
-                    onTool("link");
+                    onOpenOcr?.();
                     setMoreOpen(false);
                   }}
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                 >
-                  <LinkIcon className="size-3.5" />
-                  Add Link / URL
+                  <FileSearch className="size-3.5 text-indigo-600" />
+                  OCR Scanned Text
+                </button>
+                <button
+                  onClick={() => {
+                    onOpenForm?.();
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <CheckSquare className="size-3.5 text-indigo-600" />
+                  Interactive Form Fields
                 </button>
                 <button
                   onClick={() => {
@@ -572,8 +589,18 @@ export function ToolRibbon({
                   }}
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                 >
-                  <Waves className="size-3.5" />
-                  Watermark
+                  <Waves className="size-3.5 text-indigo-600" />
+                  Watermark Settings
+                </button>
+                <button
+                  onClick={() => {
+                    onToggleGrid?.();
+                    setMoreOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
+                >
+                  <LayoutGrid className="size-3.5 text-indigo-600" />
+                  Page Grid / Reorder
                 </button>
                 <button
                   onClick={() => {
@@ -583,7 +610,7 @@ export function ToolRibbon({
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                 >
                   <Sparkles className="size-3.5 text-indigo-600" />
-                  AI Summarizer
+                  AI Summarizer & Q&A
                 </button>
               </div>
             )}

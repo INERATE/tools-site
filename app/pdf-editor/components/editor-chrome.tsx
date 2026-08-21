@@ -21,6 +21,9 @@ export function EditorChrome({
   onRotatePage,
   onDeletePage,
   onOpenAi,
+  onAddText,
+  onOpenOcr,
+  onOpenForm,
   redactStyle,
   onRedactStyle,
 }: {
@@ -38,6 +41,9 @@ export function EditorChrome({
   onRotatePage?: () => void;
   onDeletePage?: () => void;
   onOpenAi?: () => void;
+  onAddText?: () => void;
+  onOpenOcr?: () => void;
+  onOpenForm?: () => void;
   redactStyle?: "blackout" | "blur" | "whiteout";
   onRedactStyle?: (s: "blackout" | "blur" | "whiteout") => void;
 }) {
@@ -72,6 +78,9 @@ export function EditorChrome({
         onRotatePage={onRotatePage}
         onDeletePage={onDeletePage}
         onOpenAi={onOpenAi}
+        onAddText={onAddText}
+        onOpenOcr={onOpenOcr}
+        onOpenForm={onOpenForm}
         redactStyle={redactStyle}
         onRedactStyle={onRedactStyle}
       />

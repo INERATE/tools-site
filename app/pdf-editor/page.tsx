@@ -102,6 +102,9 @@ export default function PdfEditorPage() {
         onToggleSearch={() => setSearchOpen((prev) => !prev)}
         onToggleGrid={() => setGridOpen((prev) => !prev)}
         onOpenAi={() => setAiOpen(true)}
+        onAddText={e.addTextBlock}
+        onOpenOcr={() => setOcrOpen(true)}
+        onOpenForm={() => setFormOpen(true)}
         onRotatePage={() => e.pageOps.rotatePage(e.page)}
         onDeletePage={() => e.pageOps.toggleDeleted(e.page)}
         onOpenWatermark={() => {

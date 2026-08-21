@@ -138,6 +138,40 @@ export function usePdfEditor() {
     if (id) setSelected(null);
   }, [anno]);
 
+  const addTextBlock = useCallback((targetPage?: number) => {
+    const p = targetPage ?? page;
+    const curPage = pages[p];
+    const ph = curPage?.height ?? 792;
+    const newBlock: TextBlock = {
+      id: `text-${Date.now()}`,
+      pageIndex: p,
+      text: "Type your text here",
+      originalText: "",
+      pdfX: 72,
+      pdfY: ph - 120,
+      pdfWidth: 180,
+      pdfHeight: 20,
+      relX: 0.15,
+      relY: 0.15,
+      relWidth: 0.35,
+      relHeight: 0.04,
+      fontSize: 16,
+      fontFamily: "Poppins",
+      fontWeight: "normal",
+      fontStyle: "normal",
+      color: "#111827",
+      align: "left",
+      lineHeight: 1.2,
+      letterSpacing: 0,
+      isEdited: true,
+      isNew: true,
+      isDeleted: false,
+    };
+    history.commit((cur) => [...cur, newBlock]);
+    setSelected(newBlock.id);
+    anno.setPicked(null);
+  }, [page, pages, history, anno]);
+
   const startNew = useCallback(async () => {
     await persist.startNew();
     setFile(null);
@@ -162,6 +196,6 @@ export function usePdfEditor() {
     ...overlays,
     anno, pageOps,
     undo: history.undo, redo: history.redo, canUndo: history.canUndo, canRedo: history.canRedo,
-    open, editBlock, setFamily, updateGeometry, updateFormat, exportPdf,
+    open, editBlock, setFamily, updateGeometry, updateFormat, exportPdf, addTextBlock,
   };
 }

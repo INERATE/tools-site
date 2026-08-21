@@ -5,12 +5,14 @@ import type { ExportRisk } from "../engine/risk";
 import { ExportButton } from "./export-button";
 
 const ICON_BTN =
-  "grid size-8 place-items-center rounded-lg text-[var(--text-dim)] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--text)]";
+  "grid size-8 place-items-center rounded-lg text-[var(--text-dim)] transition-colors hover:bg-[var(--accent)]/10 " +
+  "hover:text-[var(--text)] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-transparent";
 
 const ZERO_RISK: ExportRisk = { overflow: 0, seam: 0, math: 0, total: 0 };
 
 export function EditorTopbar({
   fileName, edited = 0, busy = false, outUrl = null, onExport, canExport = false, risk = ZERO_RISK,
+  onUndo, onRedo, canUndo = false, canRedo = false,
 }: {
   fileName: string;
   edited?: number;
@@ -19,6 +21,10 @@ export function EditorTopbar({
   onExport?: () => void;
   canExport?: boolean;
   risk?: ExportRisk;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }) {
   return (
     <header className="nav-glass relative z-30 flex h-14 shrink-0 items-center justify-between gap-4 px-4">
@@ -41,10 +47,10 @@ export function EditorTopbar({
       </div>
 
       <div className="flex shrink-0 items-center gap-1.5">
-        <button className={ICON_BTN} title="Undo">
+        <button onClick={onUndo} disabled={!canUndo} className={ICON_BTN} title="Undo">
           <Undo2 aria-hidden className="size-4" />
         </button>
-        <button className={ICON_BTN} title="Redo">
+        <button onClick={onRedo} disabled={!canRedo} className={ICON_BTN} title="Redo">
           <Redo2 aria-hidden className="size-4" />
         </button>
         <div className="mx-1 h-4 w-px bg-[var(--border)]" />

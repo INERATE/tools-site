@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { AmbientBlob } from "../components/ambient-blob";
-import { Dropzone } from "../components/dropzone";
 import { CanvasStage } from "./components/canvas-stage";
+import { OpenPanel } from "./components/open-panel";
 import { EditorTopbar } from "./components/editor-topbar";
 import { FloatingDock } from "./components/floating-dock";
 import { Inspector } from "./components/inspector";
@@ -34,6 +34,10 @@ export default function PdfEditorPage() {
         onExport={e.exportPdf}
         canExport={live}
         risk={e.risk}
+        onUndo={e.undo}
+        onRedo={e.redo}
+        canUndo={e.canUndo}
+        canRedo={e.canRedo}
       />
       <ToolRibbon tab={tab} onTab={setTab} tool={tool} onTool={setTool} zoom={zoom} onZoom={setZoom} />
 
@@ -67,23 +71,7 @@ export default function PdfEditorPage() {
             <CanvasStage zoom={zoom} selected={demoPick} onSelect={setDemoPick} />
           )}
 
-          {!live && (
-            <div className="absolute inset-x-0 bottom-20 z-30 mx-auto w-[min(520px,90%)]">
-              <div className="liquid-card p-4">
-                <Dropzone
-                  id="pdf-editor-input"
-                  onFiles={e.open}
-                  label="Drop a PDF here to edit it for real"
-                  hint="Opens in this tab only — nothing is uploaded"
-                />
-                {e.error && (
-                  <p role="alert" className="text-[13px] font-medium text-[#ff8fa3]">
-                    {e.error}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
+          {!live && <OpenPanel onFiles={e.open} error={e.error} />}
 
           <FloatingDock page={e.page} pages={live ? e.pages.length : 24} onPage={e.setPage} />
         </div>
@@ -92,6 +80,9 @@ export default function PdfEditorPage() {
           block={e.blocks.find((b) => b.id === e.selected)}
           onFamily={e.setFamily}
           match={live ? "Click a block to see its matched font" : "Open a PDF to begin"}
+          watermark={e.watermark}
+          onWatermark={e.editWatermark}
+          hasDoc={live}
         />
       </div>
     </div>

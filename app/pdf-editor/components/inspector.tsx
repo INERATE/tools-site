@@ -1,13 +1,12 @@
 "use client";
 
 import { Eye, Image as ImageIcon, Layers, Square, Type } from "lucide-react";
+import type { WatermarkConfig } from "../element-types";
 import type { FontFamily, TextBlock } from "../types";
 import { TypographyPanel } from "./typography-panel";
+import { WatermarkPanel } from "./watermark-panel";
 
-const FIELD =
-  "w-full rounded-lg border border-[var(--border)] bg-[var(--bg)]/50 px-2.5 py-1.5 text-[12px] text-[var(--text)] outline-none focus:border-[var(--accent)]";
 const HEAD = "mb-2.5 text-[10.5px] font-bold tracking-[0.09em] text-[var(--text-dim)] uppercase";
-const LABEL = "mb-1 block text-[10.5px] text-[var(--text-dim)]";
 
 const LAYERS = [
   { icon: Type, name: "Text", on: true },
@@ -17,12 +16,15 @@ const LAYERS = [
 ];
 
 export function Inspector({
-  block, onFamily, match,
+  block, onFamily, match, watermark, onWatermark, hasDoc = false,
 }: {
   block?: TextBlock | null;
   onFamily?: (id: string, family: FontFamily) => void;
   /** Placeholder copy shown before any PDF is open or any block selected. */
   match: string;
+  watermark?: WatermarkConfig;
+  onWatermark?: (patch: Partial<WatermarkConfig>) => void;
+  hasDoc?: boolean;
 }) {
   const confidence = block?.fontMatchConfidence;
   const low = confidence !== undefined && confidence < 60;
@@ -45,14 +47,9 @@ export function Inspector({
 
       <TypographyPanel block={block} onFamily={onFamily} />
 
-      <section className="mb-5 border-t border-[var(--border)] pt-4">
-        <h3 className={HEAD}>Watermark</h3>
-        <input className={FIELD} defaultValue="CONFIDENTIAL" />
-        <label className={`${LABEL} mt-2`}>Angle — 30°</label>
-        <input type="range" defaultValue={30} min={-90} max={90} className="w-full accent-[var(--accent)]" />
-        <label className={`${LABEL} mt-1`}>Opacity — 30%</label>
-        <input type="range" defaultValue={30} className="w-full accent-[var(--accent)]" />
-      </section>
+      {watermark && onWatermark && (
+        <WatermarkPanel value={watermark} onChange={onWatermark} disabled={!hasDoc} />
+      )}
 
       <section className="border-t border-[var(--border)] pt-4">
         <h3 className={HEAD}>Layers</h3>

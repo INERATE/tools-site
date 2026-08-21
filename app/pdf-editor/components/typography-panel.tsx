@@ -35,11 +35,18 @@ export function TypographyPanel({
         ))}
       </select>
       <div className="mt-2 grid grid-cols-2 gap-2">
-        <select className={FIELD} defaultValue="Regular" disabled={!block}>
+        <select className={FIELD} defaultValue="Regular" disabled={!block} aria-label="Font weight">
           <option>Regular</option>
           <option>Bold</option>
         </select>
-        <input className={`${FIELD} text-center font-mono`} defaultValue={block?.fontSize ? Math.round(block.fontSize) : 11} disabled={!block} />
+        <input
+          type="number"
+          min={1}
+          aria-label="Font size"
+          className={`${FIELD} text-center font-mono`}
+          defaultValue={block?.fontSize ? Math.round(block.fontSize) : 11}
+          disabled={!block}
+        />
       </div>
       <div className="mt-2 flex gap-1">
         {[AlignLeft, AlignCenter, AlignRight, AlignJustify].map((I, i) => (

@@ -1,6 +1,9 @@
-import { PDFDocument, rgb } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
+import type { SignatureElement, WatermarkConfig } from "../element-types";
 import type { TextBlock } from "../types";
-import { embedFontSet, hexToRgb, pickFont } from "./font-pick";
+import { drawSignatures, drawWatermark } from "./apply-overlays";
+import { drawBlocks } from "./draw-blocks";
+import { embedFontSet } from "./font-pick";
 
 /**
  * Cover-and-redraw export.
@@ -18,42 +21,24 @@ import { embedFontSet, hexToRgb, pickFont } from "./font-pick";
  * pretend every edit is clean.
  */
 
-const WHITE = { r: 1, g: 1, b: 1 };
+export interface Overlays {
+  watermark?: WatermarkConfig;
+  signatures?: SignatureElement[];
+}
 
-export async function applyEdits(file: File | Blob, blocks: TextBlock[]): Promise<Blob> {
+export async function applyEdits(
+  file: File | Blob,
+  blocks: TextBlock[],
+  overlays: Overlays = {},
+): Promise<Blob> {
   const doc = await PDFDocument.load(await file.arrayBuffer());
-  const fonts = await embedFontSet(doc);
   const pages = doc.getPages();
 
-  for (const b of blocks) {
-    if (!b.isEdited && !b.isDeleted) continue;
-    const page = pages[b.pageIndex];
-    if (!page) continue;
+  drawBlocks(pages, blocks, await embedFontSet(doc));
 
-    const bg = b.bgColor ?? WHITE;
-    // pdfY is the BASELINE. Glyphs run from ~0.25em below it (descenders on
-    // g/p/y) to ~1.0em above (ascenders/caps), so a rect anchored at the
-    // baseline leaves descender stubs showing — caught on a real export.
-    const size = b.fontSize;
-    page.drawRectangle({
-      x: b.pdfX - size * 0.1,
-      y: b.pdfY - size * 0.28,
-      width: b.pdfWidth + size * 0.2,
-      height: size * 1.32,
-      color: rgb(bg.r, bg.g, bg.b),
-    });
-
-    if (b.isDeleted || !b.text.trim()) continue;
-
-    const c = hexToRgb(b.color);
-    page.drawText(b.text, {
-      x: b.pdfX,
-      y: b.pdfY,
-      size: b.fontSize,
-      font: pickFont(b, fonts),
-      color: rgb(c.r, c.g, c.b),
-    });
-  }
+  // Overlays go on last so they sit above any redrawn text.
+  if (overlays.watermark) await drawWatermark(doc, pages, overlays.watermark);
+  if (overlays.signatures?.length) await drawSignatures(doc, pages, overlays.signatures);
 
   const bytes = await doc.save();
   return new Blob([bytes.slice().buffer], { type: "application/pdf" });

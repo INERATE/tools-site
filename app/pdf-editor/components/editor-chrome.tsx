@@ -50,7 +50,7 @@ export function EditorChrome({
   onRedactStyle?: (s: "blackout" | "blur" | "whiteout") => void;
 }) {
   return (
-    <>
+    <header className="relative z-40 flex shrink-0 flex-col">
       <EditorTopbar
         fileName={e.docName ?? "No document open"}
         edited={e.edited}
@@ -87,6 +87,6 @@ export function EditorChrome({
         redactStyle={redactStyle}
         onRedactStyle={onRedactStyle}
       />
-    </>
+    </header>
   );
 }

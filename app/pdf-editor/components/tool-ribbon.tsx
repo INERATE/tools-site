@@ -217,7 +217,7 @@ export function ToolRibbon({
                   Shape ▾
                 </button>
                 {shapesOpen && (
-                  <div className="absolute top-full left-0 mt-1.5 w-44 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl z-50">
+                  <div className="absolute top-full left-0 mt-1.5 w-44 rounded-xl border border-slate-200 bg-white/95 backdrop-blur-xl p-1.5 shadow-2xl z-[100]">
                     <button
                       onClick={() => {
                         onTool("shapes");
@@ -475,7 +475,7 @@ export function ToolRibbon({
                   Redact Sensitive Data ▾
                 </button>
                 {redactOpen && (
-                  <div className="absolute top-full left-0 mt-1.5 w-48 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl z-50">
+                  <div className="absolute top-full left-0 mt-1.5 w-52 rounded-xl border border-slate-200 bg-white/95 backdrop-blur-xl p-1.5 shadow-2xl z-[100]">
                     <button
                       onClick={() => {
                         onTool("redact");
@@ -485,7 +485,7 @@ export function ToolRibbon({
                       className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600"
                     >
                       <div className="size-3.5 rounded-xs bg-black" />
-                      Blackout Redact
+                      Blackout Mask (Permanent)
                     </button>
                     <button
                       onClick={() => {
@@ -553,7 +553,7 @@ export function ToolRibbon({
             </button>
 
             {moreOpen && (
-              <div className="absolute top-full left-0 mt-1.5 w-52 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl z-50">
+              <div className="absolute top-full left-0 mt-1.5 w-52 rounded-xl border border-slate-200 bg-white/95 backdrop-blur-xl p-1.5 shadow-2xl z-[100]">
                 <button
                   onClick={() => {
                     onAddText?.();

@@ -54,7 +54,10 @@ export function MagicBrushCanvas({
   }, [onCanUndoChange, onCanRedoChange, onMaskChange]);
 
   const handleUndo = useCallback(() => {
-    if (historyIdx.current <= 0) return;
+    if (historyIdx.current <= 0) {
+      onCanUndoChange?.(false);
+      return;
+    }
     historyIdx.current -= 1;
     const maskCanvas = maskCanvasRef.current;
     const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
@@ -78,22 +81,6 @@ export function MagicBrushCanvas({
       onMaskChange(true);
     }
   }, [onCanUndoChange, onCanRedoChange, onMaskChange]);
-
-  // Keyboard shortcuts (Ctrl+Z / Cmd+Z, Ctrl+Y / Cmd+Shift+Z)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
-        e.preventDefault();
-        if (e.shiftKey) handleRedo();
-        else handleUndo();
-      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
-        e.preventDefault();
-        handleRedo();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleUndo, handleRedo]);
 
   // Load image onto background canvas
   useEffect(() => {
@@ -221,7 +208,8 @@ export function MagicBrushCanvas({
 
   const drawDot = (x: number, y: number) => {
     const maskCanvas = maskCanvasRef.current;
-    const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
+    if (!maskCanvas) return;
+    const ctx = maskCanvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
     ctx.save();
@@ -239,7 +227,8 @@ export function MagicBrushCanvas({
 
   const drawLine = (x1: number, y1: number, x2: number, y2: number) => {
     const maskCanvas = maskCanvasRef.current;
-    const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
+    if (!maskCanvas) return;
+    const ctx = maskCanvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
     ctx.save();
@@ -261,13 +250,20 @@ export function MagicBrushCanvas({
 
   const drawBox = (x1: number, y1: number, x2: number, y2: number) => {
     const maskCanvas = maskCanvasRef.current;
-    const ctx = maskCanvas?.getContext("2d", { willReadFrequently: true });
+    if (!maskCanvas) return;
+    const ctx = maskCanvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
-    const x = Math.min(x1, x2);
-    const y = Math.min(y1, y2);
-    const w = Math.abs(x2 - x1);
-    const h = Math.abs(y2 - y1);
+    const pad = 4;
+    const rawX = Math.min(x1, x2);
+    const rawY = Math.min(y1, y2);
+    const rawW = Math.abs(x2 - x1);
+    const rawH = Math.abs(y2 - y1);
+
+    const x = Math.max(0, rawX - pad);
+    const y = Math.max(0, rawY - pad);
+    const w = Math.min(maskCanvas.width - x, rawW + pad * 2);
+    const h = Math.min(maskCanvas.height - y, rawH + pad * 2);
 
     ctx.save();
     ctx.globalCompositeOperation = "source-over";
@@ -281,12 +277,15 @@ export function MagicBrushCanvas({
       ref={containerRef}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onPointerEnter={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
       onPointerUp={handlePointerUp}
       onPointerLeave={() => {
         setCursorPos(null);
         setBoxPreview(null);
       }}
-      className="relative max-h-[70vh] w-fit max-w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-slate-900/50 shadow-2xl touch-none mx-auto select-none cursor-crosshair backdrop-blur-xs"
+      className={`relative max-h-[70vh] w-fit max-w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-slate-900/50 shadow-2xl touch-none mx-auto select-none backdrop-blur-xs ${
+        tool === "box" ? "cursor-crosshair" : "cursor-none"
+      }`}
     >
       {/* Background Image Canvas */}
       <canvas ref={imageCanvasRef} className="block max-h-[70vh] w-auto max-w-full object-contain rounded-2xl" />
@@ -311,21 +310,24 @@ export function MagicBrushCanvas({
         />
       )}
 
-      {/* Floating Apple-Style Brush Cursor Indicator (Always on Top) */}
+      {/* MS Paint / Photoshop Dynamic Circular Brush Cursor */}
       {cursorPos && tool !== "box" && (
         <div
-          className={`pointer-events-none fixed z-[9999] rounded-full border-2 -translate-x-1/2 -translate-y-1/2 shadow-xl backdrop-blur-[1px] ${
+          className={`pointer-events-none fixed z-[9999] rounded-full border-2 -translate-x-1/2 -translate-y-1/2 shadow-2xl flex items-center justify-center ${
             tool === "eraser"
-              ? "border-rose-400 bg-rose-500/30"
-              : "border-purple-400 bg-purple-500/30"
+              ? "border-rose-400 bg-rose-500/20 ring-1 ring-rose-300/40"
+              : "border-purple-400 bg-purple-500/20 ring-1 ring-purple-300/40"
           }`}
           style={{
-            left: cursorPos.x,
-            top: cursorPos.y,
+            left: `${cursorPos.x}px`,
+            top: `${cursorPos.y}px`,
             width: `${brushSize}px`,
             height: `${brushSize}px`,
           }}
-        />
+        >
+          {/* Precision center dot like Photoshop */}
+          <div className="size-1 rounded-full bg-white shadow-xs pointer-events-none" />
+        </div>
       )}
     </div>
   );

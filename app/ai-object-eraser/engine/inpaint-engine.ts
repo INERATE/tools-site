@@ -1,8 +1,8 @@
 /**
  * Advanced Fast-Marching & Patch Inpainting Engine
  * Features:
- * - Inward Level-Set Propagation (Fast Marching Method)
- * - Gradient & Texture Synthesis with Bilateral Edge Preservation
+ * - Inward Level-Set Propagation (Fast Marching Method) with Gaussian Kernel
+ * - Boundary-Weighted Gradient Propagation with Laplacian Smoothing
  * - Multi-pass Boundary Feathering with Gaussian Alpha Blending
  * - 100% Client-Side Execution (0ms network latency, infinite mask capacity)
  */
@@ -114,7 +114,6 @@ export async function runInpainting(
     for (let x = minX; x <= maxX; x++) {
       const idx = y * width + x;
       if (isMasked[idx] === 1) {
-        // Check if any 4-neighbor is unmasked
         const isBoundary =
           (x > 0 && isMasked[idx - 1] === 0) ||
           (x < width - 1 && isMasked[idx + 1] === 0) ||
@@ -131,21 +130,22 @@ export async function runInpainting(
 
   onProgress?.(30);
 
-  // 3. Inward Fast Marching Propagation: fill pixels from border inward
+  // 3. Inward Fast Marching Propagation with Gaussian Kernel
+  const radius = 6;
+  const sigma = 3.0;
   let head = 0;
+
   while (head < queue.length) {
     const idx = queue[head++];
     const x = idx % width;
     const y = Math.floor(idx / width);
     const d = dist[idx];
 
-    // Inpaint this pixel from unmasked or already-processed neighbors
     let rSum = 0;
     let gSum = 0;
     let bSum = 0;
     let totalWeight = 0;
 
-    const radius = 4;
     for (let dy = -radius; dy <= radius; dy++) {
       for (let dx = -radius; dx <= radius; dx++) {
         if (dx === 0 && dy === 0) continue;
@@ -154,10 +154,13 @@ export async function runInpainting(
 
         if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
           const nIdx = ny * width + nx;
-          // Neighbor must be unmasked OR already filled with lower/equal distance
-          if (isMasked[nIdx] === 0 || dist[nIdx] < d) {
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const weight = 1 / (distance * distance * (1 + dist[nIdx]));
+          const isOriginal = isMasked[nIdx] === 0;
+
+          if (isOriginal || dist[nIdx] < d) {
+            const distSq = dx * dx + dy * dy;
+            const gaussianWeight = Math.exp(-distSq / (2 * sigma * sigma));
+            const boundaryBoost = isOriginal ? 4.0 : 1.0;
+            const weight = (gaussianWeight * boundaryBoost) / (1 + dist[nIdx] * 0.5);
 
             const pIdx = nIdx * 4;
             rSum += src[pIdx] * weight;
@@ -185,21 +188,21 @@ export async function runInpainting(
       }
     }
 
-    if (head % 5000 === 0) {
+    if (head % 4000 === 0) {
       onProgress?.(30 + Math.round((head / (maskCount || 1)) * 40));
     }
   }
 
   onProgress?.(75);
 
-  // 4. Multi-pass Bilateral Texture Blending for high-frequency natural grain
-  const pad = 8;
+  // 4. Laplacian & Bilateral Smoothing passes
+  const pad = 10;
   const startX = Math.max(0, minX - pad);
   const startY = Math.max(0, minY - pad);
   const endX = Math.min(width - 1, maxX + pad);
   const endY = Math.min(height - 1, maxY + pad);
 
-  for (let pass = 0; pass < 2; pass++) {
+  for (let pass = 0; pass < 3; pass++) {
     for (let y = startY; y <= endY; y++) {
       for (let x = startX; x <= endX; x++) {
         const idx = y * width + x;
@@ -208,17 +211,17 @@ export async function runInpainting(
           let r = 0, g = 0, b = 0, wSum = 0;
 
           const neighbors = [
-            [-1, 0], [1, 0], [0, -1], [0, 1],
-            [-1, -1], [1, -1], [-1, 1], [1, 1],
+            [-1, 0, 1.2], [1, 0, 1.2], [0, -1, 1.2], [0, 1, 1.2],
+            [-1, -1, 0.8], [1, -1, 0.8], [-1, 1, 0.8], [1, 1, 0.8],
           ];
 
-          for (const [dx, dy] of neighbors) {
+          for (const [dx, dy, w] of neighbors) {
             const nx = x + dx;
             const ny = y + dy;
             if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
               const ni = (ny * width + nx) * 4;
-              const nIsMask = isMasked[ny * width + nx];
-              const weight = nIsMask ? 1.0 : 2.5;
+              const nIsOriginal = isMasked[ny * width + nx] === 0;
+              const weight = nIsOriginal ? w * 2.5 : w;
 
               r += src[ni] * weight;
               g += src[ni + 1] * weight;

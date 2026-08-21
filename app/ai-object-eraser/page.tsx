@@ -14,7 +14,7 @@ import {
   Split,
   Settings2,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { AmbientBlob } from "../components/ambient-blob";
 import { Nav } from "../components/nav";
 import { Dock } from "../components/dock";
@@ -58,6 +58,8 @@ export default function AiObjectEraserPage() {
   const [progress, setProgress] = useState<number>(0);
   const [showCompare, setShowCompare] = useState<boolean>(false);
 
+  const [imageHistory, setImageHistory] = useState<string[]>([]);
+
   // History signals
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -83,7 +85,9 @@ export default function AiObjectEraserPage() {
         if (ctx) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           await (page.render as any)({ canvasContext: ctx, viewport }).promise;
-          setImageSrc(canvas.toDataURL("image/png"));
+          const url = canvas.toDataURL("image/png");
+          setImageSrc(url);
+          setImageHistory([url]);
           setResultSrc(null);
           setShowCompare(false);
           setHasMask(false);
@@ -100,7 +104,9 @@ export default function AiObjectEraserPage() {
     const reader = new FileReader();
     reader.onload = (e) => {
       if (typeof e.target?.result === "string") {
-        setImageSrc(e.target.result);
+        const url = e.target.result;
+        setImageSrc(url);
+        setImageHistory([url]);
         setResultSrc(null);
         setShowCompare(false);
         setHasMask(false);
@@ -108,6 +114,33 @@ export default function AiObjectEraserPage() {
     };
     reader.readAsDataURL(file);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          setRedoSignal((s) => s + 1);
+        } else {
+          if (canUndo) {
+            setUndoSignal((s) => s + 1);
+          } else if (imageHistory.length > 1) {
+            const prev = imageHistory.slice(0, -1);
+            const last = prev[prev.length - 1];
+            setImageHistory(prev);
+            setResultSrc(last === imageSrc ? null : last);
+            setShowCompare(false);
+            setHasMask(false);
+          }
+        }
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
+        e.preventDefault();
+        setRedoSignal((s) => s + 1);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [canUndo, imageHistory, imageSrc]);
 
   const handleErase = async () => {
     if (!imageSrc || isProcessing) return;
@@ -128,8 +161,10 @@ export default function AiObjectEraserPage() {
           imageCanvas: imgCanvas,
           maskCanvas,
         });
+        setImageHistory((prev) => [...prev, cleanedUrl]);
         setResultSrc(cleanedUrl);
-        setShowCompare(true);
+        setShowCompare(false);
+        setHasMask(false);
       } catch (err: unknown) {
         const errorMsg = err instanceof Error ? err.message : "Cloudflare inpainting failed.";
         alert(errorMsg);
@@ -160,8 +195,10 @@ export default function AiObjectEraserPage() {
           imageCanvas: imgCanvas,
           maskCanvas,
         });
+        setImageHistory((prev) => [...prev, cleanedUrl]);
         setResultSrc(cleanedUrl);
-        setShowCompare(true);
+        setShowCompare(false);
+        setHasMask(false);
       } catch (err: unknown) {
         const errorMsg = err instanceof Error ? err.message : "Cloud inpainting failed. Please check your API key.";
         alert(errorMsg);
@@ -182,8 +219,10 @@ export default function AiObjectEraserPage() {
       });
 
       const cleanedUrl = outputCanvas.toDataURL("image/png");
+      setImageHistory((prev) => [...prev, cleanedUrl]);
       setResultSrc(cleanedUrl);
-      setShowCompare(true);
+      setShowCompare(false);
+      setHasMask(false);
     } catch (err) {
       console.error("Inpainting failed:", err);
     } finally {
@@ -328,10 +367,21 @@ export default function AiObjectEraserPage() {
                 {/* History & Clear */}
                 <div className="flex items-center gap-1">
                   <button
-                    disabled={!canUndo}
-                    onClick={() => setUndoSignal((s) => s + 1)}
+                    disabled={!canUndo && imageHistory.length <= 1}
+                    onClick={() => {
+                      if (canUndo) {
+                        setUndoSignal((s) => s + 1);
+                      } else if (imageHistory.length > 1) {
+                        const prev = imageHistory.slice(0, -1);
+                        const last = prev[prev.length - 1];
+                        setImageHistory(prev);
+                        setResultSrc(last === imageSrc ? null : last);
+                        setShowCompare(false);
+                        setHasMask(false);
+                      }
+                    }}
                     title="Undo (Ctrl+Z)"
-                    className="flex size-7 items-center justify-center rounded-lg text-[var(--text-dim)] hover:bg-[var(--glass-hi)] hover:text-[var(--text)] disabled:opacity-40 transition-colors"
+                    className="flex size-7 items-center justify-center rounded-lg text-[var(--text-dim)] hover:bg-[var(--glass-hi)] hover:text-[var(--text)] disabled:opacity-40 transition-colors cursor-pointer"
                   >
                     <Undo2 className="size-3.5" />
                   </button>
@@ -339,14 +389,14 @@ export default function AiObjectEraserPage() {
                     disabled={!canRedo}
                     onClick={() => setRedoSignal((s) => s + 1)}
                     title="Redo (Ctrl+Y)"
-                    className="flex size-7 items-center justify-center rounded-lg text-[var(--text-dim)] hover:bg-[var(--glass-hi)] hover:text-[var(--text)] disabled:opacity-40 transition-colors"
+                    className="flex size-7 items-center justify-center rounded-lg text-[var(--text-dim)] hover:bg-[var(--glass-hi)] hover:text-[var(--text)] disabled:opacity-40 transition-colors cursor-pointer"
                   >
                     <Redo2 className="size-3.5" />
                   </button>
                   <button
                     onClick={() => setClearSignal((s) => s + 1)}
                     title="Clear Mask"
-                    className="flex size-7 items-center justify-center rounded-lg text-rose-400 hover:bg-rose-500/10 transition-colors"
+                    className="flex size-7 items-center justify-center rounded-lg text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
                   >
                     <Trash2 className="size-3.5" />
                   </button>

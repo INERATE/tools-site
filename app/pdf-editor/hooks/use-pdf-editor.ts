@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { applyEdits } from "../engine/apply-edits";
 import { loadDocument, type Bookmark, type LoadedPage } from "../engine/load-document";
 import { exportRisk } from "../engine/risk";
@@ -112,15 +112,32 @@ export function usePdfEditor() {
     : null;
   const persist = usePersistence(session);
 
-  const restore = useCallback(async () => {
-    const saved = await persist.restore();
-    if (saved?.file) await install(saved.file, saved);
-  }, [persist, install]);
+  // Reopen the saved document automatically on mount. `take` yields it once,
+  // so this cannot loop, and it never fires while a file is already open.
+  useEffect(() => {
+    if (file || busy || !persist.pending) return;
+    const saved = persist.take();
+    if (saved?.file) void install(saved.file, saved);
+  }, [file, busy, persist, install]);
+
+  const startNew = useCallback(async () => {
+    await persist.startNew();
+    setFile(null);
+    setPages([]);
+    setBookmarks([]);
+    history.reset([]);
+    overlays.resetOverlays();
+    anno.resetAnnotations();
+    pageOps.resetOps();
+    setSelected(null);
+    setPage(0);
+    stale();
+  }, [persist, history, overlays, anno, pageOps, stale]);
 
   return {
     file, pages, bookmarks, blocks, page, setPage, selected, setSelected,
     busy, progress, error, outUrl,
-    restorable: persist.restorable, restore, discardSaved: persist.discard,
+    restoredAt: persist.restoredAt, dismissNotice: persist.dismissNotice, startNew,
     edited: blocks.filter((b) => b.isEdited).length,
     risk: exportRisk(blocks),
     ...overlays,

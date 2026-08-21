@@ -5,7 +5,7 @@ import type { EditorMode } from "../types";
 import { ESignModal } from "./esign-modal";
 import { LoadingSkeleton } from "./loading-skeleton";
 import { OpenPanel } from "./open-panel";
-import { RestoreBanner } from "./restore-banner";
+import { RestoreNotice } from "./restore-banner";
 import { ToolHint } from "./tool-hint";
 
 /** Everything that floats over the page stage: open prompt, progress, hints, modals. */
@@ -27,8 +27,8 @@ export function StageOverlays({
       {idle && <OpenPanel onFiles={e.open} error={e.error} />}
       {e.busy && <LoadingSkeleton done={e.progress.done} total={e.progress.total} />}
       {live && !e.busy && <ToolHint tool={tool} onDone={() => onTool("select")} />}
-      {idle && e.restorable && (
-        <RestoreBanner savedAt={e.restorable.savedAt} onRestore={e.restore} onDiscard={e.discardSaved} />
+      {e.restoredAt !== null && !e.busy && (
+        <RestoreNotice savedAt={e.restoredAt} onDismiss={e.dismissNotice} />
       )}
       {signing && page && (
         <ESignModal

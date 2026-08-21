@@ -19,17 +19,25 @@ export interface Session {
 }
 
 /**
- * Keeps the current document and every edit in IndexedDB so a refresh, a
- * crash, or a closed tab does not throw the work away. Re-parsing on restore
- * is deliberate: page rasters are large data: URIs, and re-rendering from the
- * stored file is cheaper than storing megabytes of PNG per page.
+ * Keeps the document and every edit in IndexedDB so a refresh does not throw
+ * the work away.
+ *
+ * The saved session is reopened automatically rather than behind a "restore?"
+ * prompt: after a refresh the user expects their document to still be there,
+ * and being dropped back to an empty screen to ask permission is the very
+ * thing this feature exists to prevent. The disclosure still happens — a
+ * notice says it was restored from this device, and "New" clears it.
+ *
+ * Re-parsing on restore is deliberate: page rasters are large data: URIs, so
+ * re-rendering from the stored file beats storing megabytes of PNG per page.
  */
 export function usePersistence(session: Session | null) {
-  const [restorable, setRestorable] = useState<{ savedAt: number } | null>(null);
+  const [pending, setPending] = useState<{ value: Session; savedAt: number } | null>(null);
+  const [restoredAt, setRestoredAt] = useState<number | null>(null);
   const timer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
-    loadWip<Session>(KEY).then((hit) => hit && setRestorable({ savedAt: hit.savedAt }));
+    loadWip<Session>(KEY).then((hit) => hit?.value?.file && setPending(hit));
   }, []);
 
   // Debounced so typing does not write to disk on every keystroke.
@@ -40,16 +48,19 @@ export function usePersistence(session: Session | null) {
     return () => window.clearTimeout(timer.current);
   }, [session]);
 
-  const restore = useCallback(async () => {
-    const hit = await loadWip<Session>(KEY);
-    setRestorable(null);
-    return hit?.value ?? null;
-  }, []);
+  /** Hands the saved session over exactly once, so it cannot reopen in a loop. */
+  const take = useCallback(() => {
+    if (!pending) return null;
+    setPending(null);
+    setRestoredAt(pending.savedAt);
+    return pending.value;
+  }, [pending]);
 
-  const discard = useCallback(async () => {
-    setRestorable(null);
+  const startNew = useCallback(async () => {
+    setPending(null);
+    setRestoredAt(null);
     await clearWip(KEY);
   }, []);
 
-  return { restorable, restore, discard };
+  return { pending, take, restoredAt, dismissNotice: () => setRestoredAt(null), startNew };
 }

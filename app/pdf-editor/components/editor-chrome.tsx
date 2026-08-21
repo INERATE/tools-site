@@ -43,6 +43,8 @@ export function EditorChrome({
         onRedo={e.redo}
         canUndo={e.canUndo}
         canRedo={e.canRedo}
+        onStartNew={e.startNew}
+        hasDoc={live}
       />
       <ToolRibbon
         tab={tab}

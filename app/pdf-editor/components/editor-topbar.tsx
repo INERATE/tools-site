@@ -1,6 +1,6 @@
 "use client";
 
-import { Cloud, ChevronDown, Redo2, Share2, Undo2 } from "lucide-react";
+import { Cloud, ChevronDown, FilePlus2, Redo2, Share2, Undo2 } from "lucide-react";
 import type { ExportRisk } from "../engine/risk";
 import { ExportButton } from "./export-button";
 
@@ -22,6 +22,8 @@ export function EditorTopbar({
   onRedo,
   canUndo = false,
   canRedo = false,
+  onStartNew,
+  hasDoc = false,
 }: {
   fileName: string;
   edited?: number;
@@ -34,6 +36,8 @@ export function EditorTopbar({
   onRedo?: () => void;
   canUndo?: boolean;
   canRedo?: boolean;
+  onStartNew?: () => void;
+  hasDoc?: boolean;
 }) {
   return (
     <header className="relative z-30 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-slate-200/90 bg-white px-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
@@ -82,6 +86,17 @@ export function EditorTopbar({
         </button>
 
         <div className="mx-1 h-4 w-px bg-slate-200" />
+
+        {hasDoc && (
+          <button
+            onClick={onStartNew}
+            title="Close this document and start fresh"
+            className="flex h-8.5 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12.5px] font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+          >
+            <FilePlus2 className="size-3.5 text-slate-500" />
+            New
+          </button>
+        )}
 
         <button className="hidden h-8.5 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 text-[12.5px] font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 sm:flex">
           <Share2 className="size-3.5 text-slate-500" />

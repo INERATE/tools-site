@@ -278,14 +278,19 @@ export function MagicBrushCanvas({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerEnter={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
+      onPointerOver={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
+      onMouseMove={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
+      onMouseEnter={(e) => setCursorPos({ x: e.clientX, y: e.clientY })}
       onPointerUp={handlePointerUp}
       onPointerLeave={() => {
         setCursorPos(null);
         setBoxPreview(null);
       }}
-      className={`relative max-h-[70vh] w-fit max-w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-slate-900/50 shadow-2xl touch-none mx-auto select-none backdrop-blur-xs ${
-        tool === "box" ? "cursor-crosshair" : "cursor-none"
-      }`}
+      onMouseLeave={() => {
+        setCursorPos(null);
+        setBoxPreview(null);
+      }}
+      className="relative max-h-[70vh] w-fit max-w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-slate-900/50 shadow-2xl touch-none mx-auto select-none backdrop-blur-xs cursor-crosshair"
     >
       {/* Background Image Canvas */}
       <canvas ref={imageCanvasRef} className="block max-h-[70vh] w-auto max-w-full object-contain rounded-2xl" />

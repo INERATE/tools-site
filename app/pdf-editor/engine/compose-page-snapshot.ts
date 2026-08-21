@@ -35,9 +35,9 @@ export async function composePageSnapshot(
     });
   }
 
-  // 2. Draw Edited Text Blocks
-  const pageBlocks = blocks.filter((b) => b.pageIndex === page.index);
-  for (const b of pageBlocks) {
+  // 2. Draw ONLY user-edited or newly added text blocks (unedited text is already in page.url)
+  const editedBlocks = blocks.filter((b) => b.pageIndex === page.index && (b.isEdited || b.isNew));
+  for (const b of editedBlocks) {
     const bx = b.relX * w;
     const by = b.relY * h;
     const bw = b.relWidth * w;

@@ -177,6 +177,16 @@ export default function PdfEditorPage() {
             signing={signing}
             onCloseSign={() => setSigning(false)}
           />
+
+          <FloatingDock
+            page={e.page}
+            pages={live ? e.pages.length : 4}
+            onPage={handlePageSelect}
+            tool={tool}
+            onTool={setTool}
+            onToggleGrid={() => setGridOpen(true)}
+            onFit={handleFit}
+          />
         </div>
 
         {aiOpen && (

@@ -1,4 +1,5 @@
 import { OcrPdfIcon } from "./icons/ocr-pdf-icon";
+import { ResizeImageIcon } from "./icons/resize-image-icon";
 import { CompressPdfIcon } from "./icons/compress-pdf-icon";
 import { RepairPdfIcon } from "./icons/repair-pdf-icon";
 import { CropPdfIcon } from "./icons/crop-pdf-icon";
@@ -8,6 +9,14 @@ import { ComparePdfIcon } from "./icons/compare-pdf-icon";
 
 /** Optimize & Secure category tools — split out of tool-list.ts to stay under the file-size cap. */
 export const TOOLS_OPTIMIZE = [
+  {
+    href: "/resize-photo-for-exam-form",
+    icon: ResizeImageIcon,
+    title: "Exam Form Photo Resizer",
+    description: "Hits the exact pixel and KB limits SSC, UPSC, IBPS and NEET forms demand.",
+    category: "Optimize & Secure",
+    live: true,
+  },
   {
     href: "/ocr-pdf",
     icon: OcrPdfIcon,

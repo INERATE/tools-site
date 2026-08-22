@@ -45,7 +45,11 @@ const SAMPLE_IMAGES = [
   },
 ];
 
-export default function AiObjectEraserPage() {
+/** `/watermark-remover` renders this same editor with its own copy — same tool, different search intent. */
+export default function AiObjectEraserPage({
+  title = "AI Object & Watermark Eraser",
+  blurb = "Erase watermarks, logos, text, stamps, and photobombers with AI Generative Fill. 100% private in your browser.",
+}: { title?: string; blurb?: string } = {}) {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [resultSrc, setResultSrc] = useState<string | null>(null);
   const [tool, setTool] = useState<"brush" | "box" | "eraser">("brush");
@@ -245,10 +249,10 @@ export default function AiObjectEraserPage() {
 
       <main className="mx-auto max-w-6xl px-4 sm:px-6 pt-36 pb-24">
         <ToolHead
-          title="AI Object & Watermark Eraser"
+          title={title}
           busy={isProcessing}
           icon={(active) => <AiObjectEraserIcon active={active} size={24} />}
-          blurb="Erase watermarks, logos, text, stamps, and photobombers with AI Generative Fill. 100% private in your browser."
+          blurb={blurb}
         />
 
         <ToolWindow path="ai-object-eraser">

@@ -1,33 +1,21 @@
 import type { Metadata } from "next";
+import { buildToolMetadata, buildToolJsonLd } from "../lib/tool-seo";
+import { TOOL_SEO } from "../lib/tool-seo-data";
+import { ToolFaq } from "../components/tool-faq";
 
-export const metadata: Metadata = {
-  title: "AI Object Eraser & Watermark Remover Online Free | Inerate Tools",
-  description:
-    "Erase watermarks, logos, text, stamps, and photobombers from photos with AI generative fill. 100% free, private, and runs directly in your browser with zero upload.",
-  keywords: [
-    "ai object eraser",
-    "watermark remover online free",
-    "remove watermark from image",
-    "magic eraser online",
-    "photo cleanup ai",
-    "remove unwanted objects from photo",
-    "erase text from image",
-    "generative fill photo eraser",
-  ],
-  openGraph: {
-    title: "AI Object Eraser & Watermark Remover — Free Generative Fill",
-    description:
-      "Brush over any watermark, logo, or object to magically erase it with seamless background generative fill. Runs 100% client-side in your browser.",
-    url: "https://tools.inerate.com/ai-object-eraser",
-    siteName: "Inerate Tools",
-    type: "website",
-  },
-};
+const seo = { slug: "ai-object-eraser", ...TOOL_SEO["ai-object-eraser"] };
 
-export default function AiObjectEraserLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return children;
+export const metadata: Metadata = buildToolMetadata(seo);
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildToolJsonLd(seo)) }}
+      />
+      {children}
+      <ToolFaq slug={seo.slug} />
+    </>
+  );
 }

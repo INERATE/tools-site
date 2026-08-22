@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Inter } from "next/font/google";
+import { AD_CLIENT, adsConfigured } from "./lib/ads-config";
 import { SmoothScroll } from "./components/smooth-scroll";
 import { SearchProvider } from "./components/search-context";
 import { SearchOverlay } from "./components/search-overlay";
@@ -81,6 +82,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600&family=Cinzel:wght@600&family=Dancing+Script:wght@600&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Lato:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&family=Pacifico&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Raleway:wght@500;700&family=Roboto+Mono:wght@400;600&family=Roboto:ital,wght@0,400;0,700;1,400&family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&family=Yatra+One&display=swap"
           rel="stylesheet"
         />
+        {adsConfigured && (
+          <Script
+            id="adsense-verify"
+            strategy="afterInteractive"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        )}
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-L1D7GPN13Y"

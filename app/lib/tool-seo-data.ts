@@ -2,6 +2,43 @@ import type { ToolSeo } from "./tool-seo";
 
 /** Per-tool SEO copy — generated once, edit here to update a tool page meta title/description/keywords/FAQ. */
 export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
+  "resize-photo-for-exam-form": {
+    "metaTitle": "Resize Photo & Signature for Exam Form (20KB, 50KB) Free | Inerate Tools",
+    "metaDescription": "Resize your photo and signature to the exact pixel and KB limits SSC, UPSC, IBPS, RRB, NEET and JEE forms demand. Free, no upload - runs in your browser.",
+    "keywords": [
+      "resize photo for exam form",
+      "compress photo to 20kb",
+      "signature resize 10kb to 20kb",
+      "ssc photo size 200x230 20kb to 50kb",
+      "upsc photo signature resize online",
+      "ibps photo resize 20kb",
+      "neet photo size converter",
+      "exam form photo resize without upload"
+    ],
+    "h1": "Resize Photo & Signature for Exam Forms",
+    "faq": [
+      {
+        "q": "Why does the exam portal keep rejecting my photo?",
+        "a": "Almost always the file misses one of two rules - the exact pixel dimensions, or the file size range in KB. SSC, for example, wants a photo at 200x230 pixels and between 20 KB and 50 KB, and rejects anything outside that. Picking your exam above applies both rules at once."
+      },
+      {
+        "q": "How do I compress a photo to 20KB without it turning blurry?",
+        "a": "The tool searches for the highest JPEG quality that still fits under the limit, rather than dropping quality to a fixed low setting. You get the sharpest image the portal's size cap allows."
+      },
+      {
+        "q": "My signature file is too small - the form wants at least 10KB. What now?",
+        "a": "A 140x60 signature often cannot reach 10 KB even at full quality because there are too few pixels. The tool pads the file past the end of the image data so it clears the minimum, while the picture itself stays exactly as it was."
+      },
+      {
+        "q": "Is my photo and signature uploaded anywhere?",
+        "a": "No. The resizing runs inside your browser, so your photograph and signature never leave your device - which matters more here than on most tools, since a signature image is worth protecting."
+      },
+      {
+        "q": "Which exams are covered?",
+        "a": "Presets are included for SSC, UPSC, IBPS and other bank exams, Railway RRB, NEET and JEE Main. Always check the current notification for your exam, since boards do occasionally change the specification."
+      }
+    ]
+  },
   "pdf-merger": {
     "metaTitle": "Merge PDF Files Online Free & Private | Inerate Tools",
     "metaDescription": "Combine multiple PDF files into one document free online. Reorder, rotate, or delete pages before saving - private, in-browser, no upload, no signup.",
@@ -144,30 +181,30 @@ export const TOOL_SEO: Record<string, Omit<ToolSeo, "slug">> = {
     ]
   },
   "watermark-remover": {
-    "metaTitle": "Remove Watermark from PDF Online Free | Inerate Tools",
-    "metaDescription": "Remove watermark from PDF online free - delete watermark annotations and cover printed marks. No upload, no signup, processed 100% privately in your browser.",
+    "metaTitle": "AI Watermark Remover Online Free — Remove Watermarks from Photos | Inerate Tools",
+    "metaDescription": "Remove watermarks, stamps, date tags, and logos from photos with AI generative fill. 100% free, private, and runs directly in your browser with zero server uploads.",
     "keywords": [
-      "remove watermark from pdf",
-      "pdf watermark remover online free",
-      "delete watermark pdf",
-      "remove stamp from pdf",
-      "cover printed watermark pdf",
-      "erase watermark pdf online no upload",
-      "watermark eraser pdf free"
+      "watermark remover",
+      "remove watermark from photo",
+      "watermark remover online free",
+      "erase watermark ai",
+      "logo remover online",
+      "clean image watermark",
+      "photo watermark remover no blur"
     ],
-    "h1": "Remove Watermarks from a PDF",
+    "h1": "Remove Watermarks from Photos",
     "faq": [
       {
-        "q": "Can this remove watermarks printed directly into the page, not just annotations?",
-        "a": "Yes, alongside deleting watermark and stamp annotations, you can cover marks that were printed into the page itself."
+        "q": "Will removing the watermark blur or smudge the photo?",
+        "a": "No, the eraser rebuilds the covered area from the surrounding texture, lighting, and colour instead of blurring it, so the patch blends into the image rather than leaving a smear."
       },
       {
-        "q": "Is my PDF uploaded to remove the watermark?",
-        "a": "No, everything is processed locally in your browser, so your document is never uploaded to a server."
+        "q": "Are my photos uploaded to remove the watermark?",
+        "a": "No, the inpainting runs entirely inside your browser, so the photo never leaves your device and nothing is stored on a server."
       },
       {
-        "q": "Do I need to sign up to remove watermarks?",
-        "a": "No, the tool is free to use with no account or signup needed."
+        "q": "Should I only remove watermarks from my own images?",
+        "a": "Yes, use this on photos you own or have permission to edit - removing a watermark from someone else's work does not give you the right to use it."
       }
     ]
   },

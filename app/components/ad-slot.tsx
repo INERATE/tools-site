@@ -16,12 +16,6 @@ export function AdSlot({ slot }: { slot: string }) {
 
   return (
     <div className="glass overflow-hidden rounded-2xl p-2">
-      <Script
-        id="adsbygoogle-init"
-        strategy="afterInteractive"
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`}
-        crossOrigin="anonymous"
-      />
       <ins
         className="adsbygoogle block"
         style={{ display: "block" }}

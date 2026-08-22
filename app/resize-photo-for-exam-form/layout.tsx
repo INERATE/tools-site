@@ -3,7 +3,7 @@ import { buildToolMetadata, buildToolJsonLd } from "../lib/tool-seo";
 import { TOOL_SEO } from "../lib/tool-seo-data";
 import { ToolFaq } from "../components/tool-faq";
 
-const seo = { slug: "pdf-metadata", ...TOOL_SEO["pdf-metadata"] };
+const seo = { slug: "resize-photo-for-exam-form", ...TOOL_SEO["resize-photo-for-exam-form"] };
 
 export const metadata: Metadata = buildToolMetadata(seo);
 

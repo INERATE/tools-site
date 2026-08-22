@@ -5,6 +5,8 @@ import { TOOLS } from "./tool-list";
 const PRODUCT = TOOLS.filter((t) => t.live).slice(0, 6);
 const COMPANY = [
   { label: "All tools", href: "/all-tools" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
   { label: "Forge (open source)", href: "https://forge.inerate.com", external: true },
   { label: "GitHub", href: "https://github.com/inerate", external: true },
 ];

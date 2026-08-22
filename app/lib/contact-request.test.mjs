@@ -1,10 +1,11 @@
-/** node app/api/contact/validate.test.mjs — runs the route's guards with types stripped. */
+/** node app/lib/contact-request.test.mjs — runs the pure request guards with types stripped. */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const src = readFileSync(new URL("./route.ts", import.meta.url), "utf8");
+const src = readFileSync(new URL("./contact-request.ts", import.meta.url), "utf8");
 const guards = src
-  .slice(src.indexOf("const clean"), src.indexOf("export async function POST"))
+  .slice(src.indexOf("export const clean"), src.indexOf("export function readSecret"))
+  .replace(/^export /gm, "")
   .replace(/: unknown/g, "")
   .replace(/: number/g, "")
   .replace(/: string/g, "");
@@ -30,4 +31,4 @@ assert.ok(!looksLikeEmail("a@b"), "needs a real TLD");
 assert.ok(!looksLikeEmail("a b@c.com"), "no spaces");
 assert.ok(!looksLikeEmail(""), "empty is not an address");
 
-console.log("contact validate: all assertions passed");
+console.log("contact-request: all assertions passed");

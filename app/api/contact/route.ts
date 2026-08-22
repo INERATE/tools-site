@@ -1,23 +1,16 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { clean, looksLikeEmail, readSecret, verifyTurnstile } from "../../lib/contact-request";
+import { sendContactMails } from "../../lib/contact-mail";
 
 // The root layout is force-static; a POST handler has to opt back out.
 export const dynamic = "force-dynamic";
 
-const FROM = "Inerate Tools <hello@relay.inerate.com>";
-const TO = "support@inerate.com";
 const LIMITS = { name: 100, email: 254, message: 5000 };
 
-/** Header injection: a newline in a header field can forge extra headers. */
-const clean = (v: unknown, max: number) =>
-  typeof v === "string" ? v.replace(/[\r\n]+/g, " ").trim().slice(0, max) : "";
-
-const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-
 export async function POST(request: Request) {
-  // Set with: npx wrangler secret put RESEND_API_KEY — never in the repo.
-  const { env } = getCloudflareContext();
-  const key = (env as { RESEND_API_KEY?: string }).RESEND_API_KEY ?? process.env.RESEND_API_KEY;
-  if (!key) return Response.json({ error: "Contact form is not configured." }, { status: 503 });
+  // Set both with: npx wrangler secret put RESEND_API_KEY / TURNSTILE_SECRET_KEY — never in the repo.
+  const key = readSecret("RESEND_API_KEY");
+  const turnstileSecret = readSecret("TURNSTILE_SECRET_KEY");
+  if (!key || !turnstileSecret) return Response.json({ error: "Contact form is not configured." }, { status: 503 });
 
   let body: Record<string, unknown>;
   try {
@@ -33,28 +26,20 @@ export async function POST(request: Request) {
   const name = clean(body.name, LIMITS.name);
   const email = clean(body.email, LIMITS.email);
   const message = clean(body.message, LIMITS.message);
+  const turnstileToken = clean(body.turnstileToken, 2048);
 
   if (!name || !message || !looksLikeEmail(email)) {
     return Response.json({ error: "Please fill in your name, a valid email, and a message." }, { status: 400 });
   }
-
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: FROM,
-      to: [TO],
-      reply_to: email,
-      subject: `Contact form: ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-    }),
-  });
-
-  if (!res.ok) {
-    // The upstream body can carry account details — log it, never return it.
-    console.error("Resend send failed", res.status, await res.text());
-    return Response.json({ error: "Could not send your message. Please email us directly." }, { status: 502 });
+  if (!turnstileToken) {
+    return Response.json({ error: "Please complete the verification check." }, { status: 400 });
   }
 
-  return Response.json({ ok: true });
+  const ip = request.headers.get("cf-connecting-ip");
+  if (!(await verifyTurnstile(turnstileToken, turnstileSecret, ip))) {
+    return Response.json({ error: "Verification failed. Please try again." }, { status: 400 });
+  }
+
+  const failure = await sendContactMails(key, { name, email, message });
+  return failure ?? Response.json({ ok: true });
 }

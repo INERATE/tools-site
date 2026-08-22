@@ -4,6 +4,7 @@ import { Nav } from "../components/nav";
 import { Dock } from "../components/dock";
 import { Footer } from "../components/footer";
 import { Section } from "../legal/legal-section";
+import { ContactForm } from "../components/contact-form";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -28,7 +29,9 @@ export default function ContactPage() {
           We read everything that comes in and usually reply within two working days.
         </p>
 
-        <Section title="Email">
+        <ContactForm />
+
+        <Section title="Prefer your own mail client?">
           <p>
             For anything at all —{" "}
             <a className="text-[var(--accent)] hover:underline" href={`mailto:${EMAIL}`}>
